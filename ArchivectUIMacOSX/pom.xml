@@ -10,9 +10,95 @@
 
 	<parent>
 		<groupId>org.devzendo</groupId>
-		<artifactId>Archivect</artifactId>
+		<artifactId>ArchivectUI</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
+
+	<profiles>
+		<profile>
+			<id>mac os x</id>
+			<activation>
+				<os>
+					<name>mac os xx</name>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+					<!--
+						Create the Mac OS X BeanMinder.app launcher structure under
+						target/macosx.
+					-->
+					<plugin>
+						<groupId>org.devzendo</groupId>
+						<artifactId>CrossPlatformLauncherPlugin</artifactId>
+						<version>0.2.0</version>
+						<configuration>
+							<os>MacOSX</os>
+							<applicationName>${appName}</applicationName>
+							<mainClassName>org.devzendo.xpfsatest.XPFSATest</mainClassName>
+							<iconsFileName>BeanMinder.icns</iconsFileName>
+							<narClassifierTypes>
+								<param>x86_64-MacOSX-g++:jni</param>
+							</narClassifierTypes>
+							<!--
+								I don't have an assigned creator code
+								<bundleSignature>BM</bundleSignature>
+							-->
+						</configuration>
+						<executions>
+							<execution>
+								<id>createlauncher</id>
+								<phase>package</phase>
+								<goals>
+									<goal>createlauncher</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!--
+						Copy the Quaqua native libraries into the correct location in the
+						Mac OS X launcher structure created above.
+					-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>unpack-quaqua-dependencies</id>
+								<phase>package</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>ch.randelshofer</groupId>
+											<artifactId>libquaqua</artifactId>
+											<version>6.5</version>
+											<type>zip</type>
+											<overWrite>true</overWrite>
+											<includes>*</includes>
+											<outputDirectory>${project.build.directory}/macosx/${appName}.app/Contents/Resources/Java/lib
+                                            </outputDirectory>
+										</artifactItem>
+									</artifactItems>
+									<!-- other configurations here -->
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<dependencies>
+				<dependency> <!-- Not released in central -->
+					<groupId>ch.randelshofer</groupId>
+					<artifactId>quaqua</artifactId>
+					<version>6.5</version> <!--  started with 5.2.1 -->
+				</dependency>
+			</dependencies>
+		</profile> <!--  mac os x -->
+	</profiles>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.devzendo</groupId>
