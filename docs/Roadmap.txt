@@ -1,0 +1,21 @@
+Archivect Roadmap
+=================
+Overall project goals:
+* Cross-platform backup, verify, restore, archive. For Mac OS X, Ubuntu Linux,
+  Windows XP and above.
+* Stores backup files as sequential streams as per tar, but with individual
+  file compression. Also creates an index tree allowing rapid access to the
+  individual files in the stream.
+* Creates incremental backups and allows these to be viewed as a point in time.
+* Data can be restored from any point in time.
+* Data can be presented as a full stream backup via tar. i.e. the on-disk
+  format is dynamically reconstructed and presented as a tar pipe.
+* Multiple backup jobs can be defined and scheduled either via cron or other
+  system scheduler, or run under user control, either via GUI, command line, or
+  invoked by taskbar control/menu.
+     
+History
+=======
+11/Oct/2010 Project started. Eclipse & Maven projects created, version control
+on internal server.
+   
