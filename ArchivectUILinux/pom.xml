@@ -5,14 +5,60 @@
 	<artifactId>ArchivectUILinux</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>ArchivectUILinux</name>
+	<packaging>pom</packaging>
 	<description>The Linux launcher for the Archivect UI.
     (Apache License v2) 2010 Matt Gumbley, DevZendo.org</description>
 
 	<parent>
 		<groupId>org.devzendo</groupId>
-		<artifactId>ArchivectUI</artifactId>
+		<artifactId>Archivect</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
+
+	<properties>
+		<appName>ArchivectUI</appName>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>linux</id>
+			<activation>
+				<os>
+					<name>linux</name>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+					<!--
+						Create the Linux launcher structure under target/linux.
+					-->
+					<plugin>
+						<groupId>org.devzendo</groupId>
+						<artifactId>CrossPlatformLauncherPlugin</artifactId>
+						<version>0.2.0</version>
+						<configuration>
+							<os>Linux</os>
+							<applicationName>${appName}</applicationName>
+							<mainClassName>org.devzendo.archivect.ArchivectUIMain</mainClassName>
+							<narClassifierTypes>
+								<param>i386-Linux-g++:jni</param>
+							</narClassifierTypes>
+						</configuration>
+						<executions>
+							<execution>
+								<id>createlauncher</id>
+								<phase>package</phase>
+								<goals>
+									<goal>createlauncher</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile> <!--  Linux -->
+	</profiles>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.devzendo</groupId>

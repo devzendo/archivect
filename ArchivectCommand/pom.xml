@@ -5,19 +5,23 @@
 	<artifactId>ArchivectCommand</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>ArchivectCommand</name>
+	<packaging>nar</packaging>
 	<description>Archivect's Command Line Utility.
     (Apache License v2) 2010 Matt Gumbley, DevZendo.org</description>
 
 	<parent>
 		<groupId>org.devzendo</groupId>
-		<artifactId>Archivect</artifactId>
+		<artifactId>ArchivectNar</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.devzendo</groupId>
 			<artifactId>ArchivectEngine</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
+			<type>nar</type>
+			<!-- strangely, not type nar -->
 		</dependency>
 	</dependencies>
 </project>

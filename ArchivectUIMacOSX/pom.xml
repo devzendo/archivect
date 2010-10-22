@@ -5,14 +5,19 @@
 	<artifactId>ArchivectUIMacOSX</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>ArchivectUIMacOSX</name>
+	<packaging>pom</packaging>
 	<description>The MacOSX launcher for the Archivect UI.
     (Apache License v2) 2010 Matt Gumbley, DevZendo.org</description>
 
 	<parent>
 		<groupId>org.devzendo</groupId>
-		<artifactId>ArchivectUI</artifactId>
+		<artifactId>Archivect</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
+
+    <properties>
+        <appName>ArchivectUI</appName>
+    </properties>
 
 	<profiles>
 		<profile>
@@ -35,8 +40,8 @@
 						<configuration>
 							<os>MacOSX</os>
 							<applicationName>${appName}</applicationName>
-							<mainClassName>org.devzendo.xpfsatest.XPFSATest</mainClassName>
-							<iconsFileName>BeanMinder.icns</iconsFileName>
+							<mainClassName>org.devzendo.archivect.ArchivectUIMain</mainClassName>
+							<iconsFileName>Archivect.icns</iconsFileName>
 							<narClassifierTypes>
 								<param>x86_64-MacOSX-g++:jni</param>
 							</narClassifierTypes>

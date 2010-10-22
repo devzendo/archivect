@@ -1,0 +1,7 @@
+
+syntax: regexp
+^ArchivectCommand/target$
+syntax: regexp
+^ArchivectEngine/target$
+syntax: regexp
+^ArchivectUI/target$

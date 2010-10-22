@@ -5,36 +5,14 @@
 	<artifactId>ArchivectEngine</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>ArchivectEngine</name>
+	<packaging>nar</packaging>
 	<description>Archivect internals.
     (Apache License v2) 2010 Matt Gumbley, DevZendo.org</description>
 
 	<parent>
 		<groupId>org.devzendo</groupId>
-		<artifactId>Archivect</artifactId>
+		<artifactId>ArchivectNar</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<dependencies>
-
-		<dependency>
-			<groupId>org.devzendo</groupId>
-			<artifactId>CommonCode</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.devzendo</groupId>
-			<artifactId>CommonSpring</artifactId>
-			<version>0.3.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.devzendo</groupId>
-			<artifactId>CommonSpring</artifactId>
-			<version>0.3.0-SNAPSHOT</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-
-	</dependencies>
 </project>
