@@ -5,3 +5,5 @@ syntax: regexp
 ^ArchivectEngine/target$
 syntax: regexp
 ^ArchivectUI/target$
+syntax: regexp
+^ArchivectNar/target$
