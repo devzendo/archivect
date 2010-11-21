@@ -21,11 +21,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.devzendo.archivect.gui.ArchivectMainFrame;
-import org.devzendo.commoncode.gui.GUIUtils;
-import org.devzendo.commoncode.gui.ThreadCheckingRepaintManager;
 import org.devzendo.commoncode.logging.Logging;
+import org.devzendo.commongui.Beautifier;
+import org.devzendo.commongui.GUIUtils;
+import org.devzendo.commongui.ThreadCheckingRepaintManager;
 import org.devzendo.commonspring.springloader.SpringLoader;
-import org.devzendo.minimiser.gui.Beautifier;
 
 /**
  * The Archivect UI.
@@ -36,6 +36,8 @@ import org.devzendo.minimiser.gui.Beautifier;
 public class ArchivectUIMain {
     private static final Logger LOGGER = Logger
             .getLogger(ArchivectUIMain.class);
+    
+   
     /**
      * @param args the command line arguments
      */
