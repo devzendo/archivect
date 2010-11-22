@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.Logging;
-import org.devzendo.commonspring.springloader.SpringLoader;
 
 /**
  * The Archivect main command line program.

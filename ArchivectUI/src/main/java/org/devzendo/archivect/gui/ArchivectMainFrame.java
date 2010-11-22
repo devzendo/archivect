@@ -17,7 +17,7 @@ package org.devzendo.archivect.gui;
 
 import java.util.List;
 
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 
 /**
  * @author matt

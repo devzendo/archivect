@@ -16,9 +16,9 @@
 package org.devzendo.archivect;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
+import org.devzendo.commonapp.spring.springloader.SpringLoaderFactory;
 import org.devzendo.commoncode.string.StringUtils;
-import org.devzendo.commonspring.springloader.SpringLoader;
-import org.devzendo.commonspring.springloader.SpringLoaderFactory;
 
 /**
  * Initialise the Archivect Application Contexts via the SpringLoader.

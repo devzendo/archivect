@@ -21,11 +21,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.devzendo.archivect.gui.ArchivectMainFrame;
+import org.devzendo.commonapp.gui.Beautifier;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.Logging;
-import org.devzendo.commongui.Beautifier;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commongui.ThreadCheckingRepaintManager;
-import org.devzendo.commonspring.springloader.SpringLoader;
 
 /**
  * The Archivect UI.
