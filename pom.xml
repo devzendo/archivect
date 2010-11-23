@@ -88,6 +88,13 @@
             <version>2.5.1</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>jmock</groupId>
+            <artifactId>jmock-junit4</artifactId>
+            <version>2.5.1</version>
+            <scope>test</scope>
+        </dependency>
         
         <dependency>
             <groupId>org.hamcrest</groupId>
