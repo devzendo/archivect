@@ -1,0 +1,1 @@
+Provide a better icon for ArchivectUI/src/main/resources/...icons/application.gif

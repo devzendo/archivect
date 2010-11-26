@@ -15,18 +15,55 @@
  */
 package org.devzendo.archivect.gui;
 
-import java.util.List;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
-import org.devzendo.commonapp.spring.springloader.SpringLoader;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+
+import org.devzendo.commonapp.gui.MainFrameFactory;
+import org.devzendo.commonapp.gui.WindowGeometryStore;
+import org.devzendo.commoncode.resource.ResourceLoader;
+
 
 /**
+ * The Archivect UI Main Frame, saves its geometry, and handles closing.
  * @author matt
  *
  */
-public class ArchivectMainFrame {
+public class ArchivectMainFrame extends JFrame {
+    private static final String MAIN_FRAME_NAME = "main";
+    private final WindowGeometryStore mWindowGeometryStore;
 
-    public ArchivectMainFrame(final SpringLoader springLoader,
-            final List<String> finalArgList) {
-        // TODO Auto-generated constructor stub
+    public ArchivectMainFrame(final WindowGeometryStore windowGeometryStore, final MainFrameFactory mainFrameFactory) {
+        mWindowGeometryStore = windowGeometryStore;
+        
+        setIconImage(ResourceLoader.createResourceImageIcon("org/devzendo/archivect/icons/application.gif").getImage());
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        setMainFrameInFactory();
+        
+        setName(MAIN_FRAME_NAME);
+        setLayout(new BorderLayout());
+
+        // TODO inject me....
+        final JPanel mainPanel = new JPanel(); // TODO to be replaced by the main app panel
+        mainPanel.setPreferredSize(new Dimension(640, 480));
+        add(mainPanel, BorderLayout.CENTER);
+        
+        loadInitialGeometry();
+    }
+
+    private void setMainFrameInFactory() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private void loadInitialGeometry() {
+        if (!mWindowGeometryStore.hasStoredGeometry(this)) {
+            pack();
+        }
+        mWindowGeometryStore.loadGeometry(this);
     }
 }

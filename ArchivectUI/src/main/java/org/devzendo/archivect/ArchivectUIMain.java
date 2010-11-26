@@ -20,10 +20,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.devzendo.archivect.gui.ArchivectMainFrame;
+import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
 import org.devzendo.commonapp.gui.Beautifier;
+import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.gui.MainFrameFactory;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
+import org.devzendo.commonapp.gui.WindowGeometryStore;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.Logging;
 
@@ -73,7 +76,13 @@ public class ArchivectUIMain {
                         final String arg = finalArgList.get(i);
                         LOGGER.debug("arg " + i + " = '" + arg + "'");
                     }
-                    new ArchivectMainFrame(springLoader, finalArgList);
+                    
+                    final CursorManager mCursorManager = springLoader.getBean("cursorManager", CursorManager.class);
+                    //mCursorManager.setMainFrame(mMainFrame);
+
+                    final WindowGeometryStore  mWindowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
+                    final MainFrameFactory  mMainFrameFactory = springLoader.getBean("mainFrameFactory", MainFrameFactory.class);
+                    new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory).createFrame();
                 } catch (final Exception e) {
                     LOGGER.fatal(e.getMessage());
                     System.exit(1);
