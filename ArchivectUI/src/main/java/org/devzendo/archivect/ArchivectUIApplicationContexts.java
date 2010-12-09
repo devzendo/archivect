@@ -15,37 +15,28 @@
  */
 package org.devzendo.archivect;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.log4j.BasicConfigurator;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-
 /**
- * Can the Archivect Application Contexts be loaded successfully?
+ * The UI application contexts.
+ * 
  * @author matt
  *
  */
-public final class TestApplicationContexts {
+public final class ArchivectUIApplicationContexts {
     /**
-     * 
+     * No instances
      */
-    @BeforeClass
-    public static void logSetup() {
-        BasicConfigurator.configure();
+    private ArchivectUIApplicationContexts() {
+        // nothing
     }
-    
+
     /**
-     * 
+     * @return an array of standard application contexts used by
+     * the UI.
      */
-    @Test
-    public void loadSpringLoaderOK() {
-        final List<String> applicationContexts = new ArrayList<String>();
-        applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
-        new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
-        // shouldn't throw!
+    public static String[] getApplicationContexts() {
+        return new String[] {
+                "org/devzendo/archivect/ArchivectUI.xml"
+        };
     }
+
 }

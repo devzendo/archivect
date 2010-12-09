@@ -16,8 +16,12 @@
 package org.devzendo.archivect;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
@@ -55,7 +59,10 @@ public class ArchivectUIMain {
 
         ThreadCheckingRepaintManager.initialise();
 
-        final SpringLoader springLoader = new ArchivectSpringLoaderInitialiser().getSpringLoader();
+        final List<String> applicationContexts = new ArrayList<String>();
+        applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
+        applicationContexts.addAll(Arrays.asList(ArchivectUIApplicationContexts.getApplicationContexts()));
+        final SpringLoader springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
 
         // Sun changed their recommendations and now recommends the UI be built
         // on the EDT, so I think flagging creation on non-EDT is OK.
@@ -82,7 +89,9 @@ public class ArchivectUIMain {
 
                     final WindowGeometryStore  mWindowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
                     final MainFrameFactory  mMainFrameFactory = springLoader.getBean("mainFrameFactory", MainFrameFactory.class);
-                    new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory).createFrame();
+                    final JFrame mainFrame = new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory).createFrame();
+                    mainFrame.add(new JButton("FAKE"));
+                    mainFrame.setVisible(true);
                 } catch (final Exception e) {
                     LOGGER.fatal(e.getMessage());
                     System.exit(1);

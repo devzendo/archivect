@@ -37,16 +37,9 @@ public final class ArchivectSpringLoaderInitialiser {
      * @param applicationContexts the application context files, as resource paths
      */
     public ArchivectSpringLoaderInitialiser(final List<String> applicationContexts) {
-        this(applicationContexts.toArray(new String[0]));
-    }
-
-    /**
-     * Initialise the SpringLoader with the Archivect Application Contexts
-     * @param applicationContexts the application context files, as resource paths
-     */
-    public ArchivectSpringLoaderInitialiser(final String ... applicationContexts) {
         // Now load up Spring...
         final long startSpring = System.currentTimeMillis();
+        LOGGER.debug("Initialising SpringLoader with context files: " + applicationContexts);
         mSpringLoader = SpringLoaderFactory
                 .initialise(applicationContexts);
         final long stopSpring = System.currentTimeMillis();
