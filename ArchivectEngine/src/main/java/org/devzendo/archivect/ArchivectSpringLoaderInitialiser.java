@@ -15,6 +15,8 @@
  */
 package org.devzendo.archivect;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commonapp.spring.springloader.SpringLoaderFactory;
@@ -32,12 +34,21 @@ public final class ArchivectSpringLoaderInitialiser {
 
     /**
      * Initialise the SpringLoader with the Archivect Application Contexts
+     * @param applicationContexts the application context files, as resource paths
      */
-    public ArchivectSpringLoaderInitialiser() {
+    public ArchivectSpringLoaderInitialiser(final List<String> applicationContexts) {
+        this(applicationContexts.toArray(new String[0]));
+    }
+
+    /**
+     * Initialise the SpringLoader with the Archivect Application Contexts
+     * @param applicationContexts the application context files, as resource paths
+     */
+    public ArchivectSpringLoaderInitialiser(final String ... applicationContexts) {
         // Now load up Spring...
         final long startSpring = System.currentTimeMillis();
         mSpringLoader = SpringLoaderFactory
-                .initialise(ArchivectEngineApplicationContexts.getApplicationContexts());
+                .initialise(applicationContexts);
         final long stopSpring = System.currentTimeMillis();
         final long springElapsed = stopSpring - startSpring;
         LOGGER.debug("SpringLoader initialised in "
