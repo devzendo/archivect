@@ -4,6 +4,6 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
     default-lazy-init="true" >
 
-    <bean id="cursorManager" class="org.devzendo.commonapp.CursorManager" />
+    <bean id="cursorManager" class="org.devzendo.commonapp.gui.CursorManager" />
 
 </beans>
