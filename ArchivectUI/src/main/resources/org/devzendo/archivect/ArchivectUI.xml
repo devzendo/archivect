@@ -6,4 +6,13 @@
 
     <bean id="cursorManager" class="org.devzendo.commonapp.gui.CursorManager" />
 
+    <bean id="windowGeometryStorePersistence" class="org.devzendo.archivect.gui.ArchivectWindowGeometryStorePersistence" >
+    </bean>
+
+    <bean id="windowGeometryStore" class="org.devzendo.commonapp.gui.WindowGeometryStore" >
+        <constructor-arg ref="windowGeometryStorePersistence" />
+    </bean>
+
+    <bean id="mainFrameFactory" class="org.devzendo.commonapp.gui.MainFrameFactory" />
+
 </beans>

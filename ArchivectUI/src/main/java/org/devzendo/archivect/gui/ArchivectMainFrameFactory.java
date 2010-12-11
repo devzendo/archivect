@@ -59,7 +59,7 @@ public final class ArchivectMainFrameFactory {
      */
     public JFrame createFrame() {
         final ArchivectMainFrame archivectMainFrame = new ArchivectMainFrame(
-                mWindowGeometryStore, mMainFrameFactory);
+                mWindowGeometryStore);
         mCursorManager.setMainFrame(archivectMainFrame);
         mMainFrameFactory.setMainFrame(archivectMainFrame);
         return archivectMainFrame;

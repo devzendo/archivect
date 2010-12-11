@@ -87,13 +87,13 @@ public class ArchivectUIMain {
                     final CursorManager mCursorManager = springLoader.getBean("cursorManager", CursorManager.class);
                     //mCursorManager.setMainFrame(mMainFrame);
 
-                    final WindowGeometryStore  mWindowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
-                    final MainFrameFactory  mMainFrameFactory = springLoader.getBean("mainFrameFactory", MainFrameFactory.class);
+                    final WindowGeometryStore mWindowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
+                    final MainFrameFactory mMainFrameFactory = springLoader.getBean("&mainFrameFactory", MainFrameFactory.class);
                     final JFrame mainFrame = new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory).createFrame();
                     mainFrame.add(new JButton("FAKE"));
                     mainFrame.setVisible(true);
                 } catch (final Exception e) {
-                    LOGGER.fatal(e.getMessage());
+                    LOGGER.fatal(e.getMessage(), e);
                     System.exit(1);
                 }
             }

@@ -95,13 +95,28 @@ public final class TestArchivectMainFrameFactory {
         MatcherAssert.assertThat(mainFrame, Matchers.notNullValue());
         MatcherAssert.assertThat(mCursorManager.getMainFrame(), Matchers.equalTo(mainFrame));
         MatcherAssert.assertThat((JFrame) mMainFrameFactory.getObject(), Matchers.equalTo(mainFrame));
+        mainFrame.dispose();
+    }
+    
+    @Test
+    public void mainFrameResizeAndMoveStoresInPersistence() {
+        context.checking(new Expectations() { {
+            allowing(mWindowGeometryStorePersistence).getWindowGeometry("main");
+                will(returnValue("100,100,640,480"));
+            oneOf(mWindowGeometryStorePersistence).setWindowGeometry("main", "200,200,500,400");
+        } });
+        initialiseFrameFixture();
+
+        final JFrame mainFrame = new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory).createFrame();
+        mainFrame.setBounds(200, 200, 500, 400);
+        mainFrame.dispose();
     }
 
     private void initialiseFrameFixture() {
         final ArchivectMainFrame frame = GuiActionRunner.execute(new GuiQuery<ArchivectMainFrame>() {
             @Override
             protected ArchivectMainFrame executeInEDT() {
-                return new ArchivectMainFrame(mWindowGeometryStore, mMainFrameFactory);
+                return new ArchivectMainFrame(mWindowGeometryStore);
             }
         });
         window = new FrameFixture(frame);

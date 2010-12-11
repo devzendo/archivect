@@ -17,12 +17,14 @@ package org.devzendo.archivect.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import org.devzendo.commonapp.gui.MainFrameFactory;
+import org.apache.log4j.Logger;
 import org.devzendo.commonapp.gui.WindowGeometryStore;
 import org.devzendo.commoncode.resource.ResourceLoader;
 
@@ -33,17 +35,17 @@ import org.devzendo.commoncode.resource.ResourceLoader;
  *
  */
 public class ArchivectMainFrame extends JFrame {
+    private static final Logger LOGGER = Logger
+            .getLogger(ArchivectMainFrame.class);
     private static final String MAIN_FRAME_NAME = "main";
     private final WindowGeometryStore mWindowGeometryStore;
 
-    public ArchivectMainFrame(final WindowGeometryStore windowGeometryStore, final MainFrameFactory mainFrameFactory) {
+    public ArchivectMainFrame(final WindowGeometryStore windowGeometryStore) {
         mWindowGeometryStore = windowGeometryStore;
         
         setIconImage(ResourceLoader.createResourceImageIcon("org/devzendo/archivect/icons/application.gif").getImage());
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        setMainFrameInFactory();
-        
         setName(MAIN_FRAME_NAME);
         setLayout(new BorderLayout());
 
@@ -53,11 +55,7 @@ public class ArchivectMainFrame extends JFrame {
         add(mainPanel, BorderLayout.CENTER);
         
         loadInitialGeometry();
-    }
-
-    private void setMainFrameInFactory() {
-        // TODO Auto-generated method stub
-        
+        setupGeometrySaveOnMoveOnClose();
     }
 
     private void loadInitialGeometry() {
@@ -66,4 +64,19 @@ public class ArchivectMainFrame extends JFrame {
         }
         mWindowGeometryStore.loadGeometry(this);
     }
+
+    private void setupGeometrySaveOnMoveOnClose() {
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(final WindowEvent e) {
+                LOGGER.info("Saving geometry");
+                mWindowGeometryStore.saveGeometry(ArchivectMainFrame.this);
+                LOGGER.info("Closing window");
+                dispose();
+                LOGGER.info("Exitting");
+                System.exit(0);
+            }
+        });
+    }
 }
+
