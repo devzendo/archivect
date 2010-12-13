@@ -15,10 +15,15 @@
  */
 package org.devzendo.archivect;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,7 +33,7 @@ import org.junit.Test;
  * @author matt
  *
  */
-public class TestApplicationContextsLoadCorrectly {
+public final class TestApplicationContextsLoadCorrectly {
     
     /**
      * 
@@ -43,10 +48,23 @@ public class TestApplicationContextsLoadCorrectly {
      */
     @Test
     public void applicationContextsLoadCorrectly() {
+        assertThat(springLoader(), notNullValue());
+        // and no exceptions thrown.
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void archivectMainFrameFactoryOk() {
+        assertThat(springLoader().getBean("archivectMainFrameFactory", ArchivectMainFrameFactory.class), notNullValue());
+    }
+
+    private SpringLoader springLoader() {
         final List<String> applicationContexts = new ArrayList<String>();
         applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
         applicationContexts.addAll(Arrays.asList(ArchivectUIApplicationContexts.getApplicationContexts()));
-        new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
-        // and no exceptions thrown.
+        final SpringLoader springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
+        return springLoader;
     }
 }

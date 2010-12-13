@@ -26,11 +26,8 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
 import org.devzendo.commonapp.gui.Beautifier;
-import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.commonapp.gui.GUIUtils;
-import org.devzendo.commonapp.gui.MainFrameFactory;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
-import org.devzendo.commonapp.gui.WindowGeometryStore;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.Logging;
 
@@ -84,10 +81,10 @@ public class ArchivectUIMain {
                         LOGGER.debug("arg " + i + " = '" + arg + "'");
                     }
                     
-                    final CursorManager mCursorManager = springLoader.getBean("cursorManager", CursorManager.class);
-                    final WindowGeometryStore mWindowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
-                    final MainFrameFactory mMainFrameFactory = springLoader.getBean("&mainFrameFactory", MainFrameFactory.class);
-                    final JFrame mainFrame = new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory).createFrame();
+                    final ArchivectMainFrameFactory archivectMainFrameFactory = 
+                        springLoader.getBean("archivectMainFrameFactory", ArchivectMainFrameFactory.class);
+
+                    final JFrame mainFrame = archivectMainFrameFactory.createFrame();
                     mainFrame.add(new JButton("FAKE"));
                     mainFrame.setVisible(true);
                 } catch (final Exception e) {
