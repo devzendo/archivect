@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 
 import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.commonapp.gui.MainFrameFactory;
+import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
 import org.devzendo.commonapp.gui.WindowGeometryStore;
 import org.devzendo.commonapp.gui.WindowGeometryStorePersistence;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
@@ -58,6 +59,7 @@ public final class TestArchivectMainFrameFactory {
     @BeforeClass
     public static void setUpLogging() {
         LoggingUnittestHelper.setupLogging();
+        ThreadCheckingRepaintManager.initialise();
     }
 
     /**
