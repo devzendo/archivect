@@ -88,38 +88,45 @@ public final class TestArchivectMainFrameFactory {
         context.checking(new Expectations() { {
             allowing(mWindowGeometryStorePersistence).getWindowGeometry("main");
                 will(returnValue("100,100,640,480"));
+            ignoring(mWindowGeometryStorePersistence);
         } });
-        initialiseFrameFixture();
 
-        final JFrame mainFrame = new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory).createFrame();
+        final JFrame mainFrame = initialiseFrameFixture();
+        
         MatcherAssert.assertThat(mainFrame, Matchers.notNullValue());
         MatcherAssert.assertThat(mCursorManager.getMainFrame(), Matchers.equalTo(mainFrame));
         MatcherAssert.assertThat((JFrame) mMainFrameFactory.getObject(), Matchers.equalTo(mainFrame));
         mainFrame.dispose();
     }
     
+    /**
+     * 
+     */
     @Test
     public void mainFrameResizeAndMoveStoresInPersistence() {
         context.checking(new Expectations() { {
             allowing(mWindowGeometryStorePersistence).getWindowGeometry("main");
                 will(returnValue("100,100,640,480"));
-            oneOf(mWindowGeometryStorePersistence).setWindowGeometry("main", "200,200,500,400");
+            atLeast(1).of(mWindowGeometryStorePersistence).setWindowGeometry("main", "200,200,500,400");
         } });
-        initialiseFrameFixture();
+        final JFrame mainFrame = initialiseFrameFixture();
+        window.robot.waitForIdle();
 
-        final JFrame mainFrame = new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory).createFrame();
         mainFrame.setBounds(200, 200, 500, 400);
+        window.robot.waitForIdle();
         mainFrame.dispose();
+        window.robot.waitForIdle();
     }
 
-    private void initialiseFrameFixture() {
+    private JFrame initialiseFrameFixture() {
         final ArchivectMainFrame frame = GuiActionRunner.execute(new GuiQuery<ArchivectMainFrame>() {
             @Override
             protected ArchivectMainFrame executeInEDT() {
-                return new ArchivectMainFrame(mWindowGeometryStore);
+                return new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory).createFrame();
             }
         });
         window = new FrameFixture(frame);
         window.show(); // shows the frame to test
+        return frame;
     }
 }

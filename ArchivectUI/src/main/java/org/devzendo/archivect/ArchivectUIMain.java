@@ -85,8 +85,6 @@ public class ArchivectUIMain {
                     }
                     
                     final CursorManager mCursorManager = springLoader.getBean("cursorManager", CursorManager.class);
-                    //mCursorManager.setMainFrame(mMainFrame);
-
                     final WindowGeometryStore mWindowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
                     final MainFrameFactory mMainFrameFactory = springLoader.getBean("&mainFrameFactory", MainFrameFactory.class);
                     final JFrame mainFrame = new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory).createFrame();

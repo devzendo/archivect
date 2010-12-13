@@ -34,17 +34,24 @@ import org.devzendo.commoncode.resource.ResourceLoader;
  * @author matt
  *
  */
+@SuppressWarnings("serial")
 public class ArchivectMainFrame extends JFrame {
     private static final Logger LOGGER = Logger
             .getLogger(ArchivectMainFrame.class);
     private static final String MAIN_FRAME_NAME = "main";
     private final WindowGeometryStore mWindowGeometryStore;
 
+    /**
+     * Construct the main application frame, given the geometry store in which
+     * its initial size and location will be loaded, and persisted on close.
+     * 
+     * @param windowGeometryStore the geometry store
+     */
     public ArchivectMainFrame(final WindowGeometryStore windowGeometryStore) {
         mWindowGeometryStore = windowGeometryStore;
         
         setIconImage(ResourceLoader.createResourceImageIcon("org/devzendo/archivect/icons/application.gif").getImage());
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         setName(MAIN_FRAME_NAME);
         setLayout(new BorderLayout());
@@ -68,13 +75,9 @@ public class ArchivectMainFrame extends JFrame {
     private void setupGeometrySaveOnMoveOnClose() {
         addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(final WindowEvent e) {
+            public void windowClosed(final WindowEvent e) {
                 LOGGER.info("Saving geometry");
                 mWindowGeometryStore.saveGeometry(ArchivectMainFrame.this);
-                LOGGER.info("Closing window");
-                dispose();
-                LOGGER.info("Exitting");
-                System.exit(0);
             }
         });
     }

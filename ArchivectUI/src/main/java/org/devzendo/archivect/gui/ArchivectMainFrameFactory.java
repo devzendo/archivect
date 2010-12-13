@@ -15,8 +15,6 @@
  */
 package org.devzendo.archivect.gui;
 
-import javax.swing.JFrame;
-
 import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.commonapp.gui.MainFrameFactory;
 import org.devzendo.commonapp.gui.WindowGeometryStore;
@@ -57,7 +55,7 @@ public final class ArchivectMainFrameFactory {
     /**
      * @return the main application frame, connected to the app framework.
      */
-    public JFrame createFrame() {
+    public ArchivectMainFrame createFrame() {
         final ArchivectMainFrame archivectMainFrame = new ArchivectMainFrame(
                 mWindowGeometryStore);
         mCursorManager.setMainFrame(archivectMainFrame);
