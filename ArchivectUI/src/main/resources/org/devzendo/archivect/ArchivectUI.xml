@@ -15,7 +15,7 @@
 
     <bean id="mainFrameFactory" class="org.devzendo.commonapp.gui.MainFrameFactory" />
     	
-    <bean id="archivectMainFrameFactory" class="org.devzendo.archivect.gui.SArchivectMainFrameFactory">
+    <bean id="archivectMainFrameFactory" class="org.devzendo.archivect.gui.ArchivectMainFrameFactory">
     	<constructor-arg ref="cursorManager" />
 		<constructor-arg ref="windowGeometryStore" />
 		<constructor-arg ref="&amp;mainFrameFactory" />

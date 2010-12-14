@@ -24,7 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
-import org.devzendo.archivect.gui.SArchivectMainFrameFactory;
+import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
 import org.devzendo.commonapp.gui.Beautifier;
 import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
@@ -81,8 +81,8 @@ public class ArchivectUIMain {
                         LOGGER.debug("arg " + i + " = '" + arg + "'");
                     }
                     
-                    final SArchivectMainFrameFactory archivectMainFrameFactory = 
-                        springLoader.getBean("archivectMainFrameFactory", SArchivectMainFrameFactory.class);
+                    final ArchivectMainFrameFactory archivectMainFrameFactory = 
+                        springLoader.getBean("archivectMainFrameFactory", ArchivectMainFrameFactory.class);
 
                     final JFrame mainFrame = archivectMainFrameFactory.createFrame();
                     mainFrame.add(new JButton("FAKE"));

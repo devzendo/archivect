@@ -27,7 +27,7 @@ import org.devzendo.commonapp.gui.CursorManager
  * @author matt
  * 
  */
-class SArchivectMainFrameFactory(
+class ArchivectMainFrameFactory(
     val cursorManager: CursorManager,
     val windowGeometryStore: WindowGeometryStore,
     val mainFrameFactory: MainFrameFactory)
