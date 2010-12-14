@@ -20,7 +20,7 @@
 			<id>mac os x</id>
 			<activation>
 				<os>
-					<name>mac os xx</name>
+					<name>mac os x</name>
 				</os>
 			</activation>
 			<build>
