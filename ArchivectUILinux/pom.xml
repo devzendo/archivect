@@ -15,9 +15,9 @@
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<appName>ArchivectUI</appName>
-	</properties>
+    <properties>
+        <appName>ArchivectUI</appName>
+    </properties>
 
 	<profiles>
 		<profile>
