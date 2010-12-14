@@ -11,3 +11,13 @@ syntax: regexp
 ^ArchivectUIWindows/target$
 syntax: regexp
 ^ArchivectCommandWindows/target$
+syntax: regexp
+^ArchivectCommandLinux/target$
+syntax: regexp
+^ArchivectCommandMacOSX/target$
+syntax: regexp
+^ArchivectUILinux/target$
+syntax: regexp
+^ArchivectUIMacOSX/target$
+syntax: regexp
+^target$
