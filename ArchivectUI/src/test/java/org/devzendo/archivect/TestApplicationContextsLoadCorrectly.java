@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
+import org.devzendo.archivect.gui.SArchivectMainFrameFactory;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.junit.BeforeClass;
@@ -57,7 +57,7 @@ public final class TestApplicationContextsLoadCorrectly {
      */
     @Test
     public void archivectMainFrameFactoryOk() {
-        assertThat(springLoader().getBean("archivectMainFrameFactory", ArchivectMainFrameFactory.class), notNullValue());
+        assertThat(springLoader().getBean("archivectMainFrameFactory", SArchivectMainFrameFactory.class), notNullValue());
     }
 
     private SpringLoader springLoader() {
