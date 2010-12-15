@@ -11,7 +11,7 @@
 
 	<parent>
 		<groupId>org.devzendo</groupId>
-		<artifactId>Archivect</artifactId>
+		<artifactId>ArchivectCode</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 

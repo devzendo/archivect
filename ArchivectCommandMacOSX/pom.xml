@@ -38,7 +38,7 @@
 						<artifactId>CrossPlatformLauncherPlugin</artifactId>
 						<version>0.2.1-SNAPSHOT</version>
 						<configuration>
-							<os>MacOSX</os>
+							<os>Linux</os> <!--  TODO: change back to MacOSX when the launcher plugin can generate a script -->
 							<applicationName>${appName}</applicationName>
 							<mainClassName>org.devzendo.archivect.ArchivectMain</mainClassName>
 							<narClassifierTypes>
