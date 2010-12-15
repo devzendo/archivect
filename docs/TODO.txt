@@ -1,1 +1,3 @@
 Provide a better icon for ArchivectUI/src/main/resources/...icons/application.gif
+
+CrossPlatformLauncherPlugin needs to be able to create a MacOSX command line application structure.
