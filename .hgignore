@@ -21,3 +21,5 @@ syntax: regexp
 ^ArchivectUIMacOSX/target$
 syntax: regexp
 ^target$
+syntax: regexp
+^ArchivectCode/target$
