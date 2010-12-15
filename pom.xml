@@ -131,6 +131,8 @@
 	</dependencies>
 
 	<modules>
+        <module>ArchivectCode</module>
+        
 		<module>ArchivectEngine</module>
 
 		<module>ArchivectUI</module>
