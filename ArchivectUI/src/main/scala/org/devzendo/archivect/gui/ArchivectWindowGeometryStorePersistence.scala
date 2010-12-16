@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.devzendo.archivect.gui;
+ 
+package org.devzendo.archivect.gui
 
-import org.devzendo.commonapp.gui.WindowGeometryStorePersistence;
+import org.devzendo.commonapp.gui.WindowGeometryStorePersistence
 
-public class ArchivectWindowGeometryStorePersistence implements WindowGeometryStorePersistence {
+class ArchivectWindowGeometryStorePersistence extends WindowGeometryStorePersistence {
 
-    public String getWindowGeometry(final String windowName) {
+    def getWindowGeometry(windowName: String): String = {
         return "100,100,640,480";
     }
 
-    public void setWindowGeometry(final String windowName, final String geometry) {
+    def setWindowGeometry(windowName: String, geometry: String): Unit = {
         // TODO Auto-generated method stub
         
     }
