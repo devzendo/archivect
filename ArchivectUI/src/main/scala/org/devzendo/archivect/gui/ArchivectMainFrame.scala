@@ -29,8 +29,8 @@ import org.apache.log4j.Logger
 import org.devzendo.commonapp.gui.WindowGeometryStore
 import org.devzendo.commoncode.resource.ResourceLoader
 
-object SArchivectMainFrame {
-    private val LOGGER = Logger.getLogger(classOf[SArchivectMainFrame])
+object ArchivectMainFrame {
+    private val LOGGER = Logger.getLogger(classOf[ArchivectMainFrame])
     private val MAIN_FRAME_NAME = "main"
 }
 
@@ -42,11 +42,11 @@ object SArchivectMainFrame {
  * @author matt
  * @param windowGeometryStore the geometry store
  */
-class SArchivectMainFrame(windowGeometryStore: WindowGeometryStore) extends JFrame {
+class ArchivectMainFrame(windowGeometryStore: WindowGeometryStore) extends JFrame {
     setIconImage(ResourceLoader.createResourceImageIcon("org/devzendo/archivect/icons/application16x16.gif").getImage())
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 
-    setName(SArchivectMainFrame.MAIN_FRAME_NAME)
+    setName(ArchivectMainFrame.MAIN_FRAME_NAME)
     setLayout(new BorderLayout())
 
     // TODO inject me....
@@ -67,8 +67,8 @@ class SArchivectMainFrame(windowGeometryStore: WindowGeometryStore) extends JFra
     def setupGeometrySaveOnMoveOnClose = {
         addWindowListener(new WindowAdapter() {
             override def windowClosed(e: WindowEvent ) {
-                SArchivectMainFrame.LOGGER.info("Saving geometry")
-                windowGeometryStore.saveGeometry(SArchivectMainFrame.this)
+                ArchivectMainFrame.LOGGER.info("Saving geometry")
+                windowGeometryStore.saveGeometry(ArchivectMainFrame.this)
         }});
     }
 }
