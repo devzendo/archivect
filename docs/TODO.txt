@@ -1,5 +1,7 @@
 Prefs storage
-  For window geometry.
+  For window geometry - wire up load/save of window geometry.
+  Initialise prefs in the command line tool.
+  
 Look at the correct method for using @Rule for temporary folders
   
 Window close trapping needs to be better:
