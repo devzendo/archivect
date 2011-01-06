@@ -15,11 +15,18 @@
  */
 package org.devzendo.archivect;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
+import org.devzendo.commonapp.prefs.PrefsFactory;
+import org.devzendo.commonapp.prefs.PrefsInstantiator;
+import org.devzendo.commonapp.prefs.PrefsLocation;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -30,12 +37,18 @@ import org.junit.Test;
  *
  */
 public final class TestApplicationContexts {
+    private static SpringLoader springLoader;
+
     /**
      * 
      */
     @BeforeClass
-    public static void logSetup() {
+    public static void setup() {
         BasicConfigurator.configure();
+        
+        final List<String> applicationContexts = new ArrayList<String>();
+        applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
+        springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
     }
     
     /**
@@ -47,5 +60,29 @@ public final class TestApplicationContexts {
         applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
         new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
         // shouldn't throw!
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void prefsLocationOk() {
+        assertThat(springLoader.getBean("prefsLocation", PrefsLocation.class), notNullValue());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void prefsFactoryOk() {
+        assertThat(springLoader.getBean("&prefs", PrefsFactory.class), notNullValue());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void prefsInstantiatorOk() {
+        assertThat(springLoader.getBean("prefsInstantiator", PrefsInstantiator.class), notNullValue());
     }
 }

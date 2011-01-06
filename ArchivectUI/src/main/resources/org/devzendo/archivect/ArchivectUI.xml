@@ -20,4 +20,10 @@
 		<constructor-arg ref="windowGeometryStore" />
 		<constructor-arg ref="&amp;mainFrameFactory" />
 	</bean>
+	
+    <bean id="guiPrefsStartupHelper" class="org.devzendo.commonapp.prefs.GuiPrefsStartupHelper">
+        <constructor-arg ref="prefsLocation" />
+        <constructor-arg ref="&amp;prefs" />
+        <constructor-arg ref="prefsInstantiator" />
+	</bean>
 </beans>

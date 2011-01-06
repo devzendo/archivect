@@ -28,6 +28,7 @@ import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
 import org.devzendo.commonapp.gui.Beautifier;
 import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
+import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.Logging;
 
@@ -61,6 +62,9 @@ public class ArchivectUIMain {
         applicationContexts.addAll(Arrays.asList(ArchivectUIApplicationContexts.getApplicationContexts()));
         final SpringLoader springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
 
+        final GuiPrefsStartupHelper prefsStartupHelper = springLoader.getBean("guiPrefsStartupHelper", GuiPrefsStartupHelper.class);
+        prefsStartupHelper.initialisePrefs();
+        
         // Sun changed their recommendations and now recommends the UI be built
         // on the EDT, so I think flagging creation on non-EDT is OK.
         // "We used to say that you could create the GUI on the main thread as

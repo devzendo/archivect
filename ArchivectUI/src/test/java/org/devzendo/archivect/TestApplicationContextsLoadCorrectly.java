@@ -22,9 +22,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.BasicConfigurator;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
+import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
-import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,21 +35,27 @@ import org.junit.Test;
  *
  */
 public final class TestApplicationContextsLoadCorrectly {
-    
+    private static SpringLoader springLoader;
+
     /**
      * 
      */
     @BeforeClass
-    public static void setupLogging() {
-        LoggingUnittestHelper.setupLogging();
+    public static void setup() {
+        BasicConfigurator.configure();
+        
+        final List<String> applicationContexts = new ArrayList<String>();
+        applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
+        applicationContexts.addAll(Arrays.asList(ArchivectUIApplicationContexts.getApplicationContexts()));
+        springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
     }
-    
+
     /**
      * 
      */
     @Test
     public void applicationContextsLoadCorrectly() {
-        assertThat(springLoader(), notNullValue());
+        assertThat(springLoader, notNullValue());
         // and no exceptions thrown.
     }
     
@@ -57,14 +64,14 @@ public final class TestApplicationContextsLoadCorrectly {
      */
     @Test
     public void archivectMainFrameFactoryOk() {
-        assertThat(springLoader().getBean("archivectMainFrameFactory", ArchivectMainFrameFactory.class), notNullValue());
+        assertThat(springLoader.getBean("archivectMainFrameFactory", ArchivectMainFrameFactory.class), notNullValue());
     }
 
-    private SpringLoader springLoader() {
-        final List<String> applicationContexts = new ArrayList<String>();
-        applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
-        applicationContexts.addAll(Arrays.asList(ArchivectUIApplicationContexts.getApplicationContexts()));
-        final SpringLoader springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
-        return springLoader;
+    /**
+     * 
+     */
+    @Test
+    public void guiPrefsStartupHelperOk() {
+        assertThat(springLoader.getBean("guiPrefsStartupHelper", GuiPrefsStartupHelper.class), notNullValue());
     }
 }

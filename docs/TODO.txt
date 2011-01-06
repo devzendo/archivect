@@ -1,3 +1,13 @@
+Prefs storage
+  For window geometry.
+Look at the correct method for using @Rule for temporary folders
+  
+Window close trapping needs to be better:
+  Apple menu Quit needs hooking up to it
+  File menu Exit (Linux/Windows) needs hoking up to it
+
+Apple menu needs correct name - should be solved by XPLP. 
+
 Provide a better icon for ArchivectUI/src/main/resources/...icons/application.gif
 
 CrossPlatformLauncherPlugin needs to be able to create a MacOSX command line application structure.
