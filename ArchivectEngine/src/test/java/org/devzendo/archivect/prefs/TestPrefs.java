@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -64,16 +63,10 @@ public final class TestPrefs {
     @Before
     public void setUp() throws IOException {
         tempDir.create();
+        System.out.println("the temp folder is " + tempDir.getRoot().getAbsolutePath());
+
         final File mTempFile = tempDir.newFile("archivect-unit-test.prefs").getAbsoluteFile();
         prefs = new DefaultArchivectPrefs(mTempFile.getAbsolutePath());
-    }
-
-    /**
-     * 
-     */
-    @After
-    public void tearDown() {
-        tempDir.delete();
     }
     
     /**

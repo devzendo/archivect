@@ -22,7 +22,6 @@ import org.devzendo.commonapp.prefs.PrefsLocation;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -48,6 +47,9 @@ public final class TestPrefsInstantiator {
         LoggingUnittestHelper.setupLogging();
     }
 
+    /**
+     * 
+     */
     @Rule
     public final TemporaryFolder tempDir = new TemporaryFolder();
 
@@ -57,13 +59,7 @@ public final class TestPrefsInstantiator {
     @Before
     public void setUp() throws IOException {
         tempDir.create();
-    }
-    /**
-     * 
-     */
-    @After
-    public void tearDown() {
-        tempDir.delete();
+        System.out.println("the temp folder is " + tempDir.getRoot().getAbsolutePath());
     }
     
     /**
