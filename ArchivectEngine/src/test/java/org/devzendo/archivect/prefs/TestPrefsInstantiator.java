@@ -22,14 +22,12 @@ import org.devzendo.commonapp.prefs.PrefsLocation;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.jmock.integration.junit4.JMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 
 
 /**
@@ -38,7 +36,6 @@ import org.junit.runner.RunWith;
  * @author matt
  *
  */
-@RunWith(JMock.class)
 public final class TestPrefsInstantiator {
     private static final String PREFS_FILE = "archivect.prefs";
     private static final String PREFS_DIRECTORY = ".archivect";
@@ -52,7 +49,7 @@ public final class TestPrefsInstantiator {
     }
 
     @Rule
-    private final TemporaryFolder tempDir = new TemporaryFolder();
+    public final TemporaryFolder tempDir = new TemporaryFolder();
 
     /**
      * @throws IOException never
