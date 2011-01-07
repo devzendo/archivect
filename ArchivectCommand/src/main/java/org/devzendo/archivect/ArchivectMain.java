@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.Logging;
 
@@ -37,11 +38,16 @@ public class ArchivectMain {
      */
     public static void main(final String[] args) {
         final List<String> finalArgList = Logging.getInstance().setupLoggingFromArgs(Arrays.asList(args));
-
+        LOGGER.debug("Starting Archivect command line tool");
+        
         final List<String> applicationContexts = new ArrayList<String>();
         applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
+        applicationContexts.addAll(Arrays.asList(ArchivectCommandApplicationContexts.getApplicationContexts()));
         final SpringLoader springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
 
+        final LoggingPrefsStartupHelper prefsStartupHelper = springLoader.getBean("loggingPrefsStartupHelper", LoggingPrefsStartupHelper.class);
+        prefsStartupHelper.initialisePrefs();
+        
         LOGGER.info("Hello world from Archivect");
     }
 

@@ -3,7 +3,9 @@ Prefs storage
   Initialise prefs in the command line tool.
   
 Look at the correct method for using @Rule for temporary folders
-  
+
+Remove spring vomit-logging via log4j at runtime.
+
 Window close trapping needs to be better:
   Apple menu Quit needs hooking up to it
   File menu Exit (Linux/Windows) needs hoking up to it

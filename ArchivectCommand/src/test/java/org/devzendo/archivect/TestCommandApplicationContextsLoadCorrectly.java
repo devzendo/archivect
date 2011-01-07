@@ -23,20 +23,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
-import org.devzendo.commonapp.prefs.PrefsFactory;
-import org.devzendo.commonapp.prefs.PrefsInstantiator;
-import org.devzendo.commonapp.prefs.PrefsLocation;
+import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 
 /**
- * Can the Archivect Application Contexts be loaded successfully?
  * @author matt
  *
  */
-public final class TestApplicationContexts {
+public final class TestCommandApplicationContextsLoadCorrectly {
     private static SpringLoader springLoader;
 
     /**
@@ -48,41 +45,24 @@ public final class TestApplicationContexts {
         
         final List<String> applicationContexts = new ArrayList<String>();
         applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
+        applicationContexts.addAll(Arrays.asList(ArchivectCommandApplicationContexts.getApplicationContexts()));
         springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
-    }
-    
-    /**
-     * 
-     */
-    @Test
-    public void loadSpringLoaderOK() {
-        final List<String> applicationContexts = new ArrayList<String>();
-        applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
-        new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
-        // shouldn't throw!
-    }
-    
-    /**
-     * 
-     */
-    @Test
-    public void prefsLocationOk() {
-        assertThat(springLoader.getBean("prefsLocation", PrefsLocation.class), notNullValue());
-    }
-    
-    /**
-     * 
-     */
-    @Test
-    public void prefsFactoryOk() {
-        assertThat(springLoader.getBean("&prefs", PrefsFactory.class), notNullValue());
     }
 
     /**
      * 
      */
     @Test
-    public void prefsInstantiatorOk() {
-        assertThat(springLoader.getBean("prefsInstantiator", PrefsInstantiator.class), notNullValue());
+    public void applicationContextsLoadCorrectly() {
+        assertThat(springLoader, notNullValue());
+        // and no exceptions thrown.
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void loggingPrefsStartupHelperOk() {
+        assertThat(springLoader.getBean("loggingPrefsStartupHelper", LoggingPrefsStartupHelper.class), notNullValue());
     }
 }
