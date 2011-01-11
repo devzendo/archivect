@@ -19,6 +19,12 @@ import org.apache.log4j.Logger
 import org.devzendo.commonapp.prefs.Prefs
 import org.devzendo.commoncode.file.INIFile
 
+/**
+ * The .ini-file based implementation of ArchivectPrefs.
+ * 
+ * @author matt
+ *
+ */
 object DefaultArchivectPrefs {
     private val LOGGER = Logger.getLogger(classOf[DefaultArchivectPrefs])
     // The section names and preference items
@@ -26,9 +32,13 @@ object DefaultArchivectPrefs {
     private val UI_GEOMETRY = "geometry"
 
 }
+/**
+ * @param String the path at which the .ini file should be stored.
+ *
+ */
 class DefaultArchivectPrefs(prefsFilePath: String) extends ArchivectPrefs {
 
-    DefaultArchivectPrefs.LOGGER.info("Creating default prefs file at " + prefsFilePath)
+    DefaultArchivectPrefs.LOGGER.debug("Archivect preferences are stored at " + prefsFilePath)
     val iniFile = new INIFile(prefsFilePath)
     
     def getWindowGeometry(windowName: String): String = {
@@ -42,5 +52,4 @@ class DefaultArchivectPrefs(prefsFilePath: String) extends ArchivectPrefs {
     private def formWindowGeometryKey(windowName: String): String = {
         DefaultArchivectPrefs.UI_GEOMETRY + "_" + windowName
     }
-    
 }
