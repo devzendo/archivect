@@ -16,16 +16,22 @@
  
 package org.devzendo.archivect.gui
 
+import org.devzendo.archivect.prefs.ArchivectPrefs
 import org.devzendo.commonapp.gui.WindowGeometryStorePersistence
 
-class ArchivectWindowGeometryStorePersistence extends WindowGeometryStorePersistence {
+/**
+ * An adapter between ArchivectPrefs and WindowGeometryStorePersistence.
+ * 
+ * @author matt
+ *
+ */
+class ArchivectWindowGeometryStorePersistence(archivectPrefs: ArchivectPrefs) extends WindowGeometryStorePersistence {
 
     def getWindowGeometry(windowName: String): String = {
-        return "100,100,640,480";
+        archivectPrefs.getWindowGeometry(windowName)
     }
 
     def setWindowGeometry(windowName: String, geometry: String): Unit = {
-        // TODO Auto-generated method stub
-        
+        archivectPrefs.setWindowGeometry(windowName, geometry)
     }
 }
