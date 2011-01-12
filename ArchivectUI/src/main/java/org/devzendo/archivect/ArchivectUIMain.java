@@ -23,6 +23,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
 import org.devzendo.commonapp.gui.Beautifier;
@@ -47,7 +48,9 @@ public class ArchivectUIMain {
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
-        final List<String> finalArgList = Logging.getInstance().setupLoggingFromArgs(Arrays.asList(args));
+        final Logging logging = Logging.getInstance();
+        final List<String> finalArgList = logging.setupLoggingFromArgs(Arrays.asList(args));
+        logging.setPackageLoggingLevel("org.springframework", Level.WARN);
         LOGGER.info("Starting Archivect UI");
 
         final String javaLibraryPath = System.getProperty("java.library.path");
