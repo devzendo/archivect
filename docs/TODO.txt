@@ -1,5 +1,3 @@
-Remove spring vomit-logging via log4j at runtime.
-
 Window close trapping needs to be better:
   Apple menu Quit needs hooking up to it
   File menu Exit (Linux/Windows) needs hoking up to it
