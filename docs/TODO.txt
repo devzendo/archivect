@@ -2,5 +2,3 @@ Window close trapping needs to be better:
   Apple menu Quit needs hooking up to it
   File menu Exit (Linux/Windows) needs hoking up to it
 
-Apple menu needs correct name - should be solved by XPLP. 
-

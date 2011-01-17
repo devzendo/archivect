@@ -16,7 +16,7 @@
 	</parent>
 
     <properties>
-        <appName>Archivect</appName>
+        <appName>ArchivectCmd</appName>
     </properties>
 
 	<profiles>
