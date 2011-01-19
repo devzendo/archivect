@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
+import org.devzendo.archivect.gui.Menu;
+import org.devzendo.commonapp.gui.menu.MenuWiring;
 import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.junit.BeforeClass;
@@ -74,4 +76,21 @@ public final class TestUIApplicationContextsLoadCorrectly {
     public void guiPrefsStartupHelperOk() {
         assertThat(springLoader.getBean("guiPrefsStartupHelper", GuiPrefsStartupHelper.class), notNullValue());
     }
+
+    /**
+     * 
+     */
+    @Test
+    public void menuOk() {
+        assertThat(springLoader.getBean("menu", Menu.class), notNullValue());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void menuWiringOk() {
+        assertThat(springLoader.getBean("menuWiring", MenuWiring.class), notNullValue());
+    }
+
 }

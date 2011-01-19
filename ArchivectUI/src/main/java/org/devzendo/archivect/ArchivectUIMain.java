@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
+import org.devzendo.archivect.gui.Menu;
 import org.devzendo.commonapp.gui.Beautifier;
 import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
@@ -92,6 +93,11 @@ public class ArchivectUIMain {
                         springLoader.getBean("archivectMainFrameFactory", ArchivectMainFrameFactory.class);
 
                     final JFrame mainFrame = archivectMainFrameFactory.createFrame();
+                    
+                    final Menu menu = springLoader.getBean("menu", Menu.class);
+                    menu.initialise();
+                    mainFrame.setJMenuBar(menu.getMenuBar());
+                    
                     mainFrame.add(new JButton("FAKE"));
                     mainFrame.setVisible(true);
                 } catch (final Exception e) {

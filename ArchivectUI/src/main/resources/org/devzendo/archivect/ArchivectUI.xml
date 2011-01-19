@@ -27,4 +27,11 @@
         <constructor-arg ref="&amp;prefs" />
         <constructor-arg ref="prefsInstantiator" />
 	</bean>
+	
+	<bean id="menu" class="org.devzendo.archivect.gui.MenuImpl">
+		<constructor-arg ref="menuWiring" />
+	</bean>
+
+    <bean id="menuWiring" class="org.devzendo.commonapp.gui.menu.MenuWiring" />
+
 </beans>
