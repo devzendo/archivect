@@ -18,6 +18,7 @@ package org.devzendo.archivect.gui
 
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.event.ActionEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
@@ -26,6 +27,7 @@ import javax.swing.JPanel
 import javax.swing.WindowConstants
 
 import org.apache.log4j.Logger
+import org.devzendo.commonapp.gui.menu.MenuWiring
 import org.devzendo.commonapp.gui.WindowGeometryStore
 import org.devzendo.commoncode.resource.ResourceLoader
 
@@ -42,7 +44,7 @@ object ArchivectMainFrame {
  * @author matt
  * @param windowGeometryStore the geometry store
  */
-class ArchivectMainFrame(windowGeometryStore: WindowGeometryStore) extends JFrame {
+class ArchivectMainFrame(val windowGeometryStore: WindowGeometryStore, val menuWiring: MenuWiring) extends JFrame {
     setIconImage(ResourceLoader.createResourceImageIcon("org/devzendo/archivect/icons/application16x16.gif").getImage())
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 
@@ -67,8 +69,7 @@ class ArchivectMainFrame(windowGeometryStore: WindowGeometryStore) extends JFram
     def setupGeometrySaveOnMoveOnClose = {
         addWindowListener(new WindowAdapter() {
             override def windowClosed(e: WindowEvent ) {
-                ArchivectMainFrame.LOGGER.info("Saving geometry")
-                windowGeometryStore.saveGeometry(ArchivectMainFrame.this)
+                menuWiring.triggerActionListener(ArchivectMenuIdentifiers.FILE_EXIT)
         }});
     }
 }

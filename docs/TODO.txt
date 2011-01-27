@@ -2,3 +2,6 @@ Window close trapping needs to be better:
   Apple menu Quit needs hooking up to it
   File menu Exit (Linux/Windows) needs hoking up to it
 
+MenuWiring: // TODO: smell: why can't you set a menu identifier's action listener before setting its menu item?
+Should be able to set these at any time, and the relevant wiring of direct actionlistener to
+menu item happens whenever the menu item is set.

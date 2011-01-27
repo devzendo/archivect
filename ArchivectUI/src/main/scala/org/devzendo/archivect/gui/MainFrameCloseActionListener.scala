@@ -13,31 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.devzendo.archivect.gui
 
-import org.devzendo.commonapp.gui.menu.MenuWiring
-import org.devzendo.commonapp.gui.MainFrameFactory
-import org.devzendo.commonapp.gui.WindowGeometryStore
-import org.devzendo.commonapp.gui.CursorManager
+import javax.swing.JFrame
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
 
-/**
- * Constructs the ArchivectMainFrame and connects it with the rest of the app
- * framework.
- * 
- * @author matt
- * 
- */
-class ArchivectMainFrameFactory(
-    val cursorManager: CursorManager,
-    val windowGeometryStore: WindowGeometryStore,
-    val mainFrameFactory: MainFrameFactory,
-    val menuWiring: MenuWiring)
-{
-    def createFrame: ArchivectMainFrame = {
-        val mainFrame = new ArchivectMainFrame(windowGeometryStore, menuWiring)
-        cursorManager.setMainFrame(mainFrame)
-        mainFrameFactory.setMainFrame(mainFrame)
-        return mainFrame;
-    }
+import org.apache.log4j.Logger
+
+import org.devzendo.commonapp.gui.WindowGeometryStore
+
+object MainFrameCloseActionListener {
+    private val LOGGER = Logger.getLogger(classOf[MainFrameCloseActionListener])
+}
+
+class MainFrameCloseActionListener(val windowGeometryStore: WindowGeometryStore, val mainFrame: JFrame) extends ActionListener {
+
+  def actionPerformed(e: ActionEvent): Unit = { 
+      MainFrameCloseActionListener.LOGGER.info("Saving geometry")
+      windowGeometryStore.saveGeometry(mainFrame)
+  }
 }

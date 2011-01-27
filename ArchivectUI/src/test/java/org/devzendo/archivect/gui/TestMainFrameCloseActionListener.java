@@ -1,24 +1,23 @@
 /**
  * Copyright (C) 2008-2010 Matt Gumbley, DevZendo.org <http://devzendo.org>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.devzendo.archivect.gui;
 
 import javax.swing.JFrame;
 
 import org.devzendo.commonapp.gui.CursorManager;
-import org.devzendo.commonapp.gui.MainFrameFactory;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
 import org.devzendo.commonapp.gui.WindowGeometryStore;
 import org.devzendo.commonapp.gui.WindowGeometryStorePersistence;
@@ -27,8 +26,6 @@ import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
@@ -40,19 +37,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * The ArchivectUI main frame factory sets up the main frame.
+ * End-to-end test that when the main frame is closed, its WindowAdapter
+ * triggers the File/Exit MenuIdentifier in MenuWiring, and that the
+ * ActionListener that's bound to that is called, saving the geometry.
  * 
  * @author matt
- * 
+ *
  */
 @RunWith(JMock.class)
-public final class TestArchivectMainFrameFactory {
+public class TestMainFrameCloseActionListener {
     private final Mockery context = new JUnit4Mockery();
     private FrameFixture window;
     private CursorManager mCursorManager;
     private WindowGeometryStorePersistence mWindowGeometryStorePersistence;
     private WindowGeometryStore mWindowGeometryStore;
-    private MainFrameFactory mMainFrameFactory;
     private MenuWiring mMenuWiring;
 
     /**
@@ -70,10 +68,10 @@ public final class TestArchivectMainFrameFactory {
     @Before
     public void setUp() {
         mCursorManager = new CursorManager();
-        mMainFrameFactory = new MainFrameFactory();
         mWindowGeometryStorePersistence = context.mock(WindowGeometryStorePersistence.class);
         mWindowGeometryStore = new WindowGeometryStore(mWindowGeometryStorePersistence);
         mMenuWiring = new MenuWiring();
+        
     }
     
     /**
@@ -86,29 +84,35 @@ public final class TestArchivectMainFrameFactory {
     }
 
     /**
-     * @throws Exception never
+     * 
      */
     @Test
-    public void mainFrameIsCorrectlySetUp() throws Exception {
+    public void mainFrameResizeAndMoveStoresInPersistence() {
         context.checking(new Expectations() { {
             allowing(mWindowGeometryStorePersistence).getWindowGeometry("main");
                 will(returnValue("100,100,640,480"));
-            ignoring(mWindowGeometryStorePersistence);
+            atLeast(1).of(mWindowGeometryStorePersistence).setWindowGeometry("main", "200,200,500,400");
         } });
-
         final JFrame mainFrame = initialiseFrameFixture();
+
+        mMenuWiring.setActionListener(
+            ArchivectMenuIdentifiers.FILE_EXIT, 
+            new MainFrameCloseActionListener(mWindowGeometryStore, mainFrame));
         
-        MatcherAssert.assertThat(mainFrame, Matchers.notNullValue());
-        MatcherAssert.assertThat(mCursorManager.getMainFrame(), Matchers.equalTo(mainFrame));
-        MatcherAssert.assertThat((JFrame) mMainFrameFactory.getObject(), Matchers.equalTo(mainFrame));
+        window.robot.waitForIdle();
+
+        mainFrame.setBounds(200, 200, 500, 400);
+        window.robot.waitForIdle();
         mainFrame.dispose();
+        window.robot.waitForIdle();
     }
-    
+
+
     private JFrame initialiseFrameFixture() {
         final ArchivectMainFrame frame = GuiActionRunner.execute(new GuiQuery<ArchivectMainFrame>() {
             @Override
             protected ArchivectMainFrame executeInEDT() {
-                return new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory, mMenuWiring).createFrame();
+                return new ArchivectMainFrame(mWindowGeometryStore, mMenuWiring);
             }
         });
         window = new FrameFixture(frame);

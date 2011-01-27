@@ -26,10 +26,13 @@ import javax.swing.JFrame;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
+import org.devzendo.archivect.gui.ArchivectMenuIdentifiers;
+import org.devzendo.archivect.gui.MainFrameCloseActionListener;
 import org.devzendo.archivect.gui.Menu;
 import org.devzendo.commonapp.gui.Beautifier;
 import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
+import org.devzendo.commonapp.gui.menu.MenuWiring;
 import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.Logging;
@@ -98,6 +101,10 @@ public class ArchivectUIMain {
                     menu.initialise();
                     mainFrame.setJMenuBar(menu.getMenuBar());
                     
+                    final MainFrameCloseActionListener closeAL = springLoader.getBean("mainFrameCloseActionListener", MainFrameCloseActionListener.class);
+                    final MenuWiring menuWiring = springLoader.getBean("menuWiring", MenuWiring.class);
+                    menuWiring.setActionListener(ArchivectMenuIdentifiers.FILE_EXIT, closeAL);
+
                     mainFrame.add(new JButton("FAKE"));
                     mainFrame.setVisible(true);
                 } catch (final Exception e) {

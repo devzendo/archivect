@@ -15,11 +15,12 @@
     </bean>
 
     <bean id="mainFrameFactory" class="org.devzendo.commonapp.gui.MainFrameFactory" />
-    	
+		
     <bean id="archivectMainFrameFactory" class="org.devzendo.archivect.gui.ArchivectMainFrameFactory">
     	<constructor-arg ref="cursorManager" />
 		<constructor-arg ref="windowGeometryStore" />
 		<constructor-arg ref="&amp;mainFrameFactory" />
+		<constructor-arg ref="menuWiring" />
 	</bean>
 	
     <bean id="guiPrefsStartupHelper" class="org.devzendo.commonapp.prefs.GuiPrefsStartupHelper">
@@ -33,5 +34,10 @@
 	</bean>
 
     <bean id="menuWiring" class="org.devzendo.commonapp.gui.menu.MenuWiring" />
+
+    <bean id="mainFrameCloseActionListener" class="org.devzendo.archivect.gui.MainFrameCloseActionListener">
+    	<constructor-arg ref="windowGeometryStore" />
+		<constructor-arg ref="mainFrameFactory" />
+	</bean>
 
 </beans>

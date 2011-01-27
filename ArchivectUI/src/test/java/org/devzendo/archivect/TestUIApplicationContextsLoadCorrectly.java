@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
+import org.devzendo.archivect.gui.MainFrameCloseActionListener;
 import org.devzendo.archivect.gui.Menu;
 import org.devzendo.commonapp.gui.menu.MenuWiring;
 import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper;
@@ -91,6 +92,14 @@ public final class TestUIApplicationContextsLoadCorrectly {
     @Test
     public void menuWiringOk() {
         assertThat(springLoader.getBean("menuWiring", MenuWiring.class), notNullValue());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void mainFrameCloseActionListenerOk() {
+        assertThat(springLoader.getBean("mainFrameCloseActionListener", MainFrameCloseActionListener.class), notNullValue());
     }
 
 }

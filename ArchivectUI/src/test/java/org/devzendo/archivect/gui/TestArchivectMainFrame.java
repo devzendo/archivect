@@ -15,10 +15,12 @@
  */
 package org.devzendo.archivect.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
 
-import org.devzendo.commonapp.gui.CursorManager;
-import org.devzendo.commonapp.gui.MainFrameFactory;
+import org.apache.log4j.Logger;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
 import org.devzendo.commonapp.gui.WindowGeometryStore;
 import org.devzendo.commonapp.gui.WindowGeometryStorePersistence;
@@ -27,32 +29,32 @@ import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * The ArchivectUI main frame factory sets up the main frame.
+ * The ArchivectUI main frame triggers the FileExit action listener via the
+ * MenuWiring on close.
  * 
  * @author matt
  * 
  */
 @RunWith(JMock.class)
-public final class TestArchivectMainFrameFactory {
+public final class TestArchivectMainFrame {
+    private static final Logger LOGGER = Logger
+            .getLogger(TestArchivectMainFrame.class);
     private final Mockery context = new JUnit4Mockery();
     private FrameFixture window;
-    private CursorManager mCursorManager;
     private WindowGeometryStorePersistence mWindowGeometryStorePersistence;
     private WindowGeometryStore mWindowGeometryStore;
-    private MainFrameFactory mMainFrameFactory;
     private MenuWiring mMenuWiring;
 
     /**
@@ -69,8 +71,6 @@ public final class TestArchivectMainFrameFactory {
      */
     @Before
     public void setUp() {
-        mCursorManager = new CursorManager();
-        mMainFrameFactory = new MainFrameFactory();
         mWindowGeometryStorePersistence = context.mock(WindowGeometryStorePersistence.class);
         mWindowGeometryStore = new WindowGeometryStore(mWindowGeometryStorePersistence);
         mMenuWiring = new MenuWiring();
@@ -82,14 +82,21 @@ public final class TestArchivectMainFrameFactory {
     @After
     public void tearDown() {
         window.cleanUp();
-        mCursorManager.shutdown();
     }
 
     /**
      * @throws Exception never
      */
     @Test
-    public void mainFrameIsCorrectlySetUp() throws Exception {
+    public void mainFrameTriggersFileExitActionListenerViaMenuWiringOnDispose() throws Exception {
+        final boolean[] seenActionListener = {false};
+        // Could store a menu item for the menu identifier here, but it's not
+        // necessary any more.
+        mMenuWiring.setActionListener(ArchivectMenuIdentifiers.FILE_EXIT, new ActionListener() {
+            public void actionPerformed(final ActionEvent arg0) {
+                LOGGER.debug("ActionListener has been triggered");
+                seenActionListener[0] = true;
+            } });
         context.checking(new Expectations() { {
             allowing(mWindowGeometryStorePersistence).getWindowGeometry("main");
                 will(returnValue("100,100,640,480"));
@@ -97,18 +104,19 @@ public final class TestArchivectMainFrameFactory {
         } });
 
         final JFrame mainFrame = initialiseFrameFixture();
+        window.robot.waitForIdle();
+        Assert.assertFalse(seenActionListener[0]);
         
-        MatcherAssert.assertThat(mainFrame, Matchers.notNullValue());
-        MatcherAssert.assertThat(mCursorManager.getMainFrame(), Matchers.equalTo(mainFrame));
-        MatcherAssert.assertThat((JFrame) mMainFrameFactory.getObject(), Matchers.equalTo(mainFrame));
         mainFrame.dispose();
+        window.robot.waitForIdle();
+        Assert.assertTrue(seenActionListener[0]);
     }
-    
+   
     private JFrame initialiseFrameFixture() {
         final ArchivectMainFrame frame = GuiActionRunner.execute(new GuiQuery<ArchivectMainFrame>() {
             @Override
             protected ArchivectMainFrame executeInEDT() {
-                return new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory, mMenuWiring).createFrame();
+                return new ArchivectMainFrame(mWindowGeometryStore, mMenuWiring);
             }
         });
         window = new FrameFixture(frame);
