@@ -69,6 +69,7 @@ class ArchivectMainFrame(val windowGeometryStore: WindowGeometryStore, val menuW
     def setupGeometrySaveOnMoveOnClose = {
         addWindowListener(new WindowAdapter() {
             override def windowClosed(e: WindowEvent ) {
+                ArchivectMainFrame.LOGGER.info("Detected window closing; triggering File/Exit")
                 menuWiring.triggerActionListener(ArchivectMenuIdentifiers.FILE_EXIT)
         }});
     }

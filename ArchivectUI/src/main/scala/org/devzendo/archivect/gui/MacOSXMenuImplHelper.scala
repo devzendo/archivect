@@ -30,6 +30,7 @@ class MacOSXMenuImplHelper(val wiring: MenuWiring) extends ApplicationAdapter {
     MacOSXMenuImplHelper.LOGGER.info("Initialising MacOSX-specific menu")
     val macApp = Application.getApplication()
     macApp.addApplicationListener(this)
+    //macApp.setQuitHandler(null)
     
     override def handleAbout(e: ApplicationEvent) = {
         e.setHandled(true)
@@ -40,7 +41,8 @@ class MacOSXMenuImplHelper(val wiring: MenuWiring) extends ApplicationAdapter {
         MacOSXMenuImplHelper.LOGGER.info("Handling Preferences menu event")
     }
     override def handleQuit(e: ApplicationEvent) = {
-        e.setHandled(true)
         MacOSXMenuImplHelper.LOGGER.info("Handling Quit menu event")
+        wiring.triggerActionListener(ArchivectMenuIdentifiers.FILE_EXIT)
+        e.setHandled(true)
     }
 }
