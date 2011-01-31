@@ -57,10 +57,8 @@ class FileMenu(val menuWiring: MenuWiring, val recentList: RecentJobsList) exten
             for (job <- recentJobs) {
                 val menuItem = new JMenuItem("" + mnemonic + " " + job)
                 menuItem.setMnemonic(KeyEvent.VK_0 + mnemonic)
-                menuItem.addActionListener(new ActionListener {
-                    def actionPerformed(event: ActionEvent) = {
-                        FileMenu.LOGGER.info("Triggered recent menu " + job)
-                    }
+                menuItem.addActionListener((_ : ActionEvent) => {
+                    FileMenu.LOGGER.info("Implicitly triggered recent menu " + job)
                 })
                 mnemonic = mnemonic + 1
 /*
