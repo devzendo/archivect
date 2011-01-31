@@ -13,27 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.devzendo.archivect;
+ 
+package org.devzendo.archivect.gui
 
-import org.devzendo.commonapp.gui.menu.MenuIdentifier;
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
 
-/**
- * Archivect menu identifiers.
- *
- * <p>
- * Defined in Java since I can't figure out yet how to declare them in Scala
- * without them being visible to Java as constants, not functions.
- * 
- * @author matt
- *
- */
-public final class ArchivectMenuIdentifiers {
+object SwingImplicits {
     /**
-     * 
+     * @param f the function to execute on receipt of an ActioEvent
+     * @return an ActionListener
      */
-    public static final MenuIdentifier FILE_EXIT = new MenuIdentifier("FileExit");
-    /**
-     * 
-     */
-    public static final MenuIdentifier TOOLS_OPTIONS = new MenuIdentifier("ToolsOptions");
+    implicit def function2ActionListener(f: ActionEvent => Unit) = new ActionListener {
+        def actionPerformed(event: ActionEvent) = f(event)
+    }
 }

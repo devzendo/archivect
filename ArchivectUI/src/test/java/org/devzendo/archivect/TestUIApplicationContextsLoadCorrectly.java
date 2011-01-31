@@ -24,8 +24,10 @@ import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
+import org.devzendo.archivect.gui.FileMenu;
 import org.devzendo.archivect.gui.MainFrameCloseActionListener;
 import org.devzendo.archivect.gui.Menu;
+import org.devzendo.archivect.gui.recent.RecentJobsList;
 import org.devzendo.commonapp.gui.menu.MenuWiring;
 import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
@@ -90,8 +92,24 @@ public final class TestUIApplicationContextsLoadCorrectly {
      * 
      */
     @Test
+    public void fileMenuOk() {
+        assertThat(springLoader.getBean("fileMenu", FileMenu.class), notNullValue());
+    }
+
+    /**
+     * 
+     */
+    @Test
     public void menuWiringOk() {
         assertThat(springLoader.getBean("menuWiring", MenuWiring.class), notNullValue());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void recentJobsListOk() {
+        assertThat(springLoader.getBean("recentJobsList", RecentJobsList.class), notNullValue());
     }
 
     /**

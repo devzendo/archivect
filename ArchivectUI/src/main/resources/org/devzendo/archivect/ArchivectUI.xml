@@ -31,9 +31,17 @@
 	
 	<bean id="menu" class="org.devzendo.archivect.gui.MenuImpl">
 		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="fileMenu" />
 	</bean>
 
+    <bean id="fileMenu" class="org.devzendo.archivect.gui.FileMenu">
+        <constructor-arg ref="menuWiring" />
+		<constructor-arg ref="recentJobsList" />
+    </bean>
+
     <bean id="menuWiring" class="org.devzendo.commonapp.gui.menu.MenuWiring" />
+
+    <bean id="recentJobsList" class="org.devzendo.archivect.gui.recent.RecentJobsList" />
 
     <bean id="mainFrameCloseActionListener" class="org.devzendo.archivect.gui.MainFrameCloseActionListener">
     	<constructor-arg ref="windowGeometryStore" />

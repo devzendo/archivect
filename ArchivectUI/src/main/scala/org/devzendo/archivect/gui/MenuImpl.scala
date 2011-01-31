@@ -29,7 +29,7 @@ object MenuImpl {
     private val LOGGER = Logger.getLogger(classOf[MenuImpl])
 }
 
-class MenuImpl(val wiring: MenuWiring) extends Menu {
+class MenuImpl(val wiring: MenuWiring, val fileMenu: FileMenu) extends Menu {
     val osType = OSTypeDetect.getInstance().getOSType;
     var menuBar: JMenuBar = null
     MenuImpl.LOGGER.debug("Starting menu construction")
@@ -41,6 +41,7 @@ class MenuImpl(val wiring: MenuWiring) extends Menu {
         if (osType == OSTypeDetect.OSType.MacOSX) {
             new MacOSXMenuImplHelper(wiring)
         }
+        menuBar.add(fileMenu.getJMenu)
     }
     
     def getMenuBar: JMenuBar = {
