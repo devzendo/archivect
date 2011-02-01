@@ -31,7 +31,9 @@ object MainFrameCloseActionListener {
 class MainFrameCloseActionListener(val windowGeometryStore: WindowGeometryStore, val mainFrame: JFrame) extends ActionListener {
 
   def actionPerformed(e: ActionEvent): Unit = { 
-      MainFrameCloseActionListener.LOGGER.info("Saving geometry")
+      MainFrameCloseActionListener.LOGGER.debug("Saving main frame geometry")
       windowGeometryStore.saveGeometry(mainFrame)
+      MainFrameCloseActionListener.LOGGER.debug("Disposing main frame")
+      mainFrame.dispose()
   }
 }

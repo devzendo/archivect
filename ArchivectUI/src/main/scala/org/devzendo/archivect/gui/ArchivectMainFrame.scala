@@ -46,7 +46,7 @@ object ArchivectMainFrame {
  */
 class ArchivectMainFrame(val windowGeometryStore: WindowGeometryStore, val menuWiring: MenuWiring) extends JFrame {
     setIconImage(ResourceLoader.createResourceImageIcon("org/devzendo/archivect/icons/application16x16.gif").getImage())
-    setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
 
     setName(ArchivectMainFrame.MAIN_FRAME_NAME)
     setLayout(new BorderLayout())
@@ -68,9 +68,12 @@ class ArchivectMainFrame(val windowGeometryStore: WindowGeometryStore, val menuW
     
     def setupGeometrySaveOnMoveOnClose = {
         addWindowListener(new WindowAdapter() {
-            override def windowClosed(e: WindowEvent ) {
-                ArchivectMainFrame.LOGGER.info("Detected window closing; triggering File/Exit")
+            override def windowClosing(e: WindowEvent) {
+                ArchivectMainFrame.LOGGER.debug("Detected window closing; triggering action listener for FileExit")
                 menuWiring.triggerActionListener(ArchivectMenuIdentifiers.FILE_EXIT)
+            }
+            override def windowClosed(e: WindowEvent ) {
+                ArchivectMainFrame.LOGGER.debug("Detected window closed")
         }});
     }
 }

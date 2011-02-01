@@ -17,6 +17,7 @@ package org.devzendo.archivect.gui;
 
 import javax.swing.JFrame;
 
+import org.apache.log4j.Logger;
 import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
 import org.devzendo.commonapp.gui.WindowGeometryStore;
@@ -26,6 +27,8 @@ import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
@@ -46,6 +49,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(JMock.class)
 public class TestMainFrameCloseActionListener {
+    private static final Logger LOGGER = Logger
+            .getLogger(TestMainFrameCloseActionListener.class);
     private final Mockery context = new JUnit4Mockery();
     private FrameFixture window;
     private CursorManager mCursorManager;
@@ -79,6 +84,7 @@ public class TestMainFrameCloseActionListener {
      */
     @After
     public void tearDown() {
+        LOGGER.info("Cleaning up window");
         window.cleanUp();
         mCursorManager.shutdown();
     }
@@ -87,7 +93,7 @@ public class TestMainFrameCloseActionListener {
      * 
      */
     @Test
-    public void mainFrameResizeAndMoveStoresInPersistence() {
+    public void mainFrameResizeAndMoveStoresInPersistenceOnClose() {
         context.checking(new Expectations() { {
             allowing(mWindowGeometryStorePersistence).getWindowGeometry("main");
                 will(returnValue("100,100,640,480"));
@@ -103,11 +109,35 @@ public class TestMainFrameCloseActionListener {
 
         mainFrame.setBounds(200, 200, 500, 400);
         window.robot.waitForIdle();
-        mainFrame.dispose();
+        mMenuWiring.triggerActionListener(ArchivectMenuIdentifiers.FILE_EXIT);
         window.robot.waitForIdle();
     }
 
+    /**
+     * Not sure about this test...
+     */
+    @Test
+    public void mainFrameDisposesWhenFileExitMenuTriggered() {
+        context.checking(new Expectations() { {
+            allowing(mWindowGeometryStorePersistence).getWindowGeometry("main");
+                will(returnValue("100,100,640,480"));
+            atLeast(1).of(mWindowGeometryStorePersistence).setWindowGeometry(with(any(String.class)), with(any(String.class)));
+        } });
+        final JFrame mainFrame = initialiseFrameFixture();
 
+        mMenuWiring.setActionListener(
+            ArchivectMenuIdentifiers.FILE_EXIT, 
+            new MainFrameCloseActionListener(mWindowGeometryStore, mainFrame));
+        
+        window.robot.waitForIdle();
+        mMenuWiring.triggerActionListener(ArchivectMenuIdentifiers.FILE_EXIT);
+        window.robot.waitForIdle();
+        // not sure this is a precise way of determining whether the window
+        // is disposed - there isn't an isDisposed() method.
+        MatcherAssert.assertThat(mainFrame.isDisplayable(), Matchers.is(false));
+    }
+
+    
     private JFrame initialiseFrameFixture() {
         final ArchivectMainFrame frame = GuiActionRunner.execute(new GuiQuery<ArchivectMainFrame>() {
             @Override
