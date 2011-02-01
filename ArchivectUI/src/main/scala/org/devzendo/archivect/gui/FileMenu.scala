@@ -9,9 +9,13 @@ import javax.swing.JSeparator
 
 import org.apache.log4j.Logger
 
-import org.devzendo.archivect.gui.SwingImplicits._
 import org.devzendo.commonapp.gui.menu.AbstractRebuildableMenuGroup
 import org.devzendo.commonapp.gui.menu.MenuWiring
+
+import org.devzendo.commoncode.os.OSTypeDetect
+import org.devzendo.commoncode.os.OSTypeDetect._
+
+import org.devzendo.archivect.gui.SwingImplicits._
 import org.devzendo.archivect.gui.recent.RecentJobsList
 
 object FileMenu {
@@ -20,6 +24,8 @@ object FileMenu {
 
 class FileMenu(val menuWiring: MenuWiring, val recentList: RecentJobsList) extends AbstractRebuildableMenuGroup(menuWiring) {
     private var fileMenu: JMenu = new JMenu("File")
+    private val osType = OSTypeDetect.getInstance().getOSType;
+
     fileMenu.setMnemonic('F')
     // Trigger the first build; initially we'll have no recent files list.
     // Need to do an initial rebuild so the menu wiring is initially populated
@@ -40,9 +46,11 @@ class FileMenu(val menuWiring: MenuWiring, val recentList: RecentJobsList) exten
 
         createMenuItem(ArchivectMenuIdentifiers.FILE_CLOSE, "Close", 'C', fileMenu)
 
-        fileMenu.add(new JSeparator())
+        if (osType != OSTypeDetect.OSType.MacOSX) {
+            fileMenu.add(new JSeparator())
 
-        createMenuItem(ArchivectMenuIdentifiers.FILE_EXIT, "Exit", 'x', fileMenu)
+            createMenuItem(ArchivectMenuIdentifiers.FILE_EXIT, "Exit", 'x', fileMenu)
+        }
     }
     
     private def buildRecentList(): JMenu = {
