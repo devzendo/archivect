@@ -1,0 +1,18 @@
+Menu:
+(platform-specific options in parentheses)
+
+(Apple)     File            Archive
+About       New             Preview
+Quit        Open            Start
+            Recent >
+            Destinations...
+            Import
+            Close
+            (Exit)
+            
+Launch screen:
+
+Backup/Archive          Restore
+New job                 [list of jobs that have run, with their first and last
+Edit existing            run-times, backup size, destination] 
+Run existing            or "No backups/archives to restore from"

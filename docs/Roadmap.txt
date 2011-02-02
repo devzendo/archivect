@@ -18,4 +18,7 @@ History
 =======
 11/Oct/2010 Project started. Eclipse & Maven projects created, version control
 on internal server.
+
+2/2/2011 UI now has cross-platform Quit (Apple menu for Mac OSX, File/Exit menu
+for Linux/Windows). Window geometry is saved in .ini-file preferences on quit.
    
