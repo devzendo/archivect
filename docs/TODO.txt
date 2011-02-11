@@ -2,5 +2,11 @@ Window close trapping needs to be better:
   Apple menu Quit needs hooking up to it
   File menu Exit (Linux/Windows) needs hoking up to it - need builds on
   Linux/Windows with apple extensions (so it compiles), and needs testing.
-  
+
+File Menu items need correct mnemonics - see p175 of HIG
+   
+Is the PrefsLocation appropriate for Mac OS X? ~/.archivect is probably wrong.
+
+
+Use a mock CursorManager in TestArchivectMainFrameFactory
 

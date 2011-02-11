@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.DefaultCursorManager;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
 import org.devzendo.commonapp.gui.WindowGeometryStore;
 import org.devzendo.commonapp.gui.WindowGeometryStorePersistence;
@@ -72,7 +73,7 @@ public class TestMainFrameCloseActionListener {
      */
     @Before
     public void setUp() {
-        mCursorManager = new CursorManager();
+        mCursorManager = new DefaultCursorManager();
         mWindowGeometryStorePersistence = context.mock(WindowGeometryStorePersistence.class);
         mWindowGeometryStore = new WindowGeometryStore(mWindowGeometryStorePersistence);
         mMenuWiring = new MenuWiring();

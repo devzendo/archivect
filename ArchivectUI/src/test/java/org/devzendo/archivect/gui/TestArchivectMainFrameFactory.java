@@ -18,6 +18,7 @@ package org.devzendo.archivect.gui;
 import javax.swing.JFrame;
 
 import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.DefaultCursorManager;
 import org.devzendo.commonapp.gui.MainFrameFactory;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
 import org.devzendo.commonapp.gui.WindowGeometryStore;
@@ -69,7 +70,9 @@ public final class TestArchivectMainFrameFactory {
      */
     @Before
     public void setUp() {
-        mCursorManager = new CursorManager();
+        // Could use a mock CursorManager since it's had an interface extracted,
+        // but it's more hassle than it's worth.
+        mCursorManager = new DefaultCursorManager();
         mMainFrameFactory = new MainFrameFactory();
         mWindowGeometryStorePersistence = context.mock(WindowGeometryStorePersistence.class);
         mWindowGeometryStore = new WindowGeometryStore(mWindowGeometryStorePersistence);
