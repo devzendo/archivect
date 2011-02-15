@@ -48,4 +48,24 @@
 		<constructor-arg ref="mainFrameFactory" />
 	</bean>
 
+    <!-- lifecycle management -->
+    <bean id="lifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+            	<!-- to be filled in -->
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="lifecycleManager" class="org.devzendo.commonapp.lifecycle.DefaultLifecycleManagerImpl">
+        <constructor-arg ref="springLoader" />
+        <constructor-arg ref="lifecycleList" /> 
+    </bean>
+
+    <bean id="lifecycleStartupAWTEventListener" class="org.devzendo.archivect.gui.LifecycleStartupAWTEventListener">
+        <constructor-arg ref="mainFrameFactory" />
+        <constructor-arg ref="cursorManager" />
+		<constructor-arg ref="lifecycleManager" />
+    </bean>
+
 </beans>

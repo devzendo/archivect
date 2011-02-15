@@ -25,10 +25,12 @@ import java.util.List;
 import org.apache.log4j.BasicConfigurator;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
 import org.devzendo.archivect.gui.FileMenu;
+import org.devzendo.archivect.gui.LifecycleStartupAWTEventListener;
 import org.devzendo.archivect.gui.MainFrameCloseActionListener;
 import org.devzendo.archivect.gui.Menu;
 import org.devzendo.archivect.gui.recent.RecentJobsList;
 import org.devzendo.commonapp.gui.menu.MenuWiring;
+import org.devzendo.commonapp.lifecycle.LifecycleManager;
 import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.junit.BeforeClass;
@@ -119,5 +121,20 @@ public final class TestUIApplicationContextsLoadCorrectly {
     public void mainFrameCloseActionListenerOk() {
         assertThat(springLoader.getBean("mainFrameCloseActionListener", MainFrameCloseActionListener.class), notNullValue());
     }
-
+    
+    /**
+     * 
+     */
+    @Test
+    public void lifecycleStartupAWTEventListenerOk() {
+        assertThat(springLoader.getBean("lifecycleStartupAWTEventListener", LifecycleStartupAWTEventListener.class), notNullValue());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void lifecycleManagerOk() {
+        assertThat(springLoader.getBean("lifecycleManager", LifecycleManager.class), notNullValue());
+    }
 }

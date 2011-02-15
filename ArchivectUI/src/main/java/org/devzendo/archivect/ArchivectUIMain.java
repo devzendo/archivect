@@ -15,6 +15,8 @@
  */
 package org.devzendo.archivect;
 
+import java.awt.AWTEvent;
+import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +29,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
 import org.devzendo.archivect.gui.ArchivectMenuIdentifiers;
+import org.devzendo.archivect.gui.LifecycleStartupAWTEventListener;
 import org.devzendo.archivect.gui.MainFrameCloseActionListener;
 import org.devzendo.archivect.gui.Menu;
 import org.devzendo.commonapp.gui.Beautifier;
@@ -107,6 +110,10 @@ public class ArchivectUIMain {
                     final MenuWiring menuWiring = springLoader.getBean("menuWiring", MenuWiring.class);
                     menuWiring.setActionListener(ArchivectMenuIdentifiers.FILE_EXIT, closeAL);
 
+                    final LifecycleStartupAWTEventListener lifecycleStartup =
+                        springLoader.getBean("lifecycleStartupAWTEventListener", LifecycleStartupAWTEventListener.class);
+                    Toolkit.getDefaultToolkit().addAWTEventListener(lifecycleStartup, AWTEvent.WINDOW_EVENT_MASK);
+                    
                     mainFrame.add(new JButton("FAKE"));
                     mainFrame.setVisible(true);
                 } catch (final Exception e) {
