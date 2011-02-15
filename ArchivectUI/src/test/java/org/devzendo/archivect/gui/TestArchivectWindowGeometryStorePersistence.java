@@ -51,8 +51,10 @@ public final class TestArchivectWindowGeometryStorePersistence {
     /**
      * 
      */
+    // CHECKSTYLE:OFF
     @Rule
     public final TemporaryFolder tempDir = new TemporaryFolder();
+    // CHECKSTYLE:ON
 
     /**
      * Create a temporary file to hold prefs data, that's deleted after

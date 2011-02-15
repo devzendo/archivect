@@ -101,7 +101,9 @@ public class ArchivectUIMain {
                     menu.initialise();
                     mainFrame.setJMenuBar(menu.getMenuBar());
                     
-                    final MainFrameCloseActionListener closeAL = springLoader.getBean("mainFrameCloseActionListener", MainFrameCloseActionListener.class);
+                    final MainFrameCloseActionListener closeAL = 
+                        springLoader.getBean(
+                            "mainFrameCloseActionListener", MainFrameCloseActionListener.class);
                     final MenuWiring menuWiring = springLoader.getBean("menuWiring", MenuWiring.class);
                     menuWiring.setActionListener(ArchivectMenuIdentifiers.FILE_EXIT, closeAL);
 

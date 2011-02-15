@@ -98,6 +98,9 @@ public final class TestLifecycleStartupAWTEventListener {
         window.cleanUp();
     }
     
+    /**
+     * 
+     */
     @Test(timeout = 2000)
     public void cursorManagerShowsHourglass() {
         context.checking(new Expectations() { {
@@ -116,6 +119,9 @@ public final class TestLifecycleStartupAWTEventListener {
         window.robot.waitForIdle();
     }
 
+    /**
+     * @throws InterruptedException never
+     */
     @Test(timeout = 2000)
     public void lifecycleStartupHappensInOwnThread() throws InterruptedException {
         context.checking(new Expectations() { {
@@ -140,6 +146,9 @@ public final class TestLifecycleStartupAWTEventListener {
         MatcherAssert.assertThat(startupThread.getName(), Matchers.equalTo("Lifecycle Startup"));
     }
 
+    /**
+     * @throws InterruptedException never
+     */
     @Test(timeout = 2000)
     public void cursorManagerHourglassEnds() throws InterruptedException {
         context.checking(new Expectations() { {
