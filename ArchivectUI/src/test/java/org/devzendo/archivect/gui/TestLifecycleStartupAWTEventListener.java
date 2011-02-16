@@ -55,6 +55,10 @@ import org.junit.runner.RunWith;
 public final class TestLifecycleStartupAWTEventListener {
     private static final Logger LOGGER = Logger
             .getLogger(TestMainFrameCloseActionListener.class);
+    // TODO: make this threadsafe when jmock 2.6.0 comes out
+    // see http://www.natpryce.com/articles/000762.html
+    // and uncomment the expectations indicated below to replicate a fail
+    // which goes unreported.
     private final Mockery context = new JUnit4Mockery();
     private FrameFixture window;
     private CursorManager mCursorManager;
@@ -108,6 +112,9 @@ public final class TestLifecycleStartupAWTEventListener {
             oneOf(mCursorManager).hourglass(with(Expectations.any(String.class)));
             // also
             allowing(mLifecycleManager).startup();
+            // TODO: comment this out to have the test fail, but not report it
+            // to junit. Thread safe jmock should fix this?
+            oneOf(mCursorManager).normal(with(Expectations.any(String.class)));
         } });
         // given
         final JFrame mainFrame = initialiseFrameFixture();
@@ -127,6 +134,9 @@ public final class TestLifecycleStartupAWTEventListener {
         context.checking(new Expectations() { {
             // also
             oneOf(mCursorManager).hourglass(with(Expectations.any(String.class)));
+            // TODO: comment this out to have the test fail, but not report it
+            // to junit. Thread safe jmock should fix this?
+            oneOf(mCursorManager).normal(with(Expectations.any(String.class)));
         } });
         // given
         final JFrame mainFrame = initialiseFrameFixture();
