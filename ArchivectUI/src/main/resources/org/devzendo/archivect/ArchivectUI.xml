@@ -29,12 +29,12 @@
         <constructor-arg ref="prefsInstantiator" />
 	</bean>
 	
-	<bean id="menu" class="org.devzendo.archivect.gui.MenuImpl">
+	<bean id="menu" class="org.devzendo.archivect.gui.menu.MenuImpl">
 		<constructor-arg ref="menuWiring" />
 		<constructor-arg ref="fileMenu" />
 	</bean>
 
-    <bean id="fileMenu" class="org.devzendo.archivect.gui.FileMenu">
+    <bean id="fileMenu" class="org.devzendo.archivect.gui.menu.FileMenu">
         <constructor-arg ref="menuWiring" />
 		<constructor-arg ref="recentJobsList" />
     </bean>

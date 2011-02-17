@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.devzendo.archivect.gui;
+package org.devzendo.archivect.gui.menu;
 
 import org.devzendo.commonapp.gui.menu.MenuIdentifier;
 

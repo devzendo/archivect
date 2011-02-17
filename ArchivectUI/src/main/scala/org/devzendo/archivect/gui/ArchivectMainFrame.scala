@@ -27,6 +27,7 @@ import javax.swing.JPanel
 import javax.swing.WindowConstants
 
 import org.apache.log4j.Logger
+import org.devzendo.archivect.gui.menu.ArchivectMenuIdentifiers
 import org.devzendo.commonapp.gui.menu.MenuWiring
 import org.devzendo.commonapp.gui.WindowGeometryStore
 import org.devzendo.commoncode.resource.ResourceLoader

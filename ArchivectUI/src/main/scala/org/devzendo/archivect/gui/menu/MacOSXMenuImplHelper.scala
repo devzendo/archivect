@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.devzendo.archivect.gui
+package org.devzendo.archivect.gui.menu
 
 import com.apple.eawt._
 

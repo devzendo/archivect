@@ -18,6 +18,7 @@ package org.devzendo.archivect.gui;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
+import org.devzendo.archivect.gui.menu.ArchivectMenuIdentifiers;
 import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.commonapp.gui.DefaultCursorManager;
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;

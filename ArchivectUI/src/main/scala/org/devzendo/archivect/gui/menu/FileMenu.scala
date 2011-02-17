@@ -1,4 +1,4 @@
-package org.devzendo.archivect.gui
+package org.devzendo.archivect.gui.menu
 
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener

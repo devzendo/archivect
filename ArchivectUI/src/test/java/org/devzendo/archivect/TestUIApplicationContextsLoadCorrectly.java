@@ -24,10 +24,10 @@ import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
-import org.devzendo.archivect.gui.FileMenu;
 import org.devzendo.archivect.gui.LifecycleStartupAWTEventListener;
 import org.devzendo.archivect.gui.MainFrameCloseActionListener;
-import org.devzendo.archivect.gui.Menu;
+import org.devzendo.archivect.gui.menu.FileMenu;
+import org.devzendo.archivect.gui.menu.Menu;
 import org.devzendo.archivect.gui.recent.RecentJobsList;
 import org.devzendo.commonapp.gui.menu.MenuWiring;
 import org.devzendo.commonapp.lifecycle.LifecycleManager;
