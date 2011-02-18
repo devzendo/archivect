@@ -75,6 +75,6 @@ class ArchivectMainFrame(
             }
             override def windowClosed(e: WindowEvent ) {
                 ArchivectMainFrame.LOGGER.debug("Detected window closed")
-        }});
+        }})
     }
 }
