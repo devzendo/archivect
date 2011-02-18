@@ -144,7 +144,8 @@ public class TestMainFrameCloseActionListener {
         final ArchivectMainFrame frame = GuiActionRunner.execute(new GuiQuery<ArchivectMainFrame>() {
             @Override
             protected ArchivectMainFrame executeInEDT() {
-                return new ArchivectMainFrame(mWindowGeometryStore, mMenuWiring);
+                final ArchivectMainPanel mainPanel = new ArchivectMainPanel();
+                return new ArchivectMainFrame(mWindowGeometryStore, mMenuWiring, mainPanel);
             }
         });
         window = new FrameFixture(frame);

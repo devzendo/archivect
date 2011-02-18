@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
 import org.devzendo.archivect.gui.ArchivectMainFrameFactory;
+import org.devzendo.archivect.gui.ArchivectMainPanel;
 import org.devzendo.archivect.gui.LifecycleStartupAWTEventListener;
 import org.devzendo.archivect.gui.MainFrameCloseActionListener;
 import org.devzendo.archivect.gui.menu.FileMenu;
@@ -137,4 +138,13 @@ public final class TestUIApplicationContextsLoadCorrectly {
     public void lifecycleManagerOk() {
         assertThat(springLoader.getBean("lifecycleManager", LifecycleManager.class), notNullValue());
     }
+
+    /**
+     * 
+     */
+    @Test
+    public void mainPanelOk() {
+        assertThat(springLoader.getBean("mainPanel", ArchivectMainPanel.class), notNullValue());
+    }
+
 }

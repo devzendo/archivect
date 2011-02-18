@@ -21,7 +21,10 @@
 		<constructor-arg ref="windowGeometryStore" />
 		<constructor-arg ref="&amp;mainFrameFactory" />
 		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="mainPanel" />
 	</bean>
+
+    <bean id="mainPanel" class="org.devzendo.archivect.gui.ArchivectMainPanel" />
 	
     <bean id="guiPrefsStartupHelper" class="org.devzendo.commonapp.prefs.GuiPrefsStartupHelper">
         <constructor-arg ref="prefsLocation" />

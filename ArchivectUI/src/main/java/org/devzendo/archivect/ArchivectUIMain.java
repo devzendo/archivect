@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Level;
@@ -95,10 +94,9 @@ public class ArchivectUIMain {
                         LOGGER.debug("arg " + i + " = '" + arg + "'");
                     }
                     
-                    final ArchivectMainFrameFactory archivectMainFrameFactory = 
-                        springLoader.getBean("archivectMainFrameFactory", ArchivectMainFrameFactory.class);
-
-                    final JFrame mainFrame = archivectMainFrameFactory.createFrame();
+                    final JFrame mainFrame = 
+                        springLoader.getBean("archivectMainFrameFactory",
+                            ArchivectMainFrameFactory.class).createFrame();
                     
                     final Menu menu = springLoader.getBean("menu", Menu.class);
                     menu.initialise();
@@ -114,7 +112,6 @@ public class ArchivectUIMain {
                         springLoader.getBean("lifecycleStartupAWTEventListener", LifecycleStartupAWTEventListener.class);
                     Toolkit.getDefaultToolkit().addAWTEventListener(lifecycleStartup, AWTEvent.WINDOW_EVENT_MASK);
                     
-                    mainFrame.add(new JButton("FAKE"));
                     mainFrame.setVisible(true);
                 } catch (final Exception e) {
                     LOGGER.fatal(e.getMessage(), e);

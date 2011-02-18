@@ -111,7 +111,8 @@ public final class TestArchivectMainFrameFactory {
         final ArchivectMainFrame frame = GuiActionRunner.execute(new GuiQuery<ArchivectMainFrame>() {
             @Override
             protected ArchivectMainFrame executeInEDT() {
-                return new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory, mMenuWiring).createFrame();
+                final ArchivectMainPanel mainPanel = new ArchivectMainPanel();
+                return new ArchivectMainFrameFactory(mCursorManager, mWindowGeometryStore, mMainFrameFactory, mMenuWiring, mainPanel).createFrame();
             }
         });
         window = new FrameFixture(frame);

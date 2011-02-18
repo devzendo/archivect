@@ -16,6 +16,8 @@
  
 package org.devzendo.archivect.gui
 
+import javax.swing.JPanel
+
 import org.devzendo.commonapp.gui.menu.MenuWiring
 import org.devzendo.commonapp.gui.MainFrameFactory
 import org.devzendo.commonapp.gui.WindowGeometryStore
@@ -32,10 +34,11 @@ class ArchivectMainFrameFactory(
     val cursorManager: CursorManager,
     val windowGeometryStore: WindowGeometryStore,
     val mainFrameFactory: MainFrameFactory,
-    val menuWiring: MenuWiring)
+    val menuWiring: MenuWiring,
+    val mainPanel: ArchivectMainPanel)
 {
     def createFrame: ArchivectMainFrame = {
-        val mainFrame = new ArchivectMainFrame(windowGeometryStore, menuWiring)
+        val mainFrame = new ArchivectMainFrame(windowGeometryStore, menuWiring, mainPanel)
         cursorManager.setMainFrame(mainFrame)
         mainFrameFactory.setMainFrame(mainFrame)
         return mainFrame;

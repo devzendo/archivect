@@ -45,17 +45,17 @@ object ArchivectMainFrame {
  * @author matt
  * @param windowGeometryStore the geometry store
  */
-class ArchivectMainFrame(val windowGeometryStore: WindowGeometryStore, val menuWiring: MenuWiring) extends JFrame {
+class ArchivectMainFrame(
+    val windowGeometryStore: WindowGeometryStore, 
+    val menuWiring: MenuWiring,
+    val mainPanel: ArchivectMainPanel) extends JFrame {
     setIconImage(ResourceLoader.createResourceImageIcon("org/devzendo/archivect/icons/application16x16.gif").getImage())
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
 
     setName(ArchivectMainFrame.MAIN_FRAME_NAME)
     setLayout(new BorderLayout())
 
-    // TODO inject me....
-    val mainPanel = new JPanel() // TODO to be replaced by the main app panel
-    mainPanel.setPreferredSize(new Dimension(640, 480))
-    add(mainPanel, BorderLayout.CENTER)
+    add(mainPanel.panel, BorderLayout.CENTER)
         
     loadInitialGeometry
     setupGeometrySaveOnMoveOnClose
