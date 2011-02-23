@@ -16,11 +16,34 @@
 
 package org.devzendo.archivect.gui
 
-import java.awt.{Dimension, BorderLayout}
+import java.awt.{Dimension, CardLayout}
 import javax.swing.{JPanel, JButton}
 
+import org.devzendo.commonapp.gui.GUIUtils
+
+object ArchivectMainPanel {
+    val BlankPanelName = "*blank*panel*"
+}
 class ArchivectMainPanel {
-    val panel = new JPanel(new BorderLayout())
+    private val cardLayout = new CardLayout()
+    val panel = new JPanel(cardLayout)
     panel.setPreferredSize(new Dimension(640, 480))
-    panel.add(new JButton("main panel"), BorderLayout.CENTER)
+    panel.add(new JPanel(), ArchivectMainPanel.BlankPanelName)
+    cardLayout.show(panel, ArchivectMainPanel.BlankPanelName)
+    
+    def addPanel(panelName: String, newPanel: JPanel) = {
+        GUIUtils.runOnEventThread(new Runnable() {
+            def run = {
+                panel.add(newPanel, panelName)
+            }
+        })
+    }
+    def mainPanel = panel
+    def switchToPanel(panelName: String) = {
+        GUIUtils.runOnEventThread(new Runnable() {
+            def run = {
+                cardLayout.show(panel, panelName)
+            }
+        })
+    }
 }

@@ -1,0 +1,26 @@
+. Startup Wizard 1
+  . Main panel with a card layout to add/remove panels from
+  . Main panel wired into main frame
+
+. Destinations storage 1
+  . File to be created on startup, a la Prefs
+  . Types and characteristics of destinations to be defined 
+  . Impl for destination storage needs creating
+  
+. Startup Wizard 2
+  . Lifecycle needs adding to early startup to start the Startup wizard
+  . Startup wizard creates panel and adds to main panel
+  . Startup wizard main loop:
+    . Detect if there are no destinations set up
+    . Add java.net.wizard dependency to the projects
+    . If none, set startup panel to Destinations-Intro/Destination Editor
+      Wizard panes
+      
+. Destinations Editor 1
+  . Panel showing list of destinations with Add/Remove buttons      
+  . Add dialog
+
+. Startup Wizard 3
+  . If there are destinations, set startup panel to the launchpad pane
+    containing Backup/Archive/Restore buttons. 
+  . Startup wizard switches the main panel to show the startup panel
