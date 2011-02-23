@@ -33,8 +33,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-//@RunWith(JMock.class)
-public class TestArchivectMainPanel {
+/**
+ * Tests that the main panel can have its card layout manipulated.
+ * 
+ * @author matt
+ *
+ */
+public final class TestArchivectMainPanel {
     private static final Logger LOGGER = Logger
             .getLogger(TestArchivectMainPanel.class);
     /**
@@ -73,9 +78,6 @@ public class TestArchivectMainPanel {
         window.robot.waitForIdle();
     }
     
-    /**
-     * 
-     */
     @After
     public void tearDown() {
         LOGGER.info("Cleaning up window");
@@ -83,14 +85,12 @@ public class TestArchivectMainPanel {
     }
 
     @Test(timeout = 3000)
-    public void panelIsBlankOnStartup()
-    {
+    public void panelIsBlankOnStartup() {
         window.background().requireEqualTo(Color.white);
     }
 
     @Test(timeout = 3000)
-    public void panelCanBeAddedTo()
-    {
+    public void panelCanBeAddedTo() {
         GuiActionRunner.execute(new GuiTask() {
             @Override
             protected void executeInEDT() throws Throwable {

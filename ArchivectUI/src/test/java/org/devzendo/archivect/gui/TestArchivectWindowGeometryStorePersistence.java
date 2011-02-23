@@ -40,21 +40,15 @@ public final class TestArchivectWindowGeometryStorePersistence {
     private static final String FOO = "foo";
     private ArchivectWindowGeometryStorePersistence persistence;
 
-    /**
-     * 
-     */
     @BeforeClass
     public static void setupLogging() {
         LoggingUnittestHelper.setupLogging();
     }
     
-    /**
-     * 
-     */
-    // CHECKSTYLE:OFF
+    // CHECKSTYLE:Off
     @Rule
     public final TemporaryFolder tempDir = new TemporaryFolder();
-    // CHECKSTYLE:ON
+    // CHECKSTYLE:On
 
     /**
      * Create a temporary file to hold prefs data, that's deleted after
@@ -72,17 +66,11 @@ public final class TestArchivectWindowGeometryStorePersistence {
         persistence = new ArchivectWindowGeometryStorePersistence(prefs);
     }
     
-    /**
-     * 
-     */
     @Test
     public void testGetDefaultGeometry() {
         Assert.assertEquals("", persistence.getWindowGeometry(FOO));
     }
     
-    /**
-     * 
-     */
     @Test
     public void testGetStoredGeometry() {
         persistence.setWindowGeometry(FOO, WINDOW_GEOMETRY);

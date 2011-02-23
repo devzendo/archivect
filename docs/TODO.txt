@@ -10,6 +10,8 @@ Is the PrefsLocation appropriate for Mac OS X? ~/.archivect is probably wrong.
 
 Use a mock CursorManager in TestArchivectMainFrameFactory
 
+Add pixel-colour detections to the TestArchivectMainPanel tests.
+
 Upgrade to jmock 2.6.0 when released, to hopefully fix thread safety issues in
 TestLifecycleStartupAWTEventListener. Uncomment the expected calls to cursor
 manager.normal - jmock 2.5.1 reports the missing expectation by terminating
