@@ -15,10 +15,14 @@
  */
 package org.devzendo.archivect.gui;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import java.awt.Color;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
@@ -42,9 +46,7 @@ import org.junit.Test;
 public final class TestArchivectMainPanel {
     private static final Logger LOGGER = Logger
             .getLogger(TestArchivectMainPanel.class);
-    /**
-     * 
-     */
+
     @BeforeClass
     public static void setUpLogging() {
         LoggingUnittestHelper.setupLogging();
@@ -70,6 +72,11 @@ public final class TestArchivectMainPanel {
                 final Color color = UIManager.getDefaults().getColor(mainPanel);
                 LOGGER.info(color);
                 jFrame.setContentPane(mainPanel);
+                final UIDefaults uiDefaults = new UIDefaults();
+                final Color color2 = uiDefaults.getColor(mainPanel);
+                LOGGER.info("color2 is " + color2);
+                LOGGER.info("main panel is " + mainPanel);
+                
                 return jFrame;
             }
         });
@@ -86,8 +93,11 @@ public final class TestArchivectMainPanel {
 
     @Test(timeout = 3000)
     public void panelIsBlankOnStartup() {
-        window.background().requireEqualTo(Color.white);
+        window.robot.waitForIdle();
+        assertThat(getCurrentPanelName(), equalTo(ArchivectMainPanel.BlankPanelName()));
+        //window.background().requireEqualTo(Color.white);
     }
+
 
     @Test(timeout = 3000)
     public void panelCanBeAddedTo() {
@@ -101,6 +111,121 @@ public final class TestArchivectMainPanel {
             }
         });
         window.robot.waitForIdle();
-        window.background().requireEqualTo(Color.RED);
+        assertThat(getCurrentPanelName(), equalTo("red"));
+        // window.background().requireEqualTo(Color.RED);
+    }
+
+    @Test(timeout = 3000)
+    public void panelAddDoesNotSwitchDisplay() {
+        GuiActionRunner.execute(new GuiTask() {
+            @Override
+            protected void executeInEDT() throws Throwable {
+                final JPanel redPanel = createColouredPanel("red");
+                mArchivectMainPanel.addPanel("red", redPanel);
+
+                final JPanel bluePanel = createColouredPanel("blue");
+                mArchivectMainPanel.addPanel("blue", bluePanel);
+
+                mArchivectMainPanel.switchToPanel("red");
+            }
+        });
+        window.robot.waitForIdle();
+        assertThat(getCurrentPanelName(), equalTo("red"));
+        // window.background().requireEqualTo(Color.RED);
+    }
+
+    @Test(timeout = 3000)
+    public void removalOfNonCurrentPanelDoesNotChangeDisplay() {
+        GuiActionRunner.execute(new GuiTask() {
+            @Override
+            protected void executeInEDT() throws Throwable {
+                final JPanel redPanel = createColouredPanel("red");
+                mArchivectMainPanel.addPanel("red", redPanel);
+
+                final JPanel bluePanel = createColouredPanel("blue");
+                mArchivectMainPanel.addPanel("blue", bluePanel);
+
+                mArchivectMainPanel.switchToPanel("red");
+                
+                mArchivectMainPanel.removePanel("blue");
+            }
+        });
+        window.robot.waitForIdle();
+        assertThat(getCurrentPanelName(), equalTo("red"));
+        // window.background().requireEqualTo(Color.RED);
+    }
+
+    @Test(timeout = 3000)
+    public void removalOfOnlyPanelChangesToBlankPanel() {
+        GuiActionRunner.execute(new GuiTask() {
+            @Override
+            protected void executeInEDT() throws Throwable {
+                final JPanel redPanel = createColouredPanel("red");
+                mArchivectMainPanel.addPanel("red", redPanel);
+
+                mArchivectMainPanel.switchToPanel("red");
+
+                mArchivectMainPanel.removePanel("red");
+            }
+        });
+        window.robot.waitForIdle();
+        assertThat(getCurrentPanelName(), equalTo(ArchivectMainPanel.BlankPanelName()));
+    }
+
+    @Test(timeout = 3000)
+    public void removalOfCurrentPanelDoesChangeDisplayToPrevious() {
+        GuiActionRunner.execute(new GuiTask() {
+            @Override
+            protected void executeInEDT() throws Throwable {
+                final JPanel redPanel = createColouredPanel("red");
+                mArchivectMainPanel.addPanel("red", redPanel);
+
+                final JPanel bluePanel = createColouredPanel("blue");
+                mArchivectMainPanel.addPanel("blue", bluePanel);
+
+                mArchivectMainPanel.switchToPanel("blue");
+
+                mArchivectMainPanel.removePanel("blue");
+            }
+        });
+        window.robot.waitForIdle();
+        assertThat(getCurrentPanelName(), equalTo("red"));
+        // window.background().requireEqualTo(Color.RED);
+    }
+
+    @Test(timeout = 3000)
+    public void removalOfCurrentFirstPanelDoesChangeDisplayToNext() {
+        GuiActionRunner.execute(new GuiTask() {
+            @Override
+            protected void executeInEDT() throws Throwable {
+                final JPanel redPanel = createColouredPanel("red");
+                mArchivectMainPanel.addPanel("red", redPanel);
+
+                final JPanel bluePanel = createColouredPanel("blue");
+                mArchivectMainPanel.addPanel("blue", bluePanel);
+
+                mArchivectMainPanel.switchToPanel("red");
+
+                mArchivectMainPanel.removePanel("red");
+            }
+        });
+        window.robot.waitForIdle();
+        assertThat(getCurrentPanelName(), equalTo("blue"));
+        // window.background().requireEqualTo(Color.RED);
+    }
+
+    private String getCurrentPanelName() {
+        return GuiActionRunner.execute(new GuiQuery<String>() {
+            @Override
+            protected String executeInEDT() throws Throwable {
+                return mArchivectMainPanel.currPanelName();
+            }
+        });
+    }
+
+    private JPanel createColouredPanel(final String colourName) {
+        final JPanel panel = new JPanel();
+        panel.setBackground(Color.getColor(colourName));
+        return panel;
     }
 }
