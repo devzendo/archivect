@@ -40,17 +40,11 @@ public final class TestPrefs {
     private static final String FOO = "foo";
     private ArchivectPrefs prefs;
 
-    /**
-     * 
-     */
     @BeforeClass
     public static void setupLogging() {
         LoggingUnittestHelper.setupLogging();
     }
     
-    /**
-     * 
-     */
     @Rule
     public final TemporaryFolder tempDir = new TemporaryFolder();
 
@@ -69,17 +63,11 @@ public final class TestPrefs {
         prefs = new DefaultArchivectPrefs(mTempFile.getAbsolutePath());
     }
     
-    /**
-     * 
-     */
     @Test
     public void testGetDefaultGeometry() {
         Assert.assertEquals("", prefs.getWindowGeometry(FOO));
     }
     
-    /**
-     * 
-     */
     @Test
     public void testGetStoredGeometry() {
         prefs.setWindowGeometry(FOO, WINDOW_GEOMETRY);
