@@ -1,6 +1,6 @@
 . Startup Wizard 1
-  . Main panel with a card layout to add/remove panels from
-  . Main panel wired into main frame
+  X Main panel with a card layout to add/remove panels from
+  X Main panel wired into main frame
 
 . Destinations storage 1
   . File to be created on startup, a la Prefs
