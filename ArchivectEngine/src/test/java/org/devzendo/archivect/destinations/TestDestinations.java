@@ -16,6 +16,7 @@
 package org.devzendo.archivect.destinations;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import java.io.File;
@@ -77,4 +78,45 @@ public final class TestDestinations {
         assertThat(mTempFile.exists(), is(true));
         assertThat(mDestinations.size(), is(0));
     }
+    
+    @Test
+    public void aLocalDestinationCanBeAddedAndIsPersisted() {
+        mDestinations.addDestination(new LocalDestination("tmp", "/tmp/foo"));
+        
+        assertThat(mDestinations.size(), is(1));
+        final LocalDestination destination = (LocalDestination) mDestinations.getDestination(0);
+        assertThat(destination.name(), equalTo("tmp"));
+        assertThat(destination.localPath(), equalTo("/tmp/foo"));
+        
+        final Destinations newDestinations = new DefaultDestinations(mTempFile.getAbsolutePath());
+        assertThat(newDestinations.size(), is(1));
+        final LocalDestination reloadedDestination = (LocalDestination) newDestinations.getDestination(0);
+        assertThat(reloadedDestination.name(), equalTo("tmp"));
+        assertThat(reloadedDestination.localPath(), equalTo("/tmp/foo"));
+    }
+
+    @Test
+    public void aSmbDestinationCanBeAddedAndIsPersisted() {
+        mDestinations.addDestination(new SmbDestination("tmp", "server", "public", "username", "password", "/tmp/foo"));
+        
+        assertThat(mDestinations.size(), is(1));
+        final SmbDestination destination = (SmbDestination) mDestinations.getDestination(0);
+        assertThat(destination.name(), equalTo("tmp"));
+        assertThat(destination.server(), equalTo("server"));
+        assertThat(destination.share(), equalTo("public"));
+        assertThat(destination.userName(), equalTo("username"));
+        assertThat(destination.password(), equalTo("password"));
+        assertThat(destination.localPath(), equalTo("/tmp/foo"));
+        
+        final Destinations newDestinations = new DefaultDestinations(mTempFile.getAbsolutePath());
+        assertThat(newDestinations.size(), is(1));
+        final SmbDestination reloadedDestination = (SmbDestination) newDestinations.getDestination(0);
+        assertThat(reloadedDestination.name(), equalTo("tmp"));
+        assertThat(reloadedDestination.server(), equalTo("server"));
+        assertThat(reloadedDestination.share(), equalTo("public"));
+        assertThat(reloadedDestination.userName(), equalTo("username"));
+        assertThat(reloadedDestination.password(), equalTo("password"));
+        assertThat(reloadedDestination.localPath(), equalTo("/tmp/foo"));
+    }
+
 }

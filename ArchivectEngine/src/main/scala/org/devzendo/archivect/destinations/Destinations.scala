@@ -37,4 +37,10 @@ trait Destinations {
      * @return a Destination
      */
     def getDestination(index: Int): Destination
+    
+    /**
+     * Add a destination to storage
+     * @param dest a destination to add
+     */
+    def addDestination(dest: Destination): Unit
 }
