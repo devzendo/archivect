@@ -39,9 +39,6 @@ import org.junit.Test;
 public final class TestEngineApplicationContextsLoadCorrectly {
     private static SpringLoader springLoader;
 
-    /**
-     * 
-     */
     @BeforeClass
     public static void setup() {
         BasicConfigurator.configure();
@@ -51,9 +48,6 @@ public final class TestEngineApplicationContextsLoadCorrectly {
         springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
     }
     
-    /**
-     * 
-     */
     @Test
     public void loadSpringLoaderOK() {
         final List<String> applicationContexts = new ArrayList<String>();
@@ -62,25 +56,16 @@ public final class TestEngineApplicationContextsLoadCorrectly {
         // shouldn't throw!
     }
     
-    /**
-     * 
-     */
     @Test
     public void prefsLocationOk() {
         assertThat(springLoader.getBean("prefsLocation", PrefsLocation.class), notNullValue());
     }
     
-    /**
-     * 
-     */
     @Test
     public void prefsFactoryOk() {
         assertThat(springLoader.getBean("&prefs", PrefsFactory.class), notNullValue());
     }
 
-    /**
-     * 
-     */
     @Test
     public void prefsInstantiatorOk() {
         assertThat(springLoader.getBean("prefsInstantiator", PrefsInstantiator.class), notNullValue());
