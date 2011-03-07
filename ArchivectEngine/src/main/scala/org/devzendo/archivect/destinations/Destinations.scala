@@ -16,6 +16,8 @@
 
 package org.devzendo.archivect.destinations
 
+import collection.JavaConversions._
+
 sealed abstract class Destination(val name: String)
 
 case class LocalDestination(override val name: String, val localPath: String)
@@ -25,6 +27,8 @@ case class SmbDestination(override val name: String, val server: String,
     val share: String, val userName: String, val password: String,
     val localPath: String) extends Destination(name)
     
+case class DestinationSummary(val name: String, val destinationType: String)
+
 trait Destinations {
     /**
      * @return the number of destinations currently stored
@@ -43,4 +47,15 @@ trait Destinations {
      * @param dest a destination to add
      */
     def addDestination(dest: Destination): Unit
+    
+    /**
+     * Get a summary of the destinations
+     * @return a list of summaries
+     */
+    def summaries: List[DestinationSummary]
+    
+    // There may be a neater way of doing this...
+    implicit def summariesAsList: java.util.List[DestinationSummary] = {
+        summaries
+    }
 }

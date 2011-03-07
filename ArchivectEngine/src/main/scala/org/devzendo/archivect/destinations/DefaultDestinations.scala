@@ -17,7 +17,7 @@
 package org.devzendo.archivect.destinations
 
 import org.apache.log4j.Logger
-
+import collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 import scala.xml.{Document, XML, Elem, Node, NodeSeq}
 import java.io.{File, FileWriter}
@@ -42,6 +42,19 @@ class DefaultDestinations(val destinationsPath: String) extends Destinations {
     def addDestination(dest: Destination) = {
         destinations += dest
         saveDestinations
+    }
+
+    def summaries: List[DestinationSummary] = {
+        (destinations map (summarise(_))).toList
+    }
+    
+    private def summarise(destination: Destination): DestinationSummary = {
+        destination match {
+            case LocalDestination(name, localPath) => 
+                new DestinationSummary(name, "local")
+            case SmbDestination(name, server, share, userName, password, localPath) =>
+                new DestinationSummary(name, "smb")
+        }
     }
 
     private def createDestinationsIfStorageDoesNotExist() = {

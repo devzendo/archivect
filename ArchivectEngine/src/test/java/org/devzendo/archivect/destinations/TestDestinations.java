@@ -81,27 +81,27 @@ public final class TestDestinations {
     
     @Test
     public void aLocalDestinationCanBeAddedAndIsPersisted() {
-        mDestinations.addDestination(new LocalDestination("tmp", "/tmp/foo"));
+        mDestinations.addDestination(localDestination());
         
         assertThat(mDestinations.size(), is(1));
         final LocalDestination destination = (LocalDestination) mDestinations.getDestination(0);
-        assertThat(destination.name(), equalTo("tmp"));
+        assertThat(destination.name(), equalTo("localtmp"));
         assertThat(destination.localPath(), equalTo("/tmp/foo"));
         
         final Destinations newDestinations = new DefaultDestinations(mTempFile.getAbsolutePath());
         assertThat(newDestinations.size(), is(1));
         final LocalDestination reloadedDestination = (LocalDestination) newDestinations.getDestination(0);
-        assertThat(reloadedDestination.name(), equalTo("tmp"));
+        assertThat(reloadedDestination.name(), equalTo("localtmp"));
         assertThat(reloadedDestination.localPath(), equalTo("/tmp/foo"));
     }
 
     @Test
     public void aSmbDestinationCanBeAddedAndIsPersisted() {
-        mDestinations.addDestination(new SmbDestination("tmp", "server", "public", "username", "password", "/tmp/foo"));
+        mDestinations.addDestination(smbDestination());
         
         assertThat(mDestinations.size(), is(1));
         final SmbDestination destination = (SmbDestination) mDestinations.getDestination(0);
-        assertThat(destination.name(), equalTo("tmp"));
+        assertThat(destination.name(), equalTo("smbtmp"));
         assertThat(destination.server(), equalTo("server"));
         assertThat(destination.share(), equalTo("public"));
         assertThat(destination.userName(), equalTo("username"));
@@ -111,7 +111,7 @@ public final class TestDestinations {
         final Destinations newDestinations = new DefaultDestinations(mTempFile.getAbsolutePath());
         assertThat(newDestinations.size(), is(1));
         final SmbDestination reloadedDestination = (SmbDestination) newDestinations.getDestination(0);
-        assertThat(reloadedDestination.name(), equalTo("tmp"));
+        assertThat(reloadedDestination.name(), equalTo("smbtmp"));
         assertThat(reloadedDestination.server(), equalTo("server"));
         assertThat(reloadedDestination.share(), equalTo("public"));
         assertThat(reloadedDestination.userName(), equalTo("username"));
@@ -119,4 +119,26 @@ public final class TestDestinations {
         assertThat(reloadedDestination.localPath(), equalTo("/tmp/foo"));
     }
 
+    @Test
+    public void summariesCanBeObtained() {
+        mDestinations.addDestination(localDestination());
+        mDestinations.addDestination(smbDestination());
+        
+        final java.util.List<DestinationSummary> summaries = mDestinations.summariesAsList();
+        assertThat(summaries.size(), equalTo(2));
+        final DestinationSummary ds0 = summaries.get(0);
+        assertThat(ds0.name(), equalTo("localtmp"));
+        assertThat(ds0.destinationType(), equalTo("local"));
+        final DestinationSummary ds1 = summaries.get(1);
+        assertThat(ds1.name(), equalTo("smbtmp"));
+        assertThat(ds1.destinationType(), equalTo("smb"));
+    }
+
+    private LocalDestination localDestination() {
+        return new LocalDestination("localtmp", "/tmp/foo");
+    }
+    
+    private SmbDestination smbDestination() {
+        return new SmbDestination("smbtmp", "server", "public", "username", "password", "/tmp/foo");
+    }
 }
