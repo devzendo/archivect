@@ -27,6 +27,7 @@ object DefaultDestinations {
 }
 
 class DefaultDestinations(val destinationsPath: String) extends Destinations {
+    DefaultDestinations.LOGGER.debug("Destinations path is '" + destinationsPath + "'")
     private val destinationsFile = new File(destinationsPath)
     private val destinations = ListBuffer.empty[Destination] 
     

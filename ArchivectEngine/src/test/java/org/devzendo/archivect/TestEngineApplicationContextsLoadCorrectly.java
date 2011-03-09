@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.log4j.BasicConfigurator;
 import org.devzendo.commonapp.prefs.PrefsFactory;
 import org.devzendo.commonapp.prefs.PrefsInstantiator;
-import org.devzendo.commonapp.prefs.PrefsLocation;
+import org.devzendo.commonapp.prefs.DefaultPrefsLocation;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public final class TestEngineApplicationContextsLoadCorrectly {
     
     @Test
     public void prefsLocationOk() {
-        assertThat(springLoader.getBean("prefsLocation", PrefsLocation.class), notNullValue());
+        assertThat(springLoader.getBean("prefsLocation", DefaultPrefsLocation.class), notNullValue());
     }
     
     @Test

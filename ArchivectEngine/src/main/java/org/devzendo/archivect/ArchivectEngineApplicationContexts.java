@@ -35,7 +35,8 @@ public final class ArchivectEngineApplicationContexts {
      */
     public static String[] getApplicationContexts() {
         return new String[] {
-                "org/devzendo/archivect/ArchivectEngine.xml"
+                "org/devzendo/archivect/ArchivectEngine.xml",
+                "org/devzendo/archivect/ArchivectEnginePersistence.xml"
         };
     }
 

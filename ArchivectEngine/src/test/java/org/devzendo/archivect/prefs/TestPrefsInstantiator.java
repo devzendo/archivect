@@ -18,6 +18,7 @@ package org.devzendo.archivect.prefs;
 import java.io.IOException;
 
 import org.devzendo.commonapp.prefs.Prefs;
+import org.devzendo.commonapp.prefs.DefaultPrefsLocation;
 import org.devzendo.commonapp.prefs.PrefsLocation;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.hamcrest.MatcherAssert;
@@ -39,17 +40,11 @@ public final class TestPrefsInstantiator {
     private static final String PREFS_FILE = "archivect.prefs";
     private static final String PREFS_DIRECTORY = ".archivect";
 
-    /**
-     * 
-     */
     @BeforeClass
     public static void setupLogging() {
         LoggingUnittestHelper.setupLogging();
     }
 
-    /**
-     * 
-     */
     @Rule
     public final TemporaryFolder tempDir = new TemporaryFolder();
 
@@ -64,11 +59,10 @@ public final class TestPrefsInstantiator {
     
     /**
      * @throws IOException never
-     * 
      */
     @Test
     public void prefsAreInstantiatedCorrectly() throws IOException {
-        final PrefsLocation prefsLocation = new PrefsLocation(PREFS_DIRECTORY, PREFS_FILE, tempDir.getRoot().getAbsolutePath());
+        final PrefsLocation prefsLocation = new DefaultPrefsLocation(PREFS_DIRECTORY, PREFS_FILE, tempDir.getRoot().getAbsolutePath());
 
         final DefaultPrefsInstantiator prefsInstantiator = new DefaultPrefsInstantiator();
         final Prefs prefs = prefsInstantiator.instantiatePrefs(prefsLocation);

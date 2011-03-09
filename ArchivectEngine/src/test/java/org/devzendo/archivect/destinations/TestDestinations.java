@@ -64,6 +64,7 @@ public final class TestDestinations {
         LOGGER.debug("the temp folder is " + mTempDir.getRoot().getAbsolutePath());
 
         mTempFile = new File(mTempDir.getRoot(), "archivect-unit-test-destinations.xml");
+        assertThat(mTempDir.getRoot().exists(), is(true));
         assertThat(mTempFile.exists(), is(false));
         mDestinations = new DefaultDestinations(mTempFile.getAbsolutePath());
     }
