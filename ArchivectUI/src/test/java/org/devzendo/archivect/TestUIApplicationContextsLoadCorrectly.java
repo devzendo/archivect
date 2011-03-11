@@ -45,9 +45,6 @@ import org.junit.Test;
 public final class TestUIApplicationContextsLoadCorrectly {
     private static SpringLoader springLoader;
 
-    /**
-     * 
-     */
     @BeforeClass
     public static void setup() {
         BasicConfigurator.configure();
@@ -58,90 +55,57 @@ public final class TestUIApplicationContextsLoadCorrectly {
         springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
     }
 
-    /**
-     * 
-     */
     @Test
     public void applicationContextsLoadCorrectly() {
         assertThat(springLoader, notNullValue());
         // and no exceptions thrown.
     }
     
-    /**
-     * 
-     */
     @Test
     public void archivectMainFrameFactoryOk() {
         assertThat(springLoader.getBean("archivectMainFrameFactory", ArchivectMainFrameFactory.class), notNullValue());
     }
 
-    /**
-     * 
-     */
     @Test
     public void guiPrefsStartupHelperOk() {
         assertThat(springLoader.getBean("guiPrefsStartupHelper", GuiPrefsStartupHelper.class), notNullValue());
     }
 
-    /**
-     * 
-     */
     @Test
     public void menuOk() {
         assertThat(springLoader.getBean("menu", Menu.class), notNullValue());
     }
 
-    /**
-     * 
-     */
     @Test
     public void fileMenuOk() {
         assertThat(springLoader.getBean("fileMenu", FileMenu.class), notNullValue());
     }
 
-    /**
-     * 
-     */
     @Test
     public void menuWiringOk() {
         assertThat(springLoader.getBean("menuWiring", MenuWiring.class), notNullValue());
     }
 
-    /**
-     * 
-     */
     @Test
     public void recentJobsListOk() {
         assertThat(springLoader.getBean("recentJobsList", RecentJobsList.class), notNullValue());
     }
 
-    /**
-     * 
-     */
     @Test
     public void mainFrameCloseActionListenerOk() {
         assertThat(springLoader.getBean("mainFrameCloseActionListener", MainFrameCloseActionListener.class), notNullValue());
     }
     
-    /**
-     * 
-     */
     @Test
     public void lifecycleStartupAWTEventListenerOk() {
         assertThat(springLoader.getBean("lifecycleStartupAWTEventListener", LifecycleStartupAWTEventListener.class), notNullValue());
     }
     
-    /**
-     * 
-     */
     @Test
     public void lifecycleManagerOk() {
         assertThat(springLoader.getBean("lifecycleManager", LifecycleManager.class), notNullValue());
     }
 
-    /**
-     * 
-     */
     @Test
     public void mainPanelOk() {
         assertThat(springLoader.getBean("mainPanel", ArchivectMainPanel.class), notNullValue());
