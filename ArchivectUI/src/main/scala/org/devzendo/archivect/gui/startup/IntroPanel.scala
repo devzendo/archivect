@@ -17,7 +17,7 @@
 package org.devzendo.archivect.gui.startup
 
 import java.awt.BorderLayout
-import javax.swing.{JPanel, JTextPane, JTextArea}
+import javax.swing.{JPanel, JTextPane, SwingUtilities}
 
 import org.devzendo.commonapp.gui.GUIUtils
 import org.netbeans.spi.wizard.WizardPage
@@ -28,7 +28,8 @@ object IntroPanel {
     }
 }
 class IntroPanel extends WizardPage {
-    // TODO should be done on the swing EDT
+    assert(SwingUtilities.isEventDispatchThread())
+    
     setLayout(new BorderLayout())
     val textPane = new JTextPane()
     textPane.setBackground(getBackground())
