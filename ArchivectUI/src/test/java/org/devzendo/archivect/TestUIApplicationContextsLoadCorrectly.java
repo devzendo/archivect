@@ -30,6 +30,9 @@ import org.devzendo.archivect.gui.MainFrameCloseActionListener;
 import org.devzendo.archivect.gui.menu.FileMenu;
 import org.devzendo.archivect.gui.menu.Menu;
 import org.devzendo.archivect.gui.recent.RecentJobsList;
+import org.devzendo.archivect.gui.startup.StartupWizard;
+import org.devzendo.archivect.lifecycle.StartupWizardStartingLifecycle;
+import org.devzendo.archivect.lifecycle.WizardInitialisingLifecycle;
 import org.devzendo.commonapp.gui.menu.MenuWiring;
 import org.devzendo.commonapp.lifecycle.LifecycleManager;
 import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper;
@@ -111,4 +114,18 @@ public final class TestUIApplicationContextsLoadCorrectly {
         assertThat(springLoader.getBean("mainPanel", ArchivectMainPanel.class), notNullValue());
     }
 
+    @Test
+    public void startupWizardOk() {
+        assertThat(springLoader.getBean("startupWizard", StartupWizard.class), notNullValue());
+    }
+
+    @Test
+    public void wizardInitialisingLifecycleOk() {
+        assertThat(springLoader.getBean("wizardInitialisingLifecycle", WizardInitialisingLifecycle.class), notNullValue());
+    }
+
+    @Test
+    public void startupWizardStartingLifecycleOk() {
+        assertThat(springLoader.getBean("startupWizardStartingLifecycle", StartupWizardStartingLifecycle.class), notNullValue());
+    }
 }

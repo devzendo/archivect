@@ -55,7 +55,8 @@
     <bean id="lifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
         <property name="sourceList">
             <list>
-            	<!-- to be filled in -->
+            	<value>wizardInitialisingLifecycle</value>
+                <value>startupWizardStartingLifecycle</value>
             </list>
         </property>
     </bean>
@@ -71,4 +72,17 @@
 		<constructor-arg ref="lifecycleManager" />
     </bean>
 
+    <bean id="startupWizard" class="org.devzendo.archivect.gui.startup.StartupWizard">
+        <constructor-arg ref="mainPanel" />
+        <constructor-arg ref="destinations" />
+	</bean>
+
+    <!-- lifecycle -->
+    <bean id="wizardInitialisingLifecycle" class="org.devzendo.archivect.lifecycle.WizardInitialisingLifecycle" />
+
+    <bean id="startupWizardStartingLifecycle" class="org.devzendo.archivect.lifecycle.StartupWizardStartingLifecycle">
+        <constructor-arg ref="startupWizard" />
+    </bean>
+
+	
 </beans>
