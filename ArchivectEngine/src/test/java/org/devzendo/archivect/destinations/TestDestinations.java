@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -133,6 +134,49 @@ public final class TestDestinations {
         final DestinationSummary ds1 = summaries.get(1);
         assertThat(ds1.name(), equalTo("smbtmp"));
         assertThat(ds1.destinationType(), equalTo("smb"));
+    }
+    
+    @Test
+    public void destinationCanBeRemoved() {
+        final LocalDestination localDestination = localDestination();
+        mDestinations.addDestination(localDestination);
+        assertThat(mDestinations.size(), is(1));
+        
+        mDestinations.removeDestination(localDestination);
+        
+        assertThat(mDestinations.size(), is(0));
+    }
+    
+    @Test
+    public void addDestinationAndListenerIsNotified() {
+        final boolean fired[] = { false };
+        mDestinations.addDestinationListener(new Observer<DestinationEvent>() {
+            public void eventOccurred(final DestinationEvent observableEvent) {
+                if (observableEvent instanceof DestinationAddedEvent) {
+                    fired[0] = true;
+                }
+            }
+        });
+        assertThat(fired[0], equalTo(false));
+        mDestinations.addDestination(localDestination());
+        assertThat(fired[0], equalTo(true));
+    }
+
+    @Test
+    public void removeDestinationAndListenerIsNotified() {
+        final boolean fired[] = { false };
+        final LocalDestination localDestination = localDestination();
+        mDestinations.addDestination(localDestination);
+        mDestinations.addDestinationListener(new Observer<DestinationEvent>() {
+            public void eventOccurred(final DestinationEvent observableEvent) {
+                if (observableEvent instanceof DestinationRemovedEvent) {
+                    fired[0] = true;
+                }
+            }
+        });
+        assertThat(fired[0], equalTo(false));
+        mDestinations.removeDestination(localDestination);
+        assertThat(fired[0], equalTo(true));
     }
 
     private LocalDestination localDestination() {

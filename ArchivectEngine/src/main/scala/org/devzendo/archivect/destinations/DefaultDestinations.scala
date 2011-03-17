@@ -22,6 +22,9 @@ import scala.collection.mutable.ListBuffer
 import scala.xml.{Document, XML, Elem, Node, NodeSeq}
 import java.io.{File, FileWriter}
 
+import org.devzendo.commoncode.patterns.observer.Observer
+import org.devzendo.commoncode.patterns.observer.ObserverList
+
 object DefaultDestinations {
     private val LOGGER = Logger.getLogger(classOf[DefaultDestinations])
 }
@@ -30,6 +33,7 @@ class DefaultDestinations(val destinationsPath: String) extends Destinations {
     DefaultDestinations.LOGGER.debug("Destinations path is '" + destinationsPath + "'")
     private val destinationsFile = new File(destinationsPath)
     private val destinations = ListBuffer.empty[Destination] 
+    private val listeners = new ObserverList[DestinationEvent]
     
     createDestinationsIfStorageDoesNotExist()
     loadDestinations()
@@ -43,8 +47,23 @@ class DefaultDestinations(val destinationsPath: String) extends Destinations {
     def addDestination(dest: Destination) = {
         destinations += dest
         saveDestinations
+        listeners.eventOccurred(new DestinationAddedEvent())
     }
 
+    def removeDestination(dest: Destination) = {
+        destinations -= dest
+        saveDestinations
+        listeners.eventOccurred(new DestinationRemovedEvent())
+    }
+
+    def addDestinationListener(listener: Observer[DestinationEvent]) = {
+        listeners.addObserver(listener)
+    }
+    
+    def removeDestinationListener(listener: Observer[DestinationEvent]) = {
+        listeners.removeListener(listener)
+    }
+    
     def summaries: List[DestinationSummary] = {
         (destinations map (summarise(_))).toList
     }

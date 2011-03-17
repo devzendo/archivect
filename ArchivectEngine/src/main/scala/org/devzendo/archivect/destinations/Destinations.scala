@@ -18,6 +18,8 @@ package org.devzendo.archivect.destinations
 
 import collection.JavaConversions._
 
+import org.devzendo.commoncode.patterns.observer.{Observer, ObservableEvent}
+
 sealed abstract class Destination(val name: String)
 
 case class LocalDestination(override val name: String, val localPath: String)
@@ -28,6 +30,10 @@ case class SmbDestination(override val name: String, val server: String,
     val localPath: String) extends Destination(name)
     
 case class DestinationSummary(val name: String, val destinationType: String)
+
+sealed abstract class DestinationEvent extends ObservableEvent
+case class DestinationAddedEvent extends DestinationEvent
+case class DestinationRemovedEvent extends DestinationEvent
 
 trait Destinations {
     /**
@@ -47,13 +53,31 @@ trait Destinations {
      * @param dest a destination to add
      */
     def addDestination(dest: Destination): Unit
-    
+
+    /**
+     * Remove a destination from storage
+     * @param dest a destination to remove
+     */
+    def removeDestination(dest: Destination): Unit
+
     /**
      * Get a summary of the destinations
      * @return a list of summaries
      */
     def summaries: List[DestinationSummary]
-    
+
+    /**
+     * Add a listener of DestinationEvents
+     * @param listener the listener to add
+     */
+    def addDestinationListener(listener: Observer[DestinationEvent])
+
+    /**
+     * Remove a listener of DestinationEvents
+     * @param listener the listener to remove
+     */
+    def removeDestinationListener(listener: Observer[DestinationEvent])
+
     // There may be a neater way of doing this...
     implicit def summariesAsList: java.util.List[DestinationSummary] = {
         summaries
