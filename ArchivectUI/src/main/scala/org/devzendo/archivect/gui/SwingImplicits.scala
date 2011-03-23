@@ -18,13 +18,23 @@ package org.devzendo.archivect.gui
 
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
+import java.awt.event.ItemEvent
+import java.awt.event.ItemListener
 
 object SwingImplicits {
     /**
-     * @param f the function to execute on receipt of an ActioEvent
+     * @param f the function to execute on receipt of an ActionEvent
      * @return an ActionListener
      */
     implicit def function2ActionListener(f: ActionEvent => Unit) = new ActionListener {
         def actionPerformed(event: ActionEvent) = f(event)
+    }
+
+    /**
+     * @param f the function to execute on receipt of an ItemEvent
+     * @return an ItemListener
+     */
+    implicit def function2ItemListener(f: ItemEvent => Unit) = new ItemListener {
+        def itemStateChanged(event: ItemEvent) = f(event)
     }
 }
