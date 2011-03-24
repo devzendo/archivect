@@ -16,21 +16,43 @@
  
 package org.devzendo.archivect.gui.startup
 
-import java.awt.BorderLayout
+import java.awt.{BorderLayout, Frame}
 import javax.swing.{JPanel}
 
 import org.devzendo.archivect.destinations.Destinations
-import org.devzendo.archivect.gui.editor.DestinationEditor
+import org.devzendo.archivect.gui.editor.{DestinationEditor, DestinationEditorEvent}
 
-import org.netbeans.spi.wizard.WizardPage
+import org.devzendo.commoncode.patterns.observer.{Observer, ObserverList}
+
+import org.netbeans.spi.wizard.{WizardPage, WizardController}
 
 object DestinationsEditorPanel {
     def getDescription = {
         "Edit Destinations" 
     }
 }
-class DestinationsEditorPanel(val destinations: Destinations) extends WizardPage {
+class DestinationsEditorPanel(val destinations: Destinations, val mainFrame: Frame) extends WizardPage {
     setLayout(new BorderLayout())
-    val destEditPanel = new DestinationEditor(destinations)
-    add(destEditPanel, BorderLayout.CENTER)
+    val destEditor = new DestinationEditor(destinations, mainFrame)
+    add(destEditor, BorderLayout.CENTER)
+
+    destEditor.addDestinationListener(new Observer[DestinationEditorEvent]() {
+        def eventOccurred(observableEvent: DestinationEditorEvent): Unit = {
+            validateDestinationCount()
+        }
+    })
+    destEditor.startEditing() // trigger empty message
+    
+    // TODO: call destEditor.stopEditing() when wizard closes.
+    //validateDestinationCount()
+    
+    private def validateDestinationCount() = {
+        setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE)
+        if (destinations.size == 0) {
+            setProblem("You must create one or more destinations")
+        } else {
+            setProblem(null)
+        }
+    }
+    
 }

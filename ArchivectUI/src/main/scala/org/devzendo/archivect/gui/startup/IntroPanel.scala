@@ -20,7 +20,7 @@ import java.awt.BorderLayout
 import javax.swing.{JPanel, JTextPane, SwingUtilities}
 
 import org.devzendo.commonapp.gui.GUIUtils
-import org.netbeans.spi.wizard.WizardPage
+import org.netbeans.spi.wizard.{WizardController, WizardPage}
 
 object IntroPanel {
     def getDescription = {
@@ -37,6 +37,9 @@ class IntroPanel extends WizardPage {
 
     textPane.setText(getText())
     add(textPane, BorderLayout.WEST)
+    
+    setProblem(null)
+    setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE)
     
     def getText() = {
         "<font face='Helvetica, Arial' size='-1'>" +

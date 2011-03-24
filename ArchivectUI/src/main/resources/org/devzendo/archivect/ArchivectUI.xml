@@ -75,6 +75,7 @@
     <bean id="startupWizard" class="org.devzendo.archivect.gui.startup.StartupWizard">
         <constructor-arg ref="mainPanel" />
         <constructor-arg ref="destinations" />
+		<constructor-arg ref="mainFrameFactory" />
 	</bean>
 
     <!-- lifecycle -->

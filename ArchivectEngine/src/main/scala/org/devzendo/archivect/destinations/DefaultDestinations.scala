@@ -22,8 +22,7 @@ import scala.collection.mutable.ListBuffer
 import scala.xml.{Document, XML, Elem, Node, NodeSeq}
 import java.io.{File, FileWriter}
 
-import org.devzendo.commoncode.patterns.observer.Observer
-import org.devzendo.commoncode.patterns.observer.ObserverList
+import org.devzendo.commoncode.patterns.observer.{Observer, ObserverList}
 
 object DefaultDestinations {
     private val LOGGER = Logger.getLogger(classOf[DefaultDestinations])

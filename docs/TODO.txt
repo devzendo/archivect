@@ -16,3 +16,6 @@ Upgrade to jmock 2.6.0 when released, to hopefully fix thread safety issues in
 TestLifecycleStartupAWTEventListener. Uncomment the expected calls to cursor
 manager.normal - jmock 2.5.1 reports the missing expectation by terminating
 the event thread, but the test does not fail.
+
+
+if DestinationEditor.stopEditing being called to remove the listener?

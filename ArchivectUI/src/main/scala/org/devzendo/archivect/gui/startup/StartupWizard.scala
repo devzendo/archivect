@@ -16,7 +16,7 @@
  
 package org.devzendo.archivect.gui.startup
 
-import java.awt.BorderLayout
+import java.awt.{BorderLayout, Frame}
 import java.awt.Dimension
 import java.util.Map
 import javax.swing.JPanel
@@ -39,7 +39,7 @@ object StartupWizard {
     private val LOGGER = Logger.getLogger(classOf[StartupWizard])
 }
 
-class StartupWizard(val mainPanel: ArchivectMainPanel, val destinations: Destinations) {
+class StartupWizard(val mainPanel: ArchivectMainPanel, val destinations: Destinations, val mainFrame: Frame) {
 
     def startWizardFrame(): Unit = {
         StartupWizard.LOGGER.info("Starting Startup Wizard")
@@ -61,6 +61,18 @@ class StartupWizard(val mainPanel: ArchivectMainPanel, val destinations: Destina
             }
         }
         val wizard: Wizard = WizardPage.createWizard(wizardPages, producer)
+        wizard.addWizardObserver(new WizardObserver() {
+            def stepsChanged(wizard: Wizard): Unit = {
+                StartupWizard.LOGGER .info("steps changed")
+            }
+            def navigabilityChanged(wizard: Wizard): Unit = {
+                StartupWizard.LOGGER .info("navigability changed")
+                // TODO: call destEditor.stopEditing() when wizard closes.  
+            }
+            def selectionChanged(wizard: Wizard): Unit = {
+                StartupWizard.LOGGER .info("selection changed")   
+            }
+        })
         val wizardPanel = new JPanel(new BorderLayout)
         mainPanel.addPanel("wizard", wizardPanel)
         WizardDisplayer.installInContainer(wizardPanel, BorderLayout.CENTER, wizard, null, null, receiver)
@@ -73,7 +85,7 @@ class StartupWizard(val mainPanel: ArchivectMainPanel, val destinations: Destina
             // perhaps there's a better way of determining if this is the
             // first use, in order to show the IntroPanel?
             pages += new IntroPanel()
-            pages += new DestinationsEditorPanel(destinations)
+            pages += new DestinationsEditorPanel(destinations, mainFrame)
         }
         pages += new LaunchpadPanel()
         return pages.toArray
