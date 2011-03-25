@@ -19,8 +19,11 @@ package org.devzendo.archivect.gui.editor
 import java.awt.{BorderLayout, CardLayout, Frame, GridLayout, FlowLayout}
 import java.awt.event.{ItemEvent, ItemListener}
 
+
 import javax.swing.{Box, BoxLayout, JLabel, JTextArea, JComboBox, JButton,
     WindowConstants, SwingConstants, JDialog, JPanel, JSeparator}
+
+import com.jgoodies.forms.layout.{FormLayout, CellConstraints}
 
 import org.devzendo.archivect.gui.SwingImplicits._
 import org.devzendo.commonapp.gui.GUIUtils
@@ -32,24 +35,32 @@ object DestinationEditorDialog {
 class DestinationEditorDialog(val parentFrame: Frame) extends JDialog(parentFrame, true) {
     setTitle("Add destination") // TODO: change to edit if editing
     // Handle window closing correctly.
-    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
-    setLayout(new BorderLayout(16, 16))
-    val enclosingPanel = new JPanel()
-    enclosingPanel.setLayout(new BoxLayout(enclosingPanel, BoxLayout.Y_AXIS))
-    add(enclosingPanel, BorderLayout.CENTER)
-    val topPanel = new JPanel(gridLayout())
-    enclosingPanel.add(topPanel)
+    //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
 
-    val nameLabel = new JTextArea()
-    topPanel.add(new JLabel("Name:"))
-    topPanel.add(nameLabel);
+    val formLayout = new FormLayout("pref, 4dlu, 50dlu",    // columns
+                                    "pref, 2dlu, pref, 2dlu, pref")    // rows
+    val rowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5))
+    formLayout.setRowGroups(rowGroups)
     
-    topPanel.add(new JLabel("Type:"))
+    val enclosingPanel = new JPanel()
+    setLayout(new BoxLayout(enclosingPanel, BoxLayout.Y_AXIS))
+    add(enclosingPanel, BorderLayout.CENTER)
+
+    val cc = new CellConstraints()
+    val topPanel = new JPanel(formLayout)
+
+    topPanel.add(new JLabel("Name:"), cc.xy(1, 1))
+    val nameLabel = new JTextArea()
+    topPanel.add(nameLabel, cc.xyw(3, 1, 3))
+    
+    topPanel.add(new JLabel("Type:"), cc.xy(1, 3))
     private val types = Array[Object]("Local Disk", "Windows Share")
     private val type2Panel = Map.empty[Object, JPanel]
     private val typeCombo = new JComboBox(types)
-    topPanel.add(typeCombo)
+    topPanel.add(typeCombo, cc.xyw(3, 3, 3))
     
+    enclosingPanel.add(topPanel)
+
     private val cardLayout = new CardLayout()
     private val cardPanel = new JPanel(cardLayout)
     enclosingPanel.add(cardPanel)
@@ -95,7 +106,7 @@ class DestinationEditorDialog(val parentFrame: Frame) extends JDialog(parentFram
     private val buttonBox = new Box(BoxLayout.X_AXIS)
     private val testButton = new JButton("Test access")
     buttonBox.add(testButton)
-    buttonBox.add(Box.createHorizontalGlue);
+    buttonBox.add(Box.createHorizontalStrut(20))
     private val okButton = new JButton("OK")
     buttonBox.add(okButton)
     private val cancelButton = new JButton("Cancel")
