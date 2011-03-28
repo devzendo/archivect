@@ -16,13 +16,14 @@
 
 package org.devzendo.archivect.gui.editor
 
-import java.awt.{BorderLayout, CardLayout, Frame, GridLayout, FlowLayout}
+import java.awt.{BorderLayout, CardLayout, Frame, GridLayout, FlowLayout, Insets}
 import java.awt.event.{ItemEvent, ItemListener}
 
 
 import javax.swing.{Box, BoxLayout, JLabel, JTextArea, JComboBox, JButton,
     WindowConstants, SwingConstants, JDialog, JPanel, JSeparator}
 
+import com.jgoodies.forms.builder.{ButtonBarBuilder2}
 import com.jgoodies.forms.layout.{FormLayout, CellConstraints}
 
 import org.devzendo.archivect.gui.SwingImplicits._
@@ -38,15 +39,14 @@ class DestinationEditorDialog(val parentFrame: Frame) extends JDialog(parentFram
     //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
 
     val cc = new CellConstraints()
-    val topFormLayout = new FormLayout("40dlu, 4dlu, 80dlu",    // columns
+    val topFormLayout = new FormLayout("right:50dlu, 4dlu, 80dlu",    // columns
                                        "pref, 2dlu, pref, 2dlu, pref")    // rows
     val rowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5))
     topFormLayout.setRowGroups(rowGroups)
     
-    getContentPane().setLayout(new BorderLayout(20, 20))
     val enclosingPanel = new JPanel()
     enclosingPanel.setLayout(new BoxLayout(enclosingPanel, BoxLayout.Y_AXIS))
-    add(enclosingPanel, BorderLayout.CENTER)
+    add(enclosingPanel)
 
     // Top panel
     val topPanel = new JPanel(topFormLayout)
@@ -67,7 +67,7 @@ class DestinationEditorDialog(val parentFrame: Frame) extends JDialog(parentFram
     private val cardPanel = new JPanel(cardLayout)
 
     // Local card
-    val localFormLayout = new FormLayout("40dlu, 4dlu, 80dlu",    // columns
+    val localFormLayout = new FormLayout("right:50dlu, 4dlu, 80dlu",    // columns
                                          "pref")    // rows
     val localRowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1))
     localFormLayout.setRowGroups(localRowGroups)
@@ -81,7 +81,7 @@ class DestinationEditorDialog(val parentFrame: Frame) extends JDialog(parentFram
     cardPanel.add(localPanel, DestinationEditorDialog.LocalPanelName)
     
     // SMB card
-    val smbFormLayout = new FormLayout("40dlu, 4dlu, 80dlu",    // columns
+    val smbFormLayout = new FormLayout("right:50dlu, 4dlu, 80dlu",    // columns
                                        "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref")    // rows
     val smbRowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5, 7, 9))
     smbFormLayout.setRowGroups(smbRowGroups)
@@ -110,25 +110,30 @@ class DestinationEditorDialog(val parentFrame: Frame) extends JDialog(parentFram
     
     typeCombo.addItemListener((_ : ItemEvent) => {
         val selected = typeCombo.getSelectedItem()
-        println(selected)
         cardLayout.show(cardPanel, selected.toString())
     })
     
     private val validationPanel = new JPanel(new FlowLayout())
     private val validationProblems = GUIUtils.createNonEditableJTextAreaWithParentBackground(validationPanel)
-    validationProblems.setText("Status:  ");
+    validationProblems.setText("** something **");
+    validationPanel.add(validationProblems)
     enclosingPanel.add(validationPanel)
-    
-    enclosingPanel.add(new JSeparator(SwingConstants.HORIZONTAL)) // ?
-    
-    private val buttonBox = new Box(BoxLayout.X_AXIS)
+
+    // Button bar
+    val builder = new ButtonBarBuilder2()
     private val testButton = new JButton("Test access")
-    buttonBox.add(testButton)
-    buttonBox.add(Box.createHorizontalStrut(20))
+    builder.addButton(testButton)
+    builder.addUnrelatedGap()
+    builder.addGlue()
     private val okButton = new JButton("OK")
-    buttonBox.add(okButton)
+    okButton.setDefaultCapable(true)
     private val cancelButton = new JButton("Cancel")
-    buttonBox.add(cancelButton)
+    builder.addButton(okButton, cancelButton)
     
-    enclosingPanel.add(buttonBox)
+    enclosingPanel.add(builder.getPanel())
+    
+    // just to get a decent border...
+    override def getInsets(): Insets = {
+        new Insets(40, 20, 20, 20)
+    }
 }
