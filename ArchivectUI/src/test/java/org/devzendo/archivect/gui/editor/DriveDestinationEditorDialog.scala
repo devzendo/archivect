@@ -7,7 +7,7 @@ import org.devzendo.commonapp.gui.GUIUtils
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager
 import org.devzendo.commoncode.logging.Logging
 
-import javax.swing.{ JLabel, JFrame }
+import javax.swing.{ JLabel, JFrame, WindowConstants }
 
 object DriveDestinationEditorDialog {
     def main(args: Array[String]): Unit = {
@@ -19,11 +19,9 @@ object DriveDestinationEditorDialog {
                 ThreadCheckingRepaintManager.initialise();
                 Beautifier.makeBeautiful();
 
-                val frame = new JFrame("Test")
-                frame.add(new JLabel("test"))
-                frame.setVisible(true)
-                val dialog = new DestinationEditorDialog(frame)
+                val dialog = new DestinationEditorDialog(null)
                 dialog.pack()
+                dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 dialog.setVisible(true)
             }
         })
