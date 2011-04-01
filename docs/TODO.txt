@@ -19,3 +19,6 @@ the event thread, but the test does not fail.
 
 
 if DestinationEditor.stopEditing being called to remove the listener?
+
+Test the DestinationEditor on Windows and Linux, and enable the small buttons
+there if they render correctly.
