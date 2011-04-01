@@ -28,6 +28,8 @@ import com.jgoodies.forms.layout.{FormLayout, CellConstraints}
 
 import org.devzendo.archivect.gui.SwingImplicits._
 import org.devzendo.commonapp.gui.GUIUtils
+import org.devzendo.commoncode.os.OSTypeDetect
+import org.devzendo.commoncode.os.OSTypeDetect._
 
 object DestinationEditorDialog {
     val LocalPanelName = "Local Disk"
@@ -113,25 +115,36 @@ class DestinationEditorDialog(val parentFrame: Frame) extends JDialog(parentFram
         cardLayout.show(cardPanel, selected.toString())
     })
     
-    private val validationPanel = new JPanel(new FlowLayout())
+    private val valFormLayout = new FormLayout("fill:pref",    // columns
+                                       "2dlu, pref, 2dlu")   // rows
+    val vcc = new CellConstraints()
+    private val validationPanel = new JPanel(valFormLayout)
     private val validationProblems = GUIUtils.createNonEditableJTextAreaWithParentBackground(validationPanel)
     validationProblems.setText("** something **");
-    validationPanel.add(validationProblems)
+    validationPanel.add(validationProblems, cc.xy(1, 1))
     enclosingPanel.add(validationPanel)
 
     // Button bar
     val builder = new ButtonBarBuilder2()
     private val testButton = new JButton("Test access")
+    private val okButton = new JButton("OK")
+    private val cancelButton = new JButton("Cancel")
+    if (OSTypeDetect.getInstance().getOSType() == OSTypeDetect.OSType.MacOSX) {
+        List(testButton, okButton, cancelButton) foreach (small(_))
+    }
     builder.addButton(testButton)
     builder.addUnrelatedGap()
     builder.addGlue()
-    private val okButton = new JButton("OK")
-    okButton.setDefaultCapable(true)
-    private val cancelButton = new JButton("Cancel")
+    //okButton.setDefaultCapable(true)
+    getRootPane().setDefaultButton(okButton)
     builder.addButton(okButton, cancelButton)
     
     enclosingPanel.add(builder.getPanel())
     
+    private def small(button: JButton) = {
+        println("button: " + button)
+        button.putClientProperty("JComponent.sizeVariant", "small")
+    }
     // just to get a decent border...
     override def getInsets(): Insets = {
         new Insets(40, 20, 20, 20)
