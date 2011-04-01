@@ -115,13 +115,13 @@ class DestinationEditorDialog(val parentFrame: Frame) extends JDialog(parentFram
         cardLayout.show(cardPanel, selected.toString())
     })
     
-    private val valFormLayout = new FormLayout("fill:pref",    // columns
-                                       "2dlu, pref, 2dlu")   // rows
+    private val valFormLayout = new FormLayout("fill:pref",        // columns
+                                               "2dlu, pref, 8dlu") // rows
     val vcc = new CellConstraints()
     private val validationPanel = new JPanel(valFormLayout)
     private val validationProblems = GUIUtils.createNonEditableJTextAreaWithParentBackground(validationPanel)
     validationProblems.setText("** something **");
-    validationPanel.add(validationProblems, cc.xy(1, 1))
+    validationPanel.add(validationProblems, cc.xy(1, 2))
     enclosingPanel.add(validationPanel)
 
     // Button bar
@@ -142,9 +142,9 @@ class DestinationEditorDialog(val parentFrame: Frame) extends JDialog(parentFram
     enclosingPanel.add(builder.getPanel())
     
     private def small(button: JButton) = {
-        println("button: " + button)
         button.putClientProperty("JComponent.sizeVariant", "small")
     }
+
     // just to get a decent border...
     override def getInsets(): Insets = {
         new Insets(40, 20, 20, 20)
