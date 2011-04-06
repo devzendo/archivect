@@ -41,8 +41,11 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     // Handle window closing correctly.
     //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
 
+    val labelCol = "right:50dlu"
+    val fieldCol = "fill:100dlu"
+
     val cc = new CellConstraints()
-    val topFormLayout = new FormLayout("right:60dlu, 4dlu, fill:120dlu",    // columns
+    val topFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
                                        "pref, 2dlu, pref, 2dlu, pref")    // rows
     val rowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5))
     topFormLayout.setRowGroups(rowGroups)
@@ -72,7 +75,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     cardPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLUE)) // TODO: remove diag
     
     // Local card
-    val localFormLayout = new FormLayout("right:60dlu, 4dlu, 80dlu",    // columns
+    val localFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
                                          "pref")    // rows
     val localRowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1))
     localFormLayout.setRowGroups(localRowGroups)
@@ -86,7 +89,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     cardPanel.add(localPanel, DestinationEditorDialog.LocalPanelName)
     
     // SMB card
-    val smbFormLayout = new FormLayout("right:60dlu, 4dlu, 80dlu",    // columns
+    val smbFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
                                        "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref")    // rows
     val smbRowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5, 7, 9))
     smbFormLayout.setRowGroups(smbRowGroups)
