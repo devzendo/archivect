@@ -70,7 +70,7 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
         editButton.setEnabled(!empty)
     }
     private def addActionListener() = (_ : ActionEvent) => {
-        val dialog = new DestinationEditorDialog(mainFrame)
+        val dialog = new DestinationEditorDialog(mainFrame, None)
         dialog.pack()
         dialog.setLocationRelativeTo(this)
         dialog.setVisible(true)
