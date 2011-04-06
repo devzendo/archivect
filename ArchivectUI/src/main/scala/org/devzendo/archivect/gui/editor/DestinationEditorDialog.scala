@@ -37,7 +37,6 @@ object DestinationEditorDialog {
     val SmbPanelName = "Windows Share"
 }
 class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Option[Destination]) extends JDialog(parentFrame, true) {
-    setTitle("Add destination") // TODO: change to edit if editing
     // Handle window closing correctly.
     //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
 
@@ -120,7 +119,20 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         val selected = typeCombo.getSelectedItem()
         cardLayout.show(cardPanel, selected.toString())
     })
-    
+
+    inputDestination match {
+        case None =>
+            setTitle("Add destination")
+        case Some(d) =>
+            setTitle("Edit destination")
+            d match {
+                case l: LocalDestination =>
+                    typeCombo.setSelectedItem(types(0))
+                case s: SmbDestination =>
+                    typeCombo.setSelectedItem(types(1))
+            }
+    }
+
     private val valFormLayout = new FormLayout("fill:pref",        // columns
                                                "2dlu, pref, 8dlu") // rows
     val vcc = new CellConstraints()
