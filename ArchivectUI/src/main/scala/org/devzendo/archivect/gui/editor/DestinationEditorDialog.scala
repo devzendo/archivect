@@ -20,8 +20,10 @@ import java.awt.{BorderLayout, Color, CardLayout, Frame, GridLayout, FlowLayout,
 import java.awt.event.{ItemEvent, ItemListener, KeyListener, KeyEvent}
 import java.io.File
 
-import javax.swing.{Box, BoxLayout, JLabel, JTextArea, JComboBox, JButton,
-    WindowConstants, SwingConstants, JDialog, JPanel, JSeparator}
+import javax.swing.{Box, BoxLayout,
+    JLabel, JTextField, JPasswordField, 
+    JComboBox, JButton, JDialog, JPanel, JSeparator,
+    WindowConstants, SwingConstants }
 
 import com.jgoodies.forms.builder.{ButtonBarBuilder2}
 import com.jgoodies.forms.layout.{FormLayout, CellConstraints}
@@ -39,13 +41,13 @@ object DestinationEditorDialog {
 }
 class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Option[Destination]) extends JDialog(parentFrame, true) {
     // Editable fields:
-    private var nameLabel: JTextArea = null
-    private var localPath: JTextArea = null
-    private var smbPath: JTextArea = null
-    private var smbUser: JTextArea = null
-    private var smbPassword: JTextArea = null
-    private var smbServer: JTextArea = null
-    private var smbShare: JTextArea = null
+    private var nameLabel: JTextField = null
+    private var localPath: JTextField = null
+    private var smbPath: JTextField = null
+    private var smbUser: JTextField = null
+    private var smbPassword: JTextField = null
+    private var smbServer: JTextField = null
+    private var smbShare: JTextField = null
     private var validationProblems: JLabel = null
     private var okButton: JButton = null
     private var cancelButton: JButton = null
@@ -59,13 +61,13 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     }
     
     private def initialiseDialog() = {
-        nameLabel = new JTextArea()
-        localPath = new JTextArea()
-        smbPath = new JTextArea()
-        smbUser = new JTextArea()
-        smbPassword = new JTextArea()
-        smbServer = new JTextArea()
-        smbShare = new JTextArea() 
+        nameLabel = new JTextField()
+        localPath = new JTextField()
+        smbPath = new JTextField()
+        smbUser = new JTextField()
+        smbPassword = new JTextField()
+        smbServer = new JTextField()
+        smbShare = new JTextField() 
         validationProblems = new JLabel()
         
         validateOnKey(nameLabel, localPath, smbPath, smbUser, smbPassword,
@@ -199,7 +201,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         validateDialog()
     }
     
-    private def validateOnKey(fields: JTextArea*) = {
+    private def validateOnKey(fields: JTextField*) = {
         for (field <- fields) {
             field.addKeyListener(new KeyListener() {
                 def keyPressed(e: KeyEvent) = {
@@ -241,7 +243,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         }
     }
 
-    private def fieldMustBeNonEmpty(field: JTextArea, description: String) = {
+    private def fieldMustBeNonEmpty(field: JTextField, description: String) = {
         if (field.getText().trim.equals("")) {
             throw new RuntimeException("You must enter a " + description)
         }
