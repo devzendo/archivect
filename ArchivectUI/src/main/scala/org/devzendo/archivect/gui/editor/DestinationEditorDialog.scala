@@ -17,7 +17,9 @@
 package org.devzendo.archivect.gui.editor
 
 import java.awt.{BorderLayout, Color, CardLayout, Frame, GridLayout, FlowLayout, Insets}
-import java.awt.event.{ItemEvent, ItemListener, KeyListener, KeyEvent}
+import java.awt.event.{ActionEvent, ActionListener,
+    ItemEvent, ItemListener,
+    KeyEvent, KeyListener}
 import java.io.File
 
 import javax.swing.{Box, BoxLayout,
@@ -46,6 +48,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     private var smbPath: JTextField = null
     private var smbUser: JTextField = null
     private var smbPassword: JPasswordField = null
+    private var echoChar = '\0'
     private var smbServer: JTextField = null
     private var smbShare: JTextField = null
     private var validationProblems: JLabel = null
@@ -66,6 +69,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         smbPath = new JTextField()
         smbUser = new JTextField()
         smbPassword = new JPasswordField()
+        echoChar = smbPassword.getEchoChar()
         smbServer = new JTextField()
         smbShare = new JTextField() 
         validationProblems = new JLabel()
@@ -191,14 +195,22 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         builder.addGlue()
         getRootPane().setDefaultButton(okButton)
         builder.addButton(okButton, cancelButton)
-        
+
         enclosingPanel.add(builder.getPanel())
+
+        testButton.addActionListener((_ : ActionEvent) => {
+            togglePasswordVisibility()
+        })
 
         typeCombo.addItemListener((_ : ItemEvent) => {
             validateDialog()
         })
 
         validateDialog()
+    }
+    
+    private def togglePasswordVisibility() = {
+        smbPassword.setEchoChar(if (smbPassword.getEchoChar() == 0) echoChar else '\0')
     }
     
     private def validateOnKey(fields: JTextField*) = {
