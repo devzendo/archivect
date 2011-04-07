@@ -38,16 +38,24 @@ object DestinationEditorDialog {
 }
 class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Option[Destination]) extends JDialog(parentFrame, true) {
     // Editable fields:
-    private var nameLabel: JTextArea = new JTextArea()
-    private var localPath = new JTextArea()
-    private var smbPath = new JTextArea()
-    private var smbUser = new JTextArea()
-    private var smbPassword = new JTextArea()
-    private var smbServer = new JTextArea()
-    private var smbShare = new JTextArea() 
-    private var validationProblems = new JLabel()
+    private var nameLabel: JTextArea = null
+    private var localPath: JTextArea = null
+    private var smbPath: JTextArea = null
+    private var smbUser: JTextArea = null
+    private var smbPassword: JTextArea = null
+    private var smbServer: JTextArea = null
+    private var smbShare: JTextArea = null
+    private var validationProblems: JLabel = null
+    private var okButton: JButton = null
+    private var cancelButton: JButton = null
+    private var testButton: JButton = null
+    
     initialiseDialog()
 
+    def getDestination(): Option[Destination] = {
+        return None
+    }
+    
     private def initialiseDialog() = {
         nameLabel = new JTextArea()
         localPath = new JTextArea()
@@ -140,10 +148,17 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
                 setTitle("Add destination")
             case Some(d) =>
                 setTitle("Edit destination")
+                nameLabel.setText(d.name)
                 d match {
                     case l: LocalDestination =>
+                        localPath.setText(l.localPath)
                         typeCombo.setSelectedItem(types(0))
                     case s: SmbDestination =>
+                        smbPassword.setText(s.password)
+                        smbPath.setText(s.localPath)
+                        smbServer.setText(s.server)
+                        smbUser.setText(s.userName)
+                        smbShare.setText(s.share)
                         typeCombo.setSelectedItem(types(1))
                 }
         }
@@ -154,15 +169,14 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         val validationPanel = new JPanel(valFormLayout)
         validationPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.GREEN)) // TODO: remove diag
         
-        validationProblems.setText("** something **");
         validationPanel.add(validationProblems, cc.xy(1, 2))
         enclosingPanel.add(validationPanel)
     
         // Button bar
         val builder = new ButtonBarBuilder2()
-        val testButton = new JButton("Test access")
-        val okButton = new JButton("OK")
-        val cancelButton = new JButton("Cancel")
+        testButton = new JButton("Test access")
+        okButton = new JButton("OK")
+        cancelButton = new JButton("Cancel")
         if (OSTypeDetect.getInstance().getOSType() == OSTypeDetect.OSType.MacOSX) {
             List(testButton, okButton, cancelButton) foreach (small(_))
         }
@@ -173,10 +187,12 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         builder.addButton(okButton, cancelButton)
         
         enclosingPanel.add(builder.getPanel())
+        
+        validateDialog()
     }
     
-    def getDestination(): Option[Destination] = {
-        return None
+    private def validateDialog() = {
+        validationProblems.setText("** something **")        
     }
     
     private def small(button: JButton) = {
