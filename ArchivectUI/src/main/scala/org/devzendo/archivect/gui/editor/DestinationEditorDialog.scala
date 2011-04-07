@@ -49,7 +49,6 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     private var smbPath: JTextField = null
     private var smbUser: JTextField = null
     private var smbPassword: JPasswordField = null
-    private var echoChar = '\0'
     private var smbServer: JTextField = null
     private var smbShare: JTextField = null
     private var validationProblems: JLabel = null
@@ -71,12 +70,12 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         smbUser = new JTextField()
         smbPassword = new JPasswordField()
         
-        echoChar = smbPassword.getEchoChar()
         smbServer = new JTextField()
         smbShare = new JTextField() 
         validationProblems = new JLabel()
         
-        var smbShowPassword = new JCheckBox("Show password")
+        val echoChar = smbPassword.getEchoChar()
+        val smbShowPassword = new JCheckBox("Show password")
         
         validateOnKey(nameLabel, localPath, smbPath, smbUser, smbPassword,
             smbServer, smbShare)
