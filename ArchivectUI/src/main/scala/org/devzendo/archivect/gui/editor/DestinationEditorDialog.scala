@@ -89,8 +89,6 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         val cc = new CellConstraints()
         val topFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
                                            "pref, 2dlu, pref, 2dlu, pref")    // rows
-        val rowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5))
-        topFormLayout.setRowGroups(rowGroups)
     
         val enclosingPanel = new JPanel()
         enclosingPanel.setLayout(new BoxLayout(enclosingPanel, BoxLayout.Y_AXIS))
@@ -117,8 +115,6 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         // Local card
         val localFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
                                              "pref")    // rows
-        val localRowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1))
-        localFormLayout.setRowGroups(localRowGroups)
         val lcc = new CellConstraints()
 
         val localPanel = new JPanel(localFormLayout)
