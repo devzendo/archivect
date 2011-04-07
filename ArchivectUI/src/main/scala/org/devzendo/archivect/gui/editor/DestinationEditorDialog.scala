@@ -17,8 +17,8 @@
 package org.devzendo.archivect.gui.editor
 
 import java.awt.{BorderLayout, CardLayout, Frame, GridLayout, FlowLayout, Insets}
-import java.awt.event.{ItemEvent, ItemListener}
-
+import java.awt.event.{ItemEvent, ItemListener, KeyListener, KeyEvent}
+import java.io.File
 
 import javax.swing.{Box, BoxLayout, JLabel, JTextArea, JComboBox, JButton,
     WindowConstants, SwingConstants, JDialog, JPanel, JSeparator}
@@ -35,6 +35,7 @@ import org.devzendo.commoncode.os.OSTypeDetect._
 object DestinationEditorDialog {
     val LocalPanelName = "Local Disk"
     val SmbPanelName = "Windows Share"
+    val types = Array[Object](LocalPanelName, SmbPanelName)
 }
 class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Option[Destination]) extends JDialog(parentFrame, true) {
     // Editable fields:
@@ -49,6 +50,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     private var okButton: JButton = null
     private var cancelButton: JButton = null
     private var testButton: JButton = null
+    private var typeCombo: JComboBox = null
     
     initialiseDialog()
 
@@ -64,7 +66,10 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         smbPassword = new JTextArea()
         smbServer = new JTextArea()
         smbShare = new JTextArea() 
-        validationProblems = new JLabel()    
+        validationProblems = new JLabel()
+        
+        validateOnKey(nameLabel, localPath, smbPath, smbUser, smbPassword,
+            smbServer, smbShare)
 
         // Handle window closing correctly.
         //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
@@ -90,8 +95,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         topPanel.add(nameLabel, cc.xy(3, 1))
     
         topPanel.add(new JLabel("Type:"), cc.xy(1, 3))
-        val types = Array[Object](DestinationEditorDialog.LocalPanelName, DestinationEditorDialog.SmbPanelName)
-        val typeCombo = new JComboBox(types)
+        typeCombo = new JComboBox(DestinationEditorDialog.types)
         topPanel.add(typeCombo, cc.xy(3, 3))
     
         enclosingPanel.add(topPanel)
@@ -152,14 +156,14 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
                 d match {
                     case l: LocalDestination =>
                         localPath.setText(l.localPath)
-                        typeCombo.setSelectedItem(types(0))
+                        typeCombo.setSelectedItem(DestinationEditorDialog.types(0))
                     case s: SmbDestination =>
                         smbPassword.setText(s.password)
                         smbPath.setText(s.localPath)
                         smbServer.setText(s.server)
                         smbUser.setText(s.userName)
                         smbShare.setText(s.share)
-                        typeCombo.setSelectedItem(types(1))
+                        typeCombo.setSelectedItem(DestinationEditorDialog.types(1))
                 }
         }
     
@@ -191,8 +195,68 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         validateDialog()
     }
     
-    private def validateDialog() = {
-        validationProblems.setText("** something **")        
+    private def validateOnKey(fields: JTextArea*) = {
+        for (field <- fields) {
+            field.addKeyListener(new KeyListener() {
+                def keyPressed(e: KeyEvent) = {
+                }
+
+                def keyReleased(e: KeyEvent) = {
+                    validateDialog()
+                }
+
+                def keyTyped(e: KeyEvent) = {
+                }
+            })
+        }
+    }
+    private def validateDialog(): Boolean = {
+        if (nameLabel.getText().trim.equals("")) {
+            return problem("You must enter a name")
+        }
+        typeCombo.getSelectedItem() match {
+            case DestinationEditorDialog.LocalPanelName => // local
+                val localPathText = localPath.getText().trim()
+                if (localPathText.equals("")) {
+                    return problem("You must enter a local path")
+                }
+                val pathFile = new File(localPathText)
+                if (!pathFile.exists) {
+                    return problem(localPathText + " does not exist")
+                }
+                if (!pathFile.isDirectory) {
+                    return problem(localPathText + " is not a directory")
+                }
+            
+            case DestinationEditorDialog.SmbPanelName  => // smb
+                val smbPathText = smbPath.getText().trim()
+                if (smbPathText.equals("")) {
+                    return problem("You must enter a SMB path")
+                }
+                val pathFile = new File(smbPathText)
+                if (!pathFile.exists) {
+                    return problem(smbPathText + " does not exist")
+                }
+                if (!pathFile.isDirectory) {
+                    return problem(smbPathText + " is not a directory")
+                }
+        }
+
+        return ok
+    }
+    
+    private def problem(message: String): Boolean = {
+        validationProblems.setText(message)
+        okButton.setEnabled(false)
+        testButton.setEnabled(false)
+        return false
+    }
+    
+    private def ok: Boolean = {
+        validationProblems.setText(" ")
+        okButton.setEnabled(true)
+        testButton.setEnabled(true)
+        return true
     }
     
     private def small(button: JButton) = {
