@@ -57,10 +57,12 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     private var testButton: JButton = null
     private var typeCombo: JComboBox = null
     
+    private var outputDestination: Option[Destination] = inputDestination
+    
     initialiseDialog()
 
     def getDestination(): Option[Destination] = {
-        return None
+        return outputDestination
     }
     
     private def initialiseDialog() = {
@@ -145,7 +147,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
 
         enclosingPanel.add(cardPanel)
 
-        typeCombo.addItemListener((_ : ItemEvent) => {
+        typeCombo.addItemListener((_: ItemEvent) => {
             val selected = typeCombo.getSelectedItem()
             cardLayout.show(cardPanel, selected.toString())
         })
@@ -196,15 +198,42 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
 
         enclosingPanel.add(builder.getPanel())
 
-        smbShowPassword.addActionListener((_ : ActionEvent) => {
+        smbShowPassword.addActionListener((_: ActionEvent) => {
             smbPassword.setEchoChar(if (smbPassword.getEchoChar() == 0) echoChar else '\0')
         })
 
-        typeCombo.addItemListener((_ : ItemEvent) => {
+        typeCombo.addItemListener((_: ItemEvent) => {
             validateDialog()
         })
+        
+        okButton.addActionListener((_: ActionEvent) => {
+            outputDestination = constructDestination()
+            dispose()
+        }) 
 
+        cancelButton.addActionListener((_: ActionEvent) => {
+            outputDestination = inputDestination
+            dispose()
+        })
+        
         validateDialog()
+    }
+    
+    private def constructDestination(): Option[Destination] = {
+        val name = nameLabel.getText().trim()
+        typeCombo.getSelectedItem() match {
+            case DestinationEditorDialog.LocalPanelName =>
+                return Some(LocalDestination(
+                    name, localPath.getText().trim()))
+            
+            case DestinationEditorDialog.SmbPanelName  =>
+                return Some(SmbDestination(
+                    name, smbServer.getText().trim(),
+                    smbShare.getText().trim(),
+                    smbUser.getText().trim(),
+                    smbPassword.getText().trim(),
+                    smbPath.getText().trim())) 
+        }
     }
     
     private def validateOnKey(fields: JTextField*) = {
