@@ -49,9 +49,8 @@ object DriveDestinationEditorDialog {
                 frame.add(buttonPanel, BorderLayout.NORTH)
                 
                 frame.pack()
-                frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
                 frame.setVisible(true)
-
             }
         })
     }

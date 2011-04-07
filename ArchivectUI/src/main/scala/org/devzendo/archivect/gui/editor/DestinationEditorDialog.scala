@@ -16,7 +16,7 @@
 
 package org.devzendo.archivect.gui.editor
 
-import java.awt.{BorderLayout, CardLayout, Frame, GridLayout, FlowLayout, Insets}
+import java.awt.{BorderLayout, Color, CardLayout, Frame, GridLayout, FlowLayout, Insets}
 import java.awt.event.{ItemEvent, ItemListener, KeyListener, KeyEvent}
 import java.io.File
 
@@ -142,11 +142,6 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
 
         enclosingPanel.add(cardPanel)
     
-        typeCombo.addItemListener((_ : ItemEvent) => {
-            val selected = typeCombo.getSelectedItem()
-            cardLayout.show(cardPanel, selected.toString())
-        })
-    
         inputDestination match {
             case None =>
                 setTitle("Add destination")
@@ -191,7 +186,13 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         builder.addButton(okButton, cancelButton)
         
         enclosingPanel.add(builder.getPanel())
-        
+
+        typeCombo.addItemListener((_ : ItemEvent) => {
+            val selected = typeCombo.getSelectedItem()
+            cardLayout.show(cardPanel, selected.toString())
+            validateDialog()
+        })
+
         validateDialog()
     }
     
@@ -210,17 +211,16 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
             })
         }
     }
-    private def validateDialog(): Boolean = {
+    
+    private def validateDialog() = {
         try {
             validateFields()
             ok()
-            return true
         } catch {
-            case ex: Exception =>
-                problem(ex.getMessage())
-                return false
+            case ex: Exception =>  problem(ex.getMessage())
         }
     }
+    
     private def validateFields() = {
         if (nameLabel.getText().trim.equals("")) {
             throw new RuntimeException("You must enter a name")
@@ -255,6 +255,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     }
     
     private def problem(message: String) = {
+        validationProblems.setForeground(Color.RED)
         validationProblems.setText(message)
         okButton.setEnabled(false)
         testButton.setEnabled(false)
