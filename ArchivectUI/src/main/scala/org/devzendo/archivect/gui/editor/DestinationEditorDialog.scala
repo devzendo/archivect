@@ -37,128 +37,143 @@ object DestinationEditorDialog {
     val SmbPanelName = "Windows Share"
 }
 class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Option[Destination]) extends JDialog(parentFrame, true) {
-    // Handle window closing correctly.
-    //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
+    // Editable fields:
+    private var nameLabel: JTextArea = new JTextArea()
+    private var localPath = new JTextArea()
+    private var smbPath = new JTextArea()
+    private var smbUser = new JTextArea()
+    private var smbPassword = new JTextArea()
+    private var smbServer = new JTextArea()
+    private var smbShare = new JTextArea() 
+    private var validationProblems = new JLabel()
+    initialiseDialog()
 
-    val labelCol = "right:50dlu"
-    val fieldCol = "fill:100dlu"
+    private def initialiseDialog() = {
+        nameLabel = new JTextArea()
+        localPath = new JTextArea()
+        smbPath = new JTextArea()
+        smbUser = new JTextArea()
+        smbPassword = new JTextArea()
+        smbServer = new JTextArea()
+        smbShare = new JTextArea() 
+        validationProblems = new JLabel()    
 
-    val cc = new CellConstraints()
-    val topFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
-                                       "pref, 2dlu, pref, 2dlu, pref")    // rows
-    val rowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5))
-    topFormLayout.setRowGroups(rowGroups)
+        // Handle window closing correctly.
+        //setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE)
+
+        val labelCol = "right:50dlu"
+        val fieldCol = "fill:100dlu"
+
+        val cc = new CellConstraints()
+        val topFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
+                                           "pref, 2dlu, pref, 2dlu, pref")    // rows
+        val rowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5))
+        topFormLayout.setRowGroups(rowGroups)
     
-    val enclosingPanel = new JPanel()
-    enclosingPanel.setLayout(new BoxLayout(enclosingPanel, BoxLayout.Y_AXIS))
-    add(enclosingPanel)
+        val enclosingPanel = new JPanel()
+        enclosingPanel.setLayout(new BoxLayout(enclosingPanel, BoxLayout.Y_AXIS))
+        add(enclosingPanel)
 
-    // Top panel
-    val topPanel = new JPanel(topFormLayout)
-    topPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.RED)) // TODO: remove diag
+        // Top panel
+        val topPanel = new JPanel(topFormLayout)
+        topPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.RED)) // TODO: remove diag
 
-    topPanel.add(new JLabel("Name:"), cc.xy(1, 1))
-    val nameLabel = new JTextArea()
-    topPanel.add(nameLabel, cc.xy(3, 1))
+        topPanel.add(new JLabel("Name:"), cc.xy(1, 1))
+        topPanel.add(nameLabel, cc.xy(3, 1))
     
-    topPanel.add(new JLabel("Type:"), cc.xy(1, 3))
-    private val types = Array[Object](DestinationEditorDialog.LocalPanelName, DestinationEditorDialog.SmbPanelName)
-    private val typeCombo = new JComboBox(types)
-    topPanel.add(typeCombo, cc.xy(3, 3))
+        topPanel.add(new JLabel("Type:"), cc.xy(1, 3))
+        val types = Array[Object](DestinationEditorDialog.LocalPanelName, DestinationEditorDialog.SmbPanelName)
+        val typeCombo = new JComboBox(types)
+        topPanel.add(typeCombo, cc.xy(3, 3))
     
-    enclosingPanel.add(topPanel)
+        enclosingPanel.add(topPanel)
 
-    // Card layout
-    private val cardLayout = new CardLayout()
-    private val cardPanel = new JPanel(cardLayout)
-    cardPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLUE)) // TODO: remove diag
+        // Card layout
+        val cardLayout = new CardLayout()
+        val cardPanel = new JPanel(cardLayout)
+        cardPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLUE)) // TODO: remove diag
     
-    // Local card
-    val localFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
-                                         "pref")    // rows
-    val localRowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1))
-    localFormLayout.setRowGroups(localRowGroups)
-    val lcc = new CellConstraints()
+        // Local card
+        val localFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
+                                             "pref")    // rows
+        val localRowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1))
+        localFormLayout.setRowGroups(localRowGroups)
+        val lcc = new CellConstraints()
 
-    private val localPanel = new JPanel(localFormLayout)
-    localPanel.add(new JLabel("Path:"), lcc.xy(1, 1))
-    private val localPath = new JTextArea()
-    localPanel.add(localPath, lcc.xy(3, 1))
+        val localPanel = new JPanel(localFormLayout)
+        localPanel.add(new JLabel("Path:"), lcc.xy(1, 1))
+        localPanel.add(localPath, lcc.xy(3, 1))
     
-    cardPanel.add(localPanel, DestinationEditorDialog.LocalPanelName)
+        cardPanel.add(localPanel, DestinationEditorDialog.LocalPanelName)
     
-    // SMB card
-    val smbFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
-                                       "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref")    // rows
-    val smbRowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5, 7, 9))
-    smbFormLayout.setRowGroups(smbRowGroups)
-    val scc = new CellConstraints()
+        // SMB card
+        val smbFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
+                                           "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref")    // rows
+        val smbRowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5, 7, 9))
+        smbFormLayout.setRowGroups(smbRowGroups)
+        val scc = new CellConstraints()
 
-    private val smbPanel = new JPanel(smbFormLayout)
-    smbPanel.add(new JLabel("Path:"), scc.xy(1, 1))
-    private val smbPath = new JTextArea()
-    smbPanel.add(smbPath, scc.xy(3, 1))
-    smbPanel.add(new JLabel("User name:"), scc.xy(1, 3))
-    private val smbUser = new JTextArea()
-    smbPanel.add(smbUser, scc.xy(3, 3))
-    smbPanel.add(new JLabel("Password:"), scc.xy(1, 5))
-    private val smbPassword = new JTextArea()
-    smbPanel.add(smbPassword, scc.xy(3, 5))
-    smbPanel.add(new JLabel("Server:"), scc.xy(1, 7))
-    private val smbServer = new JTextArea()
-    smbPanel.add(smbServer, scc.xy(3, 7))
-    smbPanel.add(new JLabel("Share:"), scc.xy(1, 9))
-    private val smbShare = new JTextArea()
-    smbPanel.add(smbShare, scc.xy(3, 9))
+        val smbPanel = new JPanel(smbFormLayout)
+        smbPanel.add(new JLabel("Path:"), scc.xy(1, 1))
+        smbPanel.add(smbPath, scc.xy(3, 1))
+        smbPanel.add(new JLabel("User name:"), scc.xy(1, 3))
+        smbPanel.add(smbUser, scc.xy(3, 3))
+        smbPanel.add(new JLabel("Password:"), scc.xy(1, 5))
+        smbPanel.add(smbPassword, scc.xy(3, 5))
+        smbPanel.add(new JLabel("Server:"), scc.xy(1, 7))
+        smbPanel.add(smbServer, scc.xy(3, 7))
+        smbPanel.add(new JLabel("Share:"), scc.xy(1, 9))
+        
+        smbPanel.add(smbShare, scc.xy(3, 9))
     
-    cardPanel.add(smbPanel, DestinationEditorDialog.SmbPanelName)
+        cardPanel.add(smbPanel, DestinationEditorDialog.SmbPanelName)
 
-    enclosingPanel.add(cardPanel)
+        enclosingPanel.add(cardPanel)
     
-    typeCombo.addItemListener((_ : ItemEvent) => {
-        val selected = typeCombo.getSelectedItem()
-        cardLayout.show(cardPanel, selected.toString())
-    })
-
-    inputDestination match {
-        case None =>
-            setTitle("Add destination")
-        case Some(d) =>
-            setTitle("Edit destination")
-            d match {
-                case l: LocalDestination =>
-                    typeCombo.setSelectedItem(types(0))
-                case s: SmbDestination =>
-                    typeCombo.setSelectedItem(types(1))
-            }
+        typeCombo.addItemListener((_ : ItemEvent) => {
+            val selected = typeCombo.getSelectedItem()
+            cardLayout.show(cardPanel, selected.toString())
+        })
+    
+        inputDestination match {
+            case None =>
+                setTitle("Add destination")
+            case Some(d) =>
+                setTitle("Edit destination")
+                d match {
+                    case l: LocalDestination =>
+                        typeCombo.setSelectedItem(types(0))
+                    case s: SmbDestination =>
+                        typeCombo.setSelectedItem(types(1))
+                }
+        }
+    
+        val valFormLayout = new FormLayout("fill:pref",        // columns
+                                           "2dlu, pref, 8dlu") // rows
+        val vcc = new CellConstraints()
+        val validationPanel = new JPanel(valFormLayout)
+        validationPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.GREEN)) // TODO: remove diag
+        
+        validationProblems.setText("** something **");
+        validationPanel.add(validationProblems, cc.xy(1, 2))
+        enclosingPanel.add(validationPanel)
+    
+        // Button bar
+        val builder = new ButtonBarBuilder2()
+        val testButton = new JButton("Test access")
+        val okButton = new JButton("OK")
+        val cancelButton = new JButton("Cancel")
+        if (OSTypeDetect.getInstance().getOSType() == OSTypeDetect.OSType.MacOSX) {
+            List(testButton, okButton, cancelButton) foreach (small(_))
+        }
+        builder.addButton(testButton)
+        builder.addUnrelatedGap()
+        builder.addGlue()
+        getRootPane().setDefaultButton(okButton)
+        builder.addButton(okButton, cancelButton)
+        
+        enclosingPanel.add(builder.getPanel())
     }
-
-    private val valFormLayout = new FormLayout("fill:pref",        // columns
-                                               "2dlu, pref, 8dlu") // rows
-    val vcc = new CellConstraints()
-    private val validationPanel = new JPanel(valFormLayout)
-    validationPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.GREEN)) // TODO: remove diag
-    private val validationProblems = GUIUtils.createNonEditableJTextAreaWithParentBackground(validationPanel)
-    validationProblems.setText("** something **");
-    validationPanel.add(validationProblems, cc.xy(1, 2))
-    enclosingPanel.add(validationPanel)
-
-    // Button bar
-    val builder = new ButtonBarBuilder2()
-    private val testButton = new JButton("Test access")
-    private val okButton = new JButton("OK")
-    private val cancelButton = new JButton("Cancel")
-    if (OSTypeDetect.getInstance().getOSType() == OSTypeDetect.OSType.MacOSX) {
-        List(testButton, okButton, cancelButton) foreach (small(_))
-    }
-    builder.addButton(testButton)
-    builder.addUnrelatedGap()
-    builder.addGlue()
-    //okButton.setDefaultCapable(true)
-    getRootPane().setDefaultButton(okButton)
-    builder.addButton(okButton, cancelButton)
-    
-    enclosingPanel.add(builder.getPanel())
     
     def getDestination(): Option[Destination] = {
         return None

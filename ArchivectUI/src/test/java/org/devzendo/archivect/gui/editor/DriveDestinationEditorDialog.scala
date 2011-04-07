@@ -2,16 +2,16 @@ package org.devzendo.archivect.gui.editor
 
 import collection.JavaConversions._
 
+import java.awt.{ BorderLayout, FlowLayout }
+import java.awt.event.{ ActionListener, ActionEvent }
+import javax.swing.{ JLabel, JFrame, JButton, JPanel, WindowConstants }
+
 import org.devzendo.commonapp.gui.Beautifier
 import org.devzendo.commonapp.gui.GUIUtils
 import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager
 import org.devzendo.commoncode.logging.Logging
 
-import java.awt.{ BorderLayout, FlowLayout }
-import java.awt.event.{ ActionListener, ActionEvent }
-import javax.swing.{ JLabel, JFrame, JButton, JPanel }
 import org.devzendo.archivect.destinations._
-//Destinations.{ Destination, LocalDestination, SmbDestination }
 import org.devzendo.archivect.gui.SwingImplicits._
 
 object DriveDestinationEditorDialog {
@@ -49,6 +49,7 @@ object DriveDestinationEditorDialog {
                 frame.add(buttonPanel, BorderLayout.NORTH)
                 
                 frame.pack()
+                frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 frame.setVisible(true)
 
             }
