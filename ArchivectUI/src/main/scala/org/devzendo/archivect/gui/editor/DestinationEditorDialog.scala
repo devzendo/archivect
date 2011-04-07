@@ -141,7 +141,12 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         cardPanel.add(smbPanel, DestinationEditorDialog.SmbPanelName)
 
         enclosingPanel.add(cardPanel)
-    
+
+        typeCombo.addItemListener((_ : ItemEvent) => {
+            val selected = typeCombo.getSelectedItem()
+            cardLayout.show(cardPanel, selected.toString())
+        })
+
         inputDestination match {
             case None =>
                 setTitle("Add destination")
@@ -188,8 +193,6 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         enclosingPanel.add(builder.getPanel())
 
         typeCombo.addItemListener((_ : ItemEvent) => {
-            val selected = typeCombo.getSelectedItem()
-            cardLayout.show(cardPanel, selected.toString())
             validateDialog()
         })
 
@@ -222,9 +225,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     }
     
     private def validateFields() = {
-        if (nameLabel.getText().trim.equals("")) {
-            throw new RuntimeException("You must enter a name")
-        }
+        fieldMustBeNonEmpty(nameLabel, "name")
         typeCombo.getSelectedItem() match {
             case DestinationEditorDialog.LocalPanelName =>
                 val localPathText = localPath.getText().trim()
@@ -233,9 +234,19 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
             case DestinationEditorDialog.SmbPanelName  =>
                 val smbPathText = smbPath.getText().trim()
                 validatePath(smbPathText)
+                fieldMustBeNonEmpty(smbUser, "user name")
+                fieldMustBeNonEmpty(smbPassword, "password")
+                fieldMustBeNonEmpty(smbServer, "server name")
+                fieldMustBeNonEmpty(smbShare, "share name")
         }
     }
 
+    private def fieldMustBeNonEmpty(field: JTextArea, description: String) = {
+        if (field.getText().trim.equals("")) {
+            throw new RuntimeException("You must enter a " + description)
+        }
+    }
+    
     private def validatePath(path: String) = {
         if (path.equals("")) {
             throw new RuntimeException("You must enter a path")
