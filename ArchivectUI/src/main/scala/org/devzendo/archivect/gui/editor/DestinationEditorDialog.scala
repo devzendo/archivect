@@ -45,7 +45,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     private var localPath: JTextField = null
     private var smbPath: JTextField = null
     private var smbUser: JTextField = null
-    private var smbPassword: JTextField = null
+    private var smbPassword: JPasswordField = null
     private var smbServer: JTextField = null
     private var smbShare: JTextField = null
     private var validationProblems: JLabel = null
@@ -65,7 +65,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         localPath = new JTextField()
         smbPath = new JTextField()
         smbUser = new JTextField()
-        smbPassword = new JTextField()
+        smbPassword = new JPasswordField()
         smbServer = new JTextField()
         smbShare = new JTextField() 
         validationProblems = new JLabel()
