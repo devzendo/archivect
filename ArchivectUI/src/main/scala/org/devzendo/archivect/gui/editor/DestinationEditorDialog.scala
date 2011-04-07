@@ -211,52 +211,59 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         }
     }
     private def validateDialog(): Boolean = {
+        try {
+            validateFields()
+            ok()
+            return true
+        } catch {
+            case ex: Exception =>
+                problem(ex.getMessage())
+                return false
+        }
+    }
+    private def validateFields() = {
         if (nameLabel.getText().trim.equals("")) {
-            return problem("You must enter a name")
+            throw new RuntimeException("You must enter a name")
         }
         typeCombo.getSelectedItem() match {
             case DestinationEditorDialog.LocalPanelName => // local
                 val localPathText = localPath.getText().trim()
                 if (localPathText.equals("")) {
-                    return problem("You must enter a local path")
+                    throw new RuntimeException("You must enter a local path")
                 }
                 val pathFile = new File(localPathText)
                 if (!pathFile.exists) {
-                    return problem(localPathText + " does not exist")
+                    throw new RuntimeException(localPathText + " does not exist")
                 }
                 if (!pathFile.isDirectory) {
-                    return problem(localPathText + " is not a directory")
+                    throw new RuntimeException(localPathText + " is not a directory")
                 }
             
             case DestinationEditorDialog.SmbPanelName  => // smb
                 val smbPathText = smbPath.getText().trim()
                 if (smbPathText.equals("")) {
-                    return problem("You must enter a SMB path")
+                    throw new RuntimeException("You must enter a SMB path")
                 }
                 val pathFile = new File(smbPathText)
                 if (!pathFile.exists) {
-                    return problem(smbPathText + " does not exist")
+                    throw new RuntimeException(smbPathText + " does not exist")
                 }
                 if (!pathFile.isDirectory) {
-                    return problem(smbPathText + " is not a directory")
+                    throw new RuntimeException(smbPathText + " is not a directory")
                 }
         }
-
-        return ok
     }
     
-    private def problem(message: String): Boolean = {
+    private def problem(message: String) = {
         validationProblems.setText(message)
         okButton.setEnabled(false)
         testButton.setEnabled(false)
-        return false
     }
     
-    private def ok: Boolean = {
+    private def ok() = {
         validationProblems.setText(" ")
         okButton.setEnabled(true)
         testButton.setEnabled(true)
-        return true
     }
     
     private def small(button: JButton) = {
