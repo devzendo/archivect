@@ -151,14 +151,14 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
                 d match {
                     case l: LocalDestination =>
                         localPath.setText(l.localPath)
-                        typeCombo.setSelectedItem(DestinationEditorDialog.types(0))
+                        typeCombo.setSelectedItem(DestinationEditorDialog.LocalPanelName)
                     case s: SmbDestination =>
                         smbPassword.setText(s.password)
                         smbPath.setText(s.localPath)
                         smbServer.setText(s.server)
                         smbUser.setText(s.userName)
                         smbShare.setText(s.share)
-                        typeCombo.setSelectedItem(DestinationEditorDialog.types(1))
+                        typeCombo.setSelectedItem(DestinationEditorDialog.SmbPanelName)
                 }
         }
     
@@ -226,7 +226,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
             throw new RuntimeException("You must enter a name")
         }
         typeCombo.getSelectedItem() match {
-            case DestinationEditorDialog.LocalPanelName => // local
+            case DestinationEditorDialog.LocalPanelName =>
                 val localPathText = localPath.getText().trim()
                 if (localPathText.equals("")) {
                     throw new RuntimeException("You must enter a local path")
@@ -239,7 +239,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
                     throw new RuntimeException(localPathText + " is not a directory")
                 }
             
-            case DestinationEditorDialog.SmbPanelName  => // smb
+            case DestinationEditorDialog.SmbPanelName  =>
                 val smbPathText = smbPath.getText().trim()
                 if (smbPathText.equals("")) {
                     throw new RuntimeException("You must enter a SMB path")
