@@ -23,7 +23,8 @@ import java.awt.event.{ActionEvent, ActionListener,
 import java.io.File
 
 import javax.swing.{Box, BoxLayout,
-    JLabel, JTextField, JPasswordField, 
+    JComponent,
+    JLabel, JTextField, JPasswordField, JCheckBox,
     JComboBox, JButton, JDialog, JPanel, JSeparator,
     WindowConstants, SwingConstants }
 
@@ -69,10 +70,13 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         smbPath = new JTextField()
         smbUser = new JTextField()
         smbPassword = new JPasswordField()
+        
         echoChar = smbPassword.getEchoChar()
         smbServer = new JTextField()
         smbShare = new JTextField() 
         validationProblems = new JLabel()
+        
+        var smbShowPassword = new JCheckBox("Show password")
         
         validateOnKey(nameLabel, localPath, smbPath, smbUser, smbPassword,
             smbServer, smbShare)
@@ -126,9 +130,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
     
         // SMB card
         val smbFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
-                                           "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref")    // rows
-        val smbRowGroups: Array[Array[Int]] = Array[Array[Int]](Array(1, 3, 5, 7, 9))
-        smbFormLayout.setRowGroups(smbRowGroups)
+                                           "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref")    // rows
         val scc = new CellConstraints()
 
         val smbPanel = new JPanel(smbFormLayout)
@@ -138,11 +140,11 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         smbPanel.add(smbUser, scc.xy(3, 3))
         smbPanel.add(new JLabel("Password:"), scc.xy(1, 5))
         smbPanel.add(smbPassword, scc.xy(3, 5))
-        smbPanel.add(new JLabel("Server:"), scc.xy(1, 7))
-        smbPanel.add(smbServer, scc.xy(3, 7))
-        smbPanel.add(new JLabel("Share:"), scc.xy(1, 9))
-        
-        smbPanel.add(smbShare, scc.xy(3, 9))
+        smbPanel.add(smbShowPassword, scc.xy(3, 7))
+        smbPanel.add(new JLabel("Server:"), scc.xy(1, 9))
+        smbPanel.add(smbServer, scc.xy(3, 9))
+        smbPanel.add(new JLabel("Share:"), scc.xy(1, 11))
+        smbPanel.add(smbShare, scc.xy(3, 11))
     
         cardPanel.add(smbPanel, DestinationEditorDialog.SmbPanelName)
 
@@ -189,6 +191,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         cancelButton = new JButton("Cancel")
         if (OSTypeDetect.getInstance().getOSType() == OSTypeDetect.OSType.MacOSX) {
             List(testButton, okButton, cancelButton) foreach (small(_))
+            small(smbShowPassword)
         }
         builder.addButton(testButton)
         builder.addUnrelatedGap()
@@ -198,8 +201,8 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
 
         enclosingPanel.add(builder.getPanel())
 
-        testButton.addActionListener((_ : ActionEvent) => {
-            togglePasswordVisibility()
+        smbShowPassword.addActionListener((_ : ActionEvent) => {
+            smbPassword.setEchoChar(if (smbPassword.getEchoChar() == 0) echoChar else '\0')
         })
 
         typeCombo.addItemListener((_ : ItemEvent) => {
@@ -207,10 +210,6 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         })
 
         validateDialog()
-    }
-    
-    private def togglePasswordVisibility() = {
-        smbPassword.setEchoChar(if (smbPassword.getEchoChar() == 0) echoChar else '\0')
     }
     
     private def validateOnKey(fields: JTextField*) = {
@@ -287,8 +286,8 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         testButton.setEnabled(true)
     }
     
-    private def small(button: JButton) = {
-        button.putClientProperty("JComponent.sizeVariant", "small")
+    private def small(component: JComponent) = {
+        component.putClientProperty("JComponent.sizeVariant", "small")
     }
 
     // just to get a decent border...
