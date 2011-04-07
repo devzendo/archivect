@@ -98,7 +98,6 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
 
         // Top panel
         val topPanel = new JPanel(topFormLayout)
-        topPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.RED)) // TODO: remove diag
 
         topPanel.add(new JLabel("Name:"), cc.xy(1, 1))
         topPanel.add(nameLabel, cc.xy(3, 1))
@@ -112,7 +111,6 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         // Card layout
         val cardLayout = new CardLayout()
         val cardPanel = new JPanel(cardLayout)
-        cardPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLUE)) // TODO: remove diag
     
         // Local card
         val localFormLayout = new FormLayout(labelCol + ", 4dlu, " + fieldCol,    // columns
@@ -176,7 +174,6 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
                                            "2dlu, pref, 8dlu") // rows
         val vcc = new CellConstraints()
         val validationPanel = new JPanel(valFormLayout)
-        validationPanel.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.GREEN)) // TODO: remove diag
         
         validationPanel.add(validationProblems, cc.xy(1, 2))
         enclosingPanel.add(validationPanel)
