@@ -228,29 +228,24 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         typeCombo.getSelectedItem() match {
             case DestinationEditorDialog.LocalPanelName =>
                 val localPathText = localPath.getText().trim()
-                if (localPathText.equals("")) {
-                    throw new RuntimeException("You must enter a local path")
-                }
-                val pathFile = new File(localPathText)
-                if (!pathFile.exists) {
-                    throw new RuntimeException(localPathText + " does not exist")
-                }
-                if (!pathFile.isDirectory) {
-                    throw new RuntimeException(localPathText + " is not a directory")
-                }
+                validatePath(localPathText)
             
             case DestinationEditorDialog.SmbPanelName  =>
                 val smbPathText = smbPath.getText().trim()
-                if (smbPathText.equals("")) {
-                    throw new RuntimeException("You must enter a SMB path")
-                }
-                val pathFile = new File(smbPathText)
-                if (!pathFile.exists) {
-                    throw new RuntimeException(smbPathText + " does not exist")
-                }
-                if (!pathFile.isDirectory) {
-                    throw new RuntimeException(smbPathText + " is not a directory")
-                }
+                validatePath(smbPathText)
+        }
+    }
+
+    private def validatePath(path: String) = {
+        if (path.equals("")) {
+            throw new RuntimeException("You must enter a path")
+        }
+        val pathFile = new File(path)
+        if (!pathFile.exists) {
+            throw new RuntimeException(path + " does not exist")
+        }
+        if (!pathFile.isDirectory) {
+            throw new RuntimeException(path + " is not a directory")
         }
     }
     
