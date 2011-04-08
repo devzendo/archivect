@@ -181,6 +181,7 @@ class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Opti
         // Button bar
         val builder = new ButtonBarBuilder2()
         testButton = new JButton("Test access")
+        testButton.setEnabled(false) // TODO: when we have an access tester
         okButton = new JButton("OK")
         cancelButton = new JButton("Cancel")
         if (OSTypeDetect.getInstance().getOSType() == OSTypeDetect.OSType.MacOSX) {
