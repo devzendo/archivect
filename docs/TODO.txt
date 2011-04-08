@@ -17,8 +17,12 @@ TestLifecycleStartupAWTEventListener. Uncomment the expected calls to cursor
 manager.normal - jmock 2.5.1 reports the missing expectation by terminating
 the event thread, but the test does not fail.
 
-
-if DestinationEditor.stopEditing being called to remove the listener?
-
-Test the DestinationEditor on Windows and Linux, and enable the small buttons
-there if they render correctly.
+Destination Editing:
+  Is DestinationEditor.stopEditing being called to remove the listener?
+  
+  Destination editor should not allow the addition of a destination whose
+  name already exists, nor should it allow the renaming of a destination to
+  clash with an existing one.
+  
+  Test the DestinationEditor on Windows and Linux, and enable the small buttons
+  there if they render correctly.
