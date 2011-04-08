@@ -69,11 +69,19 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
         removeButton.setEnabled(!empty)
         editButton.setEnabled(!empty)
     }
+    
     private def addActionListener() = (_ : ActionEvent) => {
         val dialog = new DestinationEditorDialog(mainFrame, None)
         dialog.pack()
         dialog.setLocationRelativeTo(this)
-        dialog.setVisible(true)
+        dialog.setVisible(true) // blocks until closed
+        val newDestination = dialog.getDestination()
+        newDestination match {
+            case None => // do nothing, they cancelled
+            case Some(d) =>
+                // TODO: duplication check? The dialog should prevent a dupe.
+                destinations.addDestination(d) 
+        }            
         DestinationEditor.LOGGER.info("Add")
     }
     
