@@ -16,17 +16,13 @@
  
 package org.devzendo.archivect.gui
 
-import java.awt.BorderLayout
-import java.awt.Dimension
-import java.awt.event.ActionEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
+import java.awt.{BorderLayout, Dimension}
+import java.awt.event.{ActionEvent, WindowAdapter, WindowEvent}
 
-import javax.swing.JFrame
-import javax.swing.JPanel
-import javax.swing.WindowConstants
+import javax.swing.{JFrame, JPanel, WindowConstants}
 
 import org.apache.log4j.Logger
+
 import org.devzendo.archivect.gui.menu.ArchivectMenuIdentifiers
 import org.devzendo.commonapp.gui.menu.MenuWiring
 import org.devzendo.commonapp.gui.WindowGeometryStore
