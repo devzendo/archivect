@@ -22,6 +22,7 @@ import javax.swing.{BoxLayout, JPanel, JTable, JButton, JScrollPane}
 import javax.swing.event.{ListSelectionEvent}
 import javax.swing.table.AbstractTableModel
 
+import com.jgoodies.forms.builder.{ButtonStackBuilder}
 import com.nadeausoftware.ZebraJTable
 import org.apache.log4j.Logger
 
@@ -46,8 +47,8 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
     table.getSelectionModel().addListSelectionListener(tableSelectionListener)
     
     setLayout(new BorderLayout())
-    private val buttonPanel = new JPanel()
-    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS))
+
+    private val buttonStackBuilder = new ButtonStackBuilder()
     private val addButton = new JButton("Add...")
     addButton.addActionListener(addActionListener)
     
@@ -55,10 +56,8 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
     removeButton.addActionListener(removeActionListener)
     
     private val editButton = new JButton("Edit")
-    buttonPanel.add(addButton)
-    buttonPanel.add(removeButton)
-    buttonPanel.add(editButton)
-    add(buttonPanel, BorderLayout.EAST)
+    buttonStackBuilder.addButtons(Array(addButton, removeButton, editButton))
+    add(buttonStackBuilder.getPanel(), BorderLayout.EAST)
     add(new JScrollPane(table), BorderLayout.CENTER);
 //    dataModel.fireTableStructureChanged()
     enableButtons
