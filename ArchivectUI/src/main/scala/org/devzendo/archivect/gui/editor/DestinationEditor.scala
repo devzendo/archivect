@@ -101,9 +101,11 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
         dataModel.fireTableStructureChanged()
     }
 
-    private def tableSelectionListener() = (_ : ListSelectionEvent) => {
-        enableButtons
-        DestinationEditor.LOGGER.info("Table selection")
+    private def tableSelectionListener() = (e : ListSelectionEvent) => {
+        if (!e.getValueIsAdjusting()) {
+            enableButtons
+            DestinationEditor.LOGGER.info("Table selection: " + e)
+        }
     }
     
     
