@@ -20,6 +20,8 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.awt.event.ItemEvent
 import java.awt.event.ItemListener
+import javax.swing.event.ListSelectionEvent
+import javax.swing.event.ListSelectionListener
 
 object SwingImplicits {
     /**
@@ -36,5 +38,13 @@ object SwingImplicits {
      */
     implicit def function2ItemListener(f: ItemEvent => Unit) = new ItemListener {
         def itemStateChanged(event: ItemEvent) = f(event)
+    }
+
+    /**
+     * @param f the function to execute on receipt of a ListSelectionEvent
+     * @return a ListSelectionListener
+     */
+    implicit def function2ListSelectionListener(f: ListSelectionEvent => Unit) = new ListSelectionListener {
+        def valueChanged(event: ListSelectionEvent) = f(event)
     }
 }
