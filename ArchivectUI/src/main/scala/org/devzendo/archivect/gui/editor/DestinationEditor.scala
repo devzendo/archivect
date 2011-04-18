@@ -19,6 +19,7 @@ package org.devzendo.archivect.gui.editor
 import java.awt.{BorderLayout, Frame}
 import java.awt.event.ActionEvent
 import javax.swing.{BoxLayout, JPanel, JTable, JButton, JScrollPane}
+import javax.swing.event.{ListSelectionEvent}
 import javax.swing.table.AbstractTableModel
 
 import com.nadeausoftware.ZebraJTable
@@ -41,6 +42,9 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
     private val listeners = new ObserverList[DestinationEditorEvent]
     private val dataModel = new DestinationsSummaryTableModel()
     private val table = new ZebraJTable(dataModel)
+    table.setRowSelectionAllowed(true)
+    table.getSelectionModel().addListSelectionListener(tableSelectionListener)
+    
     setLayout(new BorderLayout())
     private val buttonPanel = new JPanel()
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS))
@@ -48,6 +52,8 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
     addButton.addActionListener(addActionListener)
     
     private val removeButton = new JButton("Remove")
+    removeButton.addActionListener(removeActionListener)
+    
     private val editButton = new JButton("Edit")
     buttonPanel.add(addButton)
     buttonPanel.add(removeButton)
@@ -65,8 +71,9 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
     
     private def enableButtons = {
         val empty = destinations.size == 0
+        val rowSelected = table.getSelectedRow() != -1
         addButton.setEnabled(true)
-        removeButton.setEnabled(!empty)
+        removeButton.setEnabled(!empty && rowSelected)
         editButton.setEnabled(!empty)
     }
     
@@ -83,7 +90,22 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
                 destinations.addDestination(d) 
         }            
         DestinationEditor.LOGGER.info("Add")
+        // not sure why I don't need a dataModel.fireTableStructureChanged() here
     }
+    
+    private def removeActionListener() = (_ : ActionEvent) => {
+        val selectedRow = table.getSelectedRow()
+        val destinationToRemove = destinations.getDestination(selectedRow)
+        DestinationEditor.LOGGER.info("Removing " + destinationToRemove)
+        destinations.removeDestination(destinationToRemove)
+        dataModel.fireTableStructureChanged()
+    }
+
+    private def tableSelectionListener() = (_ : ListSelectionEvent) => {
+        enableButtons
+        DestinationEditor.LOGGER.info("Table selection")
+    }
+    
     
     private class DestinationsSummaryTableModel() extends AbstractTableModel {
         override def isCellEditable(row: Int, col: Int): Boolean = {
