@@ -121,6 +121,7 @@ public final class TestDestinations {
         assertThat(reloadedDestination.localPath(), equalTo("/tmp/foo"));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void summariesCanBeObtained() {
         mDestinations.addDestination(localDestination());
