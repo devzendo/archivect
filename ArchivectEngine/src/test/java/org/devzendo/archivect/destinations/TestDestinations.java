@@ -187,6 +187,19 @@ public final class TestDestinations {
         assertThat(mDestinations.destinationNameExists("localtmp"), equalTo(true));
     }
 
+    @Test
+    public void entryCannotBeRenamedSoADuplicateWouldOccur() {
+        final LocalDestination localDestination1 = localDestination();
+        mDestinations.addDestination(localDestination1);
+        final LocalDestination localDestination2 = new LocalDestination("localtmp2", "/tmp/bar");
+        mDestinations.addDestination(localDestination2);
+
+        // can't rename so a duplicate would exist
+        assertThat(mDestinations.destinationNameExists("localtmp", localDestination2), equalTo(true));
+        // but this is ok
+        assertThat(mDestinations.destinationNameExists("completelydifferent", localDestination2), equalTo(false));
+    }
+
     private LocalDestination localDestination() {
         return new LocalDestination("localtmp", "/tmp/foo");
     }

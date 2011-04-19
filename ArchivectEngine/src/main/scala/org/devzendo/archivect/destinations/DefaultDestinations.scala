@@ -67,6 +67,12 @@ class DefaultDestinations(val destinationsPath: String) extends Destinations {
         destinations.exists(_.name.equals(name)) 
     }
     
+    def destinationNameExists(name: String, thisDestination: Destination): Boolean = {
+        destinations.filter(_ ne thisDestination)  // NOTE: object reference inequality
+            .exists(_.name.equals(name))
+    }
+    
+    
     def summaries: List[DestinationSummary] = {
         (destinations map (summarise(_))).toList
     }

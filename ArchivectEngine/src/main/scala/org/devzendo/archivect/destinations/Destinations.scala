@@ -59,6 +59,13 @@ trait Destinations {
      * @param dest a destination to remove
      */
     def removeDestination(dest: Destination): Unit
+    
+    /**
+     * Replace the contents of one destination with another (i.e. edit)
+     * @param existing an existing Destination (to be removed)
+     * @param replacement the replacement to be added
+     */
+    //def replaceDestination(existing: Destination, replacement: Destination): Unit
 
     /**
      * Does a destination with this name already exist?
@@ -66,7 +73,17 @@ trait Destinations {
      * @return true iff it exists
      */
     def destinationNameExists(name: String): Boolean
-    
+
+    /**
+     * Does a destination with this name already exist (but don't check THIS
+     * destination, as it's the one we're editing)?
+     * @param name the destination name
+     * @param thisDestination a destination to ignore when checking for
+     * duplicates
+     * @return true iff it exists
+     */
+    def destinationNameExists(name: String, thisDestination: Destination): Boolean
+
     /**
      * Get a summary of the destinations
      * @return a list of summaries
