@@ -61,6 +61,13 @@ trait Destinations {
     def removeDestination(dest: Destination): Unit
 
     /**
+     * Does a destination with this name already exist?
+     * @param name the destination name
+     * @return true iff it exists
+     */
+    def destinationNameExists(name: String): Boolean
+    
+    /**
      * Get a summary of the destinations
      * @return a list of summaries
      */

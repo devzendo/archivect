@@ -63,6 +63,10 @@ class DefaultDestinations(val destinationsPath: String) extends Destinations {
         listeners.removeListener(listener)
     }
     
+    def destinationNameExists(name: String): Boolean = {
+        destinations.exists(_.name.equals(name)) 
+    }
+    
     def summaries: List[DestinationSummary] = {
         (destinations map (summarise(_))).toList
     }

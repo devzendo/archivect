@@ -149,7 +149,7 @@ public final class TestDestinations {
     
     @Test
     public void addDestinationAndListenerIsNotified() {
-        final boolean fired[] = { false };
+        final boolean[] fired = {false};
         mDestinations.addDestinationListener(new Observer<DestinationEvent>() {
             public void eventOccurred(final DestinationEvent observableEvent) {
                 if (observableEvent instanceof DestinationAddedEvent) {
@@ -164,7 +164,7 @@ public final class TestDestinations {
 
     @Test
     public void removeDestinationAndListenerIsNotified() {
-        final boolean fired[] = { false };
+        final boolean[] fired = {false};
         final LocalDestination localDestination = localDestination();
         mDestinations.addDestination(localDestination);
         mDestinations.addDestinationListener(new Observer<DestinationEvent>() {
@@ -177,6 +177,14 @@ public final class TestDestinations {
         assertThat(fired[0], equalTo(false));
         mDestinations.removeDestination(localDestination);
         assertThat(fired[0], equalTo(true));
+    }
+    
+    @Test
+    public void duplicateNameIsDetected() {
+        final LocalDestination localDestination = localDestination();
+        assertThat(mDestinations.destinationNameExists("localtmp"), equalTo(false));
+        mDestinations.addDestination(localDestination);
+        assertThat(mDestinations.destinationNameExists("localtmp"), equalTo(true));
     }
 
     private LocalDestination localDestination() {
