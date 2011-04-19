@@ -26,7 +26,7 @@ import com.jgoodies.forms.builder.{ButtonStackBuilder}
 import com.nadeausoftware.ZebraJTable
 import org.apache.log4j.Logger
 
-import org.devzendo.archivect.destinations.{Destinations, DestinationEvent}
+import org.devzendo.archivect.destinations.{Destination, Destinations, DestinationEvent}
 import org.devzendo.archivect.gui.SwingImplicits._
 import org.devzendo.commoncode.patterns.observer.{Observer, ObserverList, ObservableEvent}
 
@@ -56,10 +56,12 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
     removeButton.addActionListener(removeActionListener)
     
     private val editButton = new JButton("Edit")
+    editButton.addActionListener(editActionListener)
+    
     buttonStackBuilder.addButtons(Array(addButton, removeButton, editButton))
     add(buttonStackBuilder.getPanel(), BorderLayout.EAST)
     add(new JScrollPane(table), BorderLayout.CENTER);
-//    dataModel.fireTableStructureChanged()
+
     enableButtons
     val buttonEnablingListener = new Observer[DestinationEvent]() {
         def eventOccurred(event: DestinationEvent) = {
@@ -73,7 +75,7 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
         val rowSelected = table.getSelectedRow() != -1
         addButton.setEnabled(true)
         removeButton.setEnabled(!empty && rowSelected)
-        editButton.setEnabled(!empty)
+        editButton.setEnabled(!empty && rowSelected)
     }
     
     private def addActionListener() = (_ : ActionEvent) => {
@@ -91,15 +93,38 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
         DestinationEditor.LOGGER.info("Add")
         // not sure why I don't need a dataModel.fireTableStructureChanged() here
     }
-    
-    private def removeActionListener() = (_ : ActionEvent) => {
+
+    private def getSelectedDestination(): Destination = {
         val selectedRow = table.getSelectedRow()
-        val destinationToRemove = destinations.getDestination(selectedRow)
+        assert(selectedRow != -1)
+        destinations.getDestination(selectedRow)
+    }
+        
+    private def removeActionListener() = (_ : ActionEvent) => {
+        val destinationToRemove = getSelectedDestination()
+        
         DestinationEditor.LOGGER.info("Removing " + destinationToRemove)
         destinations.removeDestination(destinationToRemove)
         dataModel.fireTableStructureChanged()
     }
 
+    private def editActionListener() = (_ : ActionEvent) => {
+        val destinationToEdit = getSelectedDestination()
+        
+        DestinationEditor.LOGGER.info("Editing " + destinationToEdit)
+        val dialog = new DestinationEditorDialog(mainFrame, Some(destinationToEdit))
+        dialog.pack()
+        dialog.setLocationRelativeTo(this)
+        dialog.setVisible(true) // blocks until closed
+        val editedDestination = dialog.getDestination()
+        editedDestination match {
+            case None => // do nothing, they cancelled
+            case Some(d) =>
+                // TODO destinations.replaceDestination(destinationToEdit, d) 
+        }            
+        dataModel.fireTableStructureChanged()
+    }
+    
     private def tableSelectionListener() = (e : ListSelectionEvent) => {
         if (!e.getValueIsAdjusting()) {
             enableButtons
