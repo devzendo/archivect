@@ -265,6 +265,14 @@ class DestinationEditorDialog(
     
     private def validateFields() = {
         fieldMustBeNonEmpty(nameLabel, "name")
+        
+        inputDestination match {
+            case None =>
+                noDuplicateAdditionAllowed(nameLabel)
+            case Some(d) =>
+                noDuplicateRenameAllowed(nameLabel, d)
+        }
+        
         typeCombo.getSelectedItem() match {
             case DestinationEditorDialog.LocalPanelName =>
                 val localPathText = localPath.getText().trim()
@@ -280,6 +288,20 @@ class DestinationEditorDialog(
         }
     }
 
+    private def noDuplicateAdditionAllowed(field: JTextField) = {
+        val destName = field.getText().trim
+        if (destinations.destinationNameExists(destName)) {
+            throw new RuntimeException("Cannot add: destination '" + destName + "' already exists")
+        }
+    }
+    
+    private def noDuplicateRenameAllowed(field: JTextField, editingDestination: Destination) = {
+        val destName = field.getText().trim
+        if (destinations.destinationNameExists(destName, editingDestination)) {
+            throw new RuntimeException("Cannot rename: destination '" + destName + "' already exists")
+        }
+    }
+    
     private def fieldMustBeNonEmpty(field: JTextField, description: String) = {
         if (field.getText().trim.equals("")) {
             throw new RuntimeException("You must enter a " + description)
