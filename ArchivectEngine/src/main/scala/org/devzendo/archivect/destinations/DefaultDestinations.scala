@@ -44,6 +44,7 @@ class DefaultDestinations(val destinationsPath: String) extends Destinations {
     }
     
     def addDestination(dest: Destination) = {
+        // TODO: check that dest isn't a dupe
         destinations += dest
         saveDestinations
         listeners.eventOccurred(new DestinationAddedEvent())
@@ -55,6 +56,14 @@ class DefaultDestinations(val destinationsPath: String) extends Destinations {
         listeners.eventOccurred(new DestinationRemovedEvent())
     }
 
+    def replaceDestination(existing: Destination, replacement: Destination) = {
+        // TODO: check that replacement isn't a dupe
+        destinations -= existing
+        listeners.eventOccurred(new DestinationRemovedEvent())
+        destinations += replacement
+        listeners.eventOccurred(new DestinationAddedEvent())
+    }
+    
     def addDestinationListener(listener: Observer[DestinationEvent]) = {
         listeners.addObserver(listener)
     }

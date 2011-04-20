@@ -201,6 +201,50 @@ public final class TestDestinations {
         assertThat(mDestinations.destinationNameExists("completelydifferent", localDestination2), equalTo(false));
     }
 
+    @Test
+    public void entryCanBeReplaced() {
+        final LocalDestination localDestination1 = localDestination();
+        mDestinations.addDestination(localDestination1);
+        final LocalDestination localDestination2 = new LocalDestination("localtmp2", "/tmp/bar");
+        mDestinations.addDestination(localDestination2);
+        
+        assertThat(mDestinations.destinationNameExists("localtmp"), equalTo(true));
+        assertThat(mDestinations.destinationNameExists("localtmp2"), equalTo(true));
+        assertThat(mDestinations.size(), equalTo(2));
+
+        final LocalDestination newLocalDestination2 = new LocalDestination("newlocaltmp2", "/tmp/bar");
+        mDestinations.replaceDestination(localDestination2, newLocalDestination2);
+        
+        assertThat(mDestinations.destinationNameExists("localtmp"), equalTo(true));
+        assertThat(mDestinations.destinationNameExists("localtmp2"), equalTo(false));
+        assertThat(mDestinations.destinationNameExists("newlocaltmp2"), equalTo(true));
+        assertThat(mDestinations.size(), equalTo(2));
+    }
+    
+    @Test
+    public void replaceDestinationAndListenerIsNotifiedTwice() {
+        final int[] removed = {0};
+        final int[] added = {0};
+        final LocalDestination localDestination = localDestination();
+        mDestinations.addDestination(localDestination);
+        mDestinations.addDestinationListener(new Observer<DestinationEvent>() {
+            public void eventOccurred(final DestinationEvent observableEvent) {
+                if (observableEvent instanceof DestinationRemovedEvent) {
+                    removed[0] ++;
+                } else if (observableEvent instanceof DestinationAddedEvent) {
+                    added[0] ++;
+                }
+            }
+        });
+        assertThat(removed[0], equalTo(0));
+        assertThat(added[0], equalTo(0));
+        final LocalDestination newLocalDestination = new LocalDestination("newlocaltmp", "/tmp/bar");
+        mDestinations.replaceDestination(localDestination, newLocalDestination);
+        assertThat(removed[0], equalTo(1));
+        assertThat(added[0], equalTo(1));
+    }
+    
+
     private LocalDestination localDestination() {
         return new LocalDestination("localtmp", "/tmp/foo");
     }

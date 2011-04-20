@@ -65,7 +65,7 @@ trait Destinations {
      * @param existing an existing Destination (to be removed)
      * @param replacement the replacement to be added
      */
-    //def replaceDestination(existing: Destination, replacement: Destination): Unit
+    def replaceDestination(existing: Destination, replacement: Destination): Unit
 
     /**
      * Does a destination with this name already exist?
