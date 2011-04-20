@@ -42,7 +42,11 @@ object DestinationEditorDialog {
     val SmbPanelName = "Windows Share"
     val types = Array[Object](LocalPanelName, SmbPanelName)
 }
-class DestinationEditorDialog(val parentFrame: Frame, val inputDestination: Option[Destination]) extends JDialog(parentFrame, true) {
+class DestinationEditorDialog(
+    val parentFrame: Frame, 
+    val inputDestination: Option[Destination],
+    val destinations: Destinations) extends JDialog(parentFrame, true) {
+    
     // Editable fields:
     private var nameLabel: JTextField = null
     private var localPath: JTextField = null

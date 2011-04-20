@@ -24,6 +24,8 @@ object DriveDestinationEditorDialog {
                 ThreadCheckingRepaintManager.initialise();
                 Beautifier.makeBeautiful();
 
+                val destinations = DriveDestinationHelper.loadDestinations()
+
                 val frame = new JFrame("Test")
                 frame.setLayout(new BorderLayout())
                 val returnLabel = new JLabel("return value")
@@ -32,16 +34,16 @@ object DriveDestinationEditorDialog {
                 val buttonPanel = new JPanel(new FlowLayout())
                 val localEditButton = new JButton("Edit Local Destination")
                 localEditButton.addActionListener((_ :ActionEvent) => {
-                    show(returnLabel, edit(frame, new Some[Destination](LocalDestination("My Local", "/tmp/local"))))
+                    show(returnLabel, edit(frame, new Some[Destination](LocalDestination("My Local", "/tmp/local")), destinations))
                 })
                 val smbEditButton = new JButton("Edit SMB Destination")
                 smbEditButton.addActionListener((_ :ActionEvent) => {
                     show(returnLabel, edit(frame, new Some[Destination](SmbDestination("My SMB", "server",
-                        "publicshare", "JoeBloggs", "password", "/tmp/share"))))
+                        "publicshare", "JoeBloggs", "password", "/tmp/share")), destinations))
                 })
                 val addButton = new JButton("Add new Destination")
                 addButton.addActionListener((_ :ActionEvent) => {
-                    show(returnLabel, edit(frame, None))
+                    show(returnLabel, edit(frame, None, destinations))
                 })
                 buttonPanel.add(localEditButton)
                 buttonPanel.add(smbEditButton)
@@ -61,8 +63,8 @@ object DriveDestinationEditorDialog {
         }
     }
 
-    def edit(frame: JFrame, dest: Option[Destination]): Option[Destination] = {
-        val dialog = new DestinationEditorDialog(frame, dest)
+    def edit(frame: JFrame, dest: Option[Destination], destinations: Destinations): Option[Destination] = {
+        val dialog = new DestinationEditorDialog(frame, dest, destinations)
         dialog.pack()
         dialog.setVisible(true) // blocks until disposed 
         return dialog.getDestination()

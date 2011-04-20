@@ -33,7 +33,7 @@ object DriveDestinationEditor {
                 Beautifier.makeBeautiful();
                 DriveDestinationEditor.LOGGER.info("Starting driver")
 
-                val destinations = loadDestinations()
+                val destinations = DriveDestinationHelper.loadDestinations()
                 
                 val frame = new JFrame("Drive Destinations Editor")
                 frame.setLayout(new BorderLayout())
@@ -71,10 +71,5 @@ object DriveDestinationEditor {
                 frame.setVisible(true)
             }
         })
-    }
-
-    def loadDestinations(): Destinations = {
-        val prefsLocation = new DefaultPrefsLocation(".archivect", "archivect.prefs")
-        new DestinationsFactory(prefsLocation, "drivedestinationseditor.xml").getObject()        
     }
 }

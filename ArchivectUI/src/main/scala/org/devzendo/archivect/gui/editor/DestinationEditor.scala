@@ -79,7 +79,7 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
     }
     
     private def addActionListener() = (_ : ActionEvent) => {
-        val dialog = new DestinationEditorDialog(mainFrame, None)
+        val dialog = new DestinationEditorDialog(mainFrame, None, destinations)
         dialog.pack()
         dialog.setLocationRelativeTo(this)
         dialog.setVisible(true) // blocks until closed
@@ -112,7 +112,7 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
         val destinationToEdit = getSelectedDestination()
         
         DestinationEditor.LOGGER.info("Editing " + destinationToEdit)
-        val dialog = new DestinationEditorDialog(mainFrame, Some(destinationToEdit))
+        val dialog = new DestinationEditorDialog(mainFrame, Some(destinationToEdit), destinations)
         dialog.pack()
         dialog.setLocationRelativeTo(this)
         dialog.setVisible(true) // blocks until closed
