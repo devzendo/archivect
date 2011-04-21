@@ -67,7 +67,7 @@ public final class TestDestinations {
         mTempFile = new File(mTempDir.getRoot(), "archivect-unit-test-destinations.xml");
         assertThat(mTempDir.getRoot().exists(), is(true));
         assertThat(mTempFile.exists(), is(false));
-        mDestinations = new DefaultDestinations(mTempFile.getAbsolutePath());
+        mDestinations = reloadDestinations();
     }
     
     @After
@@ -90,7 +90,7 @@ public final class TestDestinations {
         assertThat(destination.name(), equalTo("localtmp"));
         assertThat(destination.localPath(), equalTo("/tmp/foo"));
         
-        final Destinations newDestinations = new DefaultDestinations(mTempFile.getAbsolutePath());
+        final Destinations newDestinations = reloadDestinations();
         assertThat(newDestinations.size(), is(1));
         final LocalDestination reloadedDestination = (LocalDestination) newDestinations.getDestination(0);
         assertThat(reloadedDestination.name(), equalTo("localtmp"));
@@ -110,7 +110,7 @@ public final class TestDestinations {
         assertThat(destination.password(), equalTo("password"));
         assertThat(destination.localPath(), equalTo("/tmp/foo"));
         
-        final Destinations newDestinations = new DefaultDestinations(mTempFile.getAbsolutePath());
+        final Destinations newDestinations = reloadDestinations();
         assertThat(newDestinations.size(), is(1));
         final SmbDestination reloadedDestination = (SmbDestination) newDestinations.getDestination(0);
         assertThat(reloadedDestination.name(), equalTo("smbtmp"));
@@ -146,6 +146,8 @@ public final class TestDestinations {
         mDestinations.removeDestination(localDestination);
         
         assertThat(mDestinations.size(), is(0));
+        
+        assertThat(reloadDestinations().size(), is(0));
     }
     
     @Test
@@ -215,10 +217,17 @@ public final class TestDestinations {
         final LocalDestination newLocalDestination2 = new LocalDestination("newlocaltmp2", "/tmp/bar");
         mDestinations.replaceDestination(localDestination2, newLocalDestination2);
         
-        assertThat(mDestinations.destinationNameExists("localtmp"), equalTo(true));
-        assertThat(mDestinations.destinationNameExists("localtmp2"), equalTo(false));
-        assertThat(mDestinations.destinationNameExists("newlocaltmp2"), equalTo(true));
-        assertThat(mDestinations.size(), equalTo(2));
+        validateReplacedDestinations(mDestinations);
+        
+        validateReplacedDestinations(reloadDestinations());
+        
+    }
+
+    private void validateReplacedDestinations(final Destinations destinations) {
+        assertThat(destinations.destinationNameExists("localtmp"), equalTo(true));
+        assertThat(destinations.destinationNameExists("localtmp2"), equalTo(false));
+        assertThat(destinations.destinationNameExists("newlocaltmp2"), equalTo(true));
+        assertThat(destinations.size(), equalTo(2));
     }
     
     @Test
@@ -252,4 +261,9 @@ public final class TestDestinations {
     private SmbDestination smbDestination() {
         return new SmbDestination("smbtmp", "server", "public", "username", "password", "/tmp/foo");
     }
+
+    private DefaultDestinations reloadDestinations() {
+        return new DefaultDestinations(mTempFile.getAbsolutePath());
+    }
 }
+

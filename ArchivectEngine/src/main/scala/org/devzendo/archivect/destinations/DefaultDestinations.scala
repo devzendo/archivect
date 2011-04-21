@@ -61,6 +61,7 @@ class DefaultDestinations(val destinationsPath: String) extends Destinations {
         destinations -= existing
         listeners.eventOccurred(new DestinationRemovedEvent())
         destinations += replacement
+        saveDestinations
         listeners.eventOccurred(new DestinationAddedEvent())
     }
     
