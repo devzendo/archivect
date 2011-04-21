@@ -120,9 +120,10 @@ class DestinationEditor(val destinations: Destinations, val mainFrame: Frame) ex
         editedDestination match {
             case None => // do nothing, they cancelled
             case Some(d) =>
-                // TODO destinations.replaceDestination(destinationToEdit, d) 
+                destinations.replaceDestination(destinationToEdit, d) 
+                dataModel.fireTableStructureChanged()
+                DestinationEditor.LOGGER.info("Editing: replaced " + destinationToEdit + " with " + d)
         }            
-        dataModel.fireTableStructureChanged()
     }
     
     private def tableSelectionListener() = (e : ListSelectionEvent) => {
