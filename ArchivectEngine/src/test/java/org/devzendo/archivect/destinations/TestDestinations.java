@@ -209,10 +209,13 @@ public final class TestDestinations {
         mDestinations.addDestination(localDestination1);
         final LocalDestination localDestination2 = new LocalDestination("localtmp2", "/tmp/bar");
         mDestinations.addDestination(localDestination2);
+        final LocalDestination localDestination3 = new LocalDestination("localtmp3", "/tmp/bar");
+        mDestinations.addDestination(localDestination3);
         
         assertThat(mDestinations.getDestination(0).name(), equalTo("localtmp"));
         assertThat(mDestinations.getDestination(1).name(), equalTo("localtmp2"));
-        assertThat(mDestinations.size(), equalTo(2));
+        assertThat(mDestinations.getDestination(2).name(), equalTo("localtmp3"));
+        assertThat(mDestinations.size(), equalTo(3));
 
         final LocalDestination newLocalDestination2 = new LocalDestination("newlocaltmp2", "/tmp/bar");
         mDestinations.replaceDestination(localDestination2, newLocalDestination2);
@@ -220,14 +223,14 @@ public final class TestDestinations {
         validateReplacedDestinations(mDestinations);
         
         validateReplacedDestinations(reloadDestinations());
-        
     }
 
     private void validateReplacedDestinations(final Destinations destinations) {
         assertThat(destinations.getDestination(0).name(), equalTo("localtmp"));
         assertThat(destinations.destinationNameExists("localtmp2"), equalTo(false));
         assertThat(destinations.getDestination(1).name(), equalTo("newlocaltmp2"));
-        assertThat(destinations.size(), equalTo(2));
+        assertThat(destinations.getDestination(2).name(), equalTo("localtmp3"));
+        assertThat(destinations.size(), equalTo(3));
     }
     
     @Test

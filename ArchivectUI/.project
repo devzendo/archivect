@@ -6,11 +6,6 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>com.atlassw.tools.eclipse.checkstyle.CheckstyleBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
 			<name>org.scala-ide.sdt.core.scalabuilder</name>
 			<arguments>
 			</arguments>
@@ -20,11 +15,16 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>net.sf.eclipsecs.core.CheckstyleBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.scala-ide.sdt.core.scalanature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.maven.ide.eclipse.maven2Nature</nature>
-		<nature>com.atlassw.tools.eclipse.checkstyle.CheckstyleNature</nature>
+		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
 	</natures>
 </projectDescription>

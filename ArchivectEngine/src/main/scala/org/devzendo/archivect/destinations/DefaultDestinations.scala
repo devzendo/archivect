@@ -58,9 +58,8 @@ class DefaultDestinations(val destinationsPath: String) extends Destinations {
 
     def replaceDestination(existing: Destination, replacement: Destination) = {
         // TODO: check that replacement isn't a dupe
-        destinations -= existing
+        destinations(destinations indexOf existing) = replacement 
         listeners.eventOccurred(new DestinationRemovedEvent())
-        destinations += replacement
         saveDestinations
         listeners.eventOccurred(new DestinationAddedEvent())
     }
