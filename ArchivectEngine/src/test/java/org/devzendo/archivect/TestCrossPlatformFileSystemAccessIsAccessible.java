@@ -20,6 +20,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
 import org.devzendo.commoncode.logging.CapturingAppender;
 import org.devzendo.xpfsa.FileSystemAccess;
+import org.devzendo.xpfsa.FileSystemAccessException;
 import org.devzendo.xpfsa.SpaceInvader;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,9 +35,6 @@ import org.junit.Test;
 public final class TestCrossPlatformFileSystemAccessIsAccessible {
     private CapturingAppender mCapturingAppender;
 
-    /**
-     * 
-     */
     @Before
     public void setupLogging() {
         BasicConfigurator.resetConfiguration();
@@ -45,11 +43,8 @@ public final class TestCrossPlatformFileSystemAccessIsAccessible {
         Assert.assertEquals(0, mCapturingAppender.getEvents().size());
     }
     
-    /**
-     * 
-     */
     @Test
-    public void testNativeCall() {
+    public void testNativeCall() throws FileSystemAccessException {
         final FileSystemAccess fsa = new FileSystemAccess();
         SpaceInvader.logMessage("Hello logger", fsa);
         
