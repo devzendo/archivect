@@ -23,3 +23,5 @@ syntax: regexp
 ^target$
 syntax: regexp
 ^ArchivectCode/target$
+syntax: glob
+**/.scala_dependencies
