@@ -9,4 +9,7 @@
         <constructor-arg ref="&amp;prefs" />
         <constructor-arg ref="prefsInstantiator" />
 	</bean>
+
+    <bean id="commandLineParser" class="org.devzendo.archivect.command.CommandLineParser"/>
+    	
 </beans>

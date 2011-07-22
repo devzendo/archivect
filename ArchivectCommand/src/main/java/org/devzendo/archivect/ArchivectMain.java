@@ -21,9 +21,14 @@ import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.devzendo.archivect.command.CommandLineException;
+import org.devzendo.archivect.command.CommandLineParser;
+import org.devzendo.archivect.command.CommandModel;
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.Logging;
+import org.devzendo.xpfsa.FileSystemAccess;
+import org.devzendo.xpfsa.FileSystemAccessException;
 
 /**
  * The Archivect main command line program.
@@ -52,5 +57,14 @@ public class ArchivectMain {
         prefsStartupHelper.initialisePrefs();
         
         LOGGER.info("Hello world from Archivect");
+        final CommandLineParser commandLineParser = springLoader.getBean("commandLineParser", CommandLineParser.class);
+        try {
+            final CommandModel operation = commandLineParser.parse(finalArgList);
+            final FileSystemAccess fileSystemAccess = new FileSystemAccess();
+        } catch (final CommandLineException e) {
+            LOGGER.error(e.getMessage());
+        } catch (final FileSystemAccessException e) {
+            LOGGER.fatal("Could not load CrossPlatformFileSystemAccess library: " + e.getMessage(), e);
+        }
     }
 }

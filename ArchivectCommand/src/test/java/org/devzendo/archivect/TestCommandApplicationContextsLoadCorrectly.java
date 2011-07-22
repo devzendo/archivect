@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
+import org.devzendo.archivect.command.CommandLineParser;
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.junit.BeforeClass;
@@ -55,5 +56,10 @@ public final class TestCommandApplicationContextsLoadCorrectly {
     @Test
     public void loggingPrefsStartupHelperOk() {
         assertThat(springLoader.getBean("loggingPrefsStartupHelper", LoggingPrefsStartupHelper.class), notNullValue());
+    }
+    
+    @Test
+    public void commandLineParserOk() {
+        assertThat(springLoader.getBean("commandLineParser", CommandLineParser.class), notNullValue());
     }
 }
