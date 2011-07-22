@@ -36,9 +36,6 @@ import org.junit.Test;
 public final class TestCommandApplicationContextsLoadCorrectly {
     private static SpringLoader springLoader;
 
-    /**
-     * 
-     */
     @BeforeClass
     public static void setup() {
         BasicConfigurator.configure();
@@ -49,18 +46,12 @@ public final class TestCommandApplicationContextsLoadCorrectly {
         springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
     }
 
-    /**
-     * 
-     */
     @Test
     public void applicationContextsLoadCorrectly() {
         assertThat(springLoader, notNullValue());
         // and no exceptions thrown.
     }
     
-    /**
-     * 
-     */
     @Test
     public void loggingPrefsStartupHelperOk() {
         assertThat(springLoader.getBean("loggingPrefsStartupHelper", LoggingPrefsStartupHelper.class), notNullValue());
