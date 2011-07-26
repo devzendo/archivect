@@ -23,7 +23,28 @@ import scala.util.parsing.combinator._
 class CommandLineParser {
     @throws(classOf[CommandLineException])
     def parse(inputLine: java.util.List[String]): CommandModel = {
-        new CommandModel(true)
+        val model = new CommandModel()
+        for (arg <- inputLine) {
+            println("args is '" + arg + "'")
+            arg match {
+                case "-v" | "-verbose" =>
+                    model.verbose = true
+                case "-a" | "-archive" =>
+                    model.mode = CommandModel.CommandMode.Archive
+                case "-r" | "-restore" =>
+                    model.mode = CommandModel.CommandMode.Restore
+                case "-b" | "-backup" =>
+                    model.mode = CommandModel.CommandMode.Backup
+                case "-d" | "-verify" =>
+                    model.mode = CommandModel.CommandMode.Verify
+                case _ =>
+                // something else
+            }
+        }
+
+        if (model.mode == CommandModel.CommandMode.Illegal) {
+            throw new CommandLineException("A mode must be specified")
+        }
+        model
     }
-    
 }
