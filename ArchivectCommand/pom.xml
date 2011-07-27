@@ -1,36 +1,43 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.devzendo</groupId>
-	<artifactId>ArchivectCommand</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
-	<name>ArchivectCommand</name>
-	<packaging>nar</packaging>
-	<description>Archivect's Command Line Utility.
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.devzendo</groupId>
+    <artifactId>ArchivectCommand</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <name>ArchivectCommand</name>
+    <packaging>nar</packaging>
+    <description>Archivect's Command Line Utility.
     (Apache License v2) 2010 Matt Gumbley, DevZendo.org</description>
 
-	<parent>
-		<groupId>org.devzendo</groupId>
-		<artifactId>ArchivectCode</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>org.devzendo</groupId>
+        <artifactId>ArchivectCode</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
 
     <properties>
         <appName>Archivect</appName>
     </properties>
 
-	<dependencies>
-	    <dependency>
+    <dependencies>
+        <dependency>
             <groupId>org.devzendo</groupId>
             <artifactId>CommonApp</artifactId>
             <version>0.3.0</version>
         </dependency>
-		<dependency>
-			<groupId>org.devzendo</groupId>
-			<artifactId>ArchivectEngine</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-			<type>nar</type>
-			<!-- strangely, not type nar -->
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>ArchivectEngine</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+            <type>nar</type>
+            <!-- strangely, not type nar -->
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.9.0</artifactId>
+            <version>1.6.1</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 </project>

@@ -22,32 +22,36 @@ import org.junit.Assert._
 import org.junit.Test
 import org.junit.Before
 
-//import org.devzendo.archivect.command.CommandModel.CommandMode._
-
 import org.devzendo.archivect.command.CommandModel.CommandMode._
 
-class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit  {
+class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit {
     @Test
-    def nonVerbose() = {
+    def nonVerboseByDefault() = {
         val model = parse("-archive") // -archive since a mode must be specified
         assertFalse(model.verbose)
     }
 
     @Test
-    def verbose() = {
+    def verboseCanBeSpecified() = {
         val model = parse("-archive -v") // -archive since a mode must be specified
         assertTrue(model.verbose)
     }
-    
+
     @Test(expected = classOf[CommandLineException])
     def aModeMustBeSpecified() {
         parse("-irrelevant")
     }
-    
+
     @Test
-    def archive() = {
-        parse("-archive").mode must equal(Archive)
+    def allModesAreAccepted() = {
+        val validModes = CommandModel.CommandMode.values.filterNot(_ == Illegal)
+        validModes.foreach {
+            validMode =>
+                val modeArgumentString = "-" + validMode.toString().toLowerCase()
+                parse(modeArgumentString).mode must equal(validMode)
+        }
     }
+    
     private def parse(line: String): CommandModel = {
         val parser = new CommandLineParser()
         parser.parse(split(line))
