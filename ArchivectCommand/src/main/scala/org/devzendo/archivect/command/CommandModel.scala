@@ -19,12 +19,12 @@ package org.devzendo.archivect.command
 object CommandModel {
     object CommandMode extends Enumeration {
         type CommandMode = Value
-        val Illegal, Archive, Backup, Restore, Verify = Value
+        val Archive, Backup, Restore, Verify = Value
     }
 }
 import CommandModel.CommandMode._
 class CommandModel {
     var verbose: Boolean = false
-    var mode = Illegal
+    var mode: Option[CommandMode] = None
 }
 

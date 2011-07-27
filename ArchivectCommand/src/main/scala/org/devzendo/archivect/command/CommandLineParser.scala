@@ -21,30 +21,46 @@ import scala.collection.JavaConversions._
 import scala.util.parsing.combinator._
 
 class CommandLineParser {
+    private abstract class ModeSpecificParser(val model: CommandModel) {
+        def parse(specificArgs: List[String]): Unit
+    }
+    private class UnknownModeParser(model: CommandModel) extends ModeSpecificParser(model) {
+        def parse(specificArgs: List[String]) = {
+            
+        }
+    }
+    private class ArchiveSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
+        def parse(specificArgs: List[String]) = {
+            
+        }
+    }
     @throws(classOf[CommandLineException])
     def parse(inputLine: java.util.List[String]): CommandModel = {
         val model = new CommandModel()
+        var modeSpecificParser = new UnknownModeParser(model)
         for (arg <- inputLine) {
             println("args is '" + arg + "'")
             arg match {
                 case "-v" | "-verbose" =>
                     model.verbose = true
                 case "-a" | "-archive" =>
-                    model.mode = CommandModel.CommandMode.Archive
+                    model.mode = Some(CommandModel.CommandMode.Archive)
                 case "-r" | "-restore" =>
-                    model.mode = CommandModel.CommandMode.Restore
+                    model.mode = Some(CommandModel.CommandMode.Restore)
                 case "-b" | "-backup" =>
-                    model.mode = CommandModel.CommandMode.Backup
+                    model.mode = Some(CommandModel.CommandMode.Backup)
                 case "-d" | "-verify" =>
-                    model.mode = CommandModel.CommandMode.Verify
+                    model.mode = Some(CommandModel.CommandMode.Verify)
                 case _ =>
                 // something else
             }
         }
 
-        if (model.mode == CommandModel.CommandMode.Illegal) {
+        if (model.mode == None) {
             throw new CommandLineException("A mode must be specified")
         }
+        
         model
     }
+    
 }

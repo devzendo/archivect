@@ -44,11 +44,10 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
 
     @Test
     def allModesAreAccepted() = {
-        val validModes = CommandModel.CommandMode.values.filterNot(_ == Illegal)
-        validModes.foreach {
+        CommandModel.CommandMode.values.foreach {
             validMode =>
                 val modeArgumentString = "-" + validMode.toString().toLowerCase()
-                parse(modeArgumentString).mode must equal(validMode)
+                parse(modeArgumentString).mode must equal(Some(validMode))
         }
     }
     
@@ -61,7 +60,5 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         val wordList = new java.util.ArrayList[String]()
         line.split(" ") foreach { wordList.add(_) }
         wordList
-        //      val wordsList = java.util.Arrays.
-        //      new java.util.ArrayList[String]().words)
     }
 }
