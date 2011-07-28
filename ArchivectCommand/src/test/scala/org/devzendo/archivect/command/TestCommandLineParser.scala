@@ -21,8 +21,8 @@ import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.Before
-
 import org.devzendo.archivect.command.CommandModel.CommandMode._
+import org.junit.Ignore
 
 class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit {
     @Test
@@ -37,9 +37,12 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         assertTrue(model.verbose)
     }
 
-    @Test(expected = classOf[CommandLineException])
+    @Test
     def aModeMustBeSpecified() {
-        parse("-irrelevant")
+        val ex = intercept[CommandLineException] {
+            parse("-irrelevant")
+        }
+        ex.getMessage() must equal("A mode must be specified")
     }
 
     @Test
@@ -51,9 +54,18 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         }
     }
     
-    @Test(expected = classOf[CommandLineException])
+    @Test
     def cannotSpecifyMoreThanOneMode() {
-        parse("-archive -restore")
+        val ex = intercept[CommandLineException] {
+            parse("-archive -restore")
+        }
+        ex.getMessage() must equal("Cannot set the mode multiple times")
+    }
+    
+    @Test(expected = classOf[CommandLineException])
+    @Ignore
+    def archiveModeMustHaveSources() {
+        
     }
     
     private def parse(line: String): CommandModel = {
