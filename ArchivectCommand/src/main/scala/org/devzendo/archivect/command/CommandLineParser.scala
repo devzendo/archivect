@@ -20,6 +20,8 @@ import java.util.List
 import scala.collection.JavaConversions._
 import scala.util.parsing.combinator._
 
+import org.devzendo.archivect.command.CommandModel.CommandMode._
+
 class CommandLineParser {
     private abstract class ModeSpecificParser(val model: CommandModel) {
         def parse(specificArgs: List[String]): Unit
@@ -37,23 +39,30 @@ class CommandLineParser {
     @throws(classOf[CommandLineException])
     def parse(inputLine: java.util.List[String]): CommandModel = {
         val model = new CommandModel()
+        def disallowMultipleModes() = {
+            
+        }
         var modeSpecificParser = new UnknownModeParser(model)
-        for (arg <- inputLine) {
-            println("args is '" + arg + "'")
-            arg match {
-                case "-v" | "-verbose" =>
-                    model.verbose = true
-                case "-a" | "-archive" =>
-                    model.mode = Some(CommandModel.CommandMode.Archive)
-                case "-r" | "-restore" =>
-                    model.mode = Some(CommandModel.CommandMode.Restore)
-                case "-b" | "-backup" =>
-                    model.mode = Some(CommandModel.CommandMode.Backup)
-                case "-d" | "-verify" =>
-                    model.mode = Some(CommandModel.CommandMode.Verify)
-                case _ =>
-                // something else
+        try {
+            for (arg <- inputLine) {
+                println("args is '" + arg + "'")
+                arg match {
+                    case "-v" | "-verbose" =>
+                        model.verbose = true
+                    case "-a" | "-archive" =>
+                        model.mode = CommandModel.CommandMode.Archive
+                    case "-r" | "-restore" =>
+                        model.mode = CommandModel.CommandMode.Restore
+                    case "-b" | "-backup" =>
+                        model.mode = CommandModel.CommandMode.Backup
+                    case "-d" | "-verify" =>
+                        model.mode = CommandModel.CommandMode.Verify
+                    case _ =>
+                    // something else
+                }
             }
+        } catch {
+            case ill: IllegalStateException => throw new CommandLineException(ill.getMessage())
         }
 
         if (model.mode == None) {

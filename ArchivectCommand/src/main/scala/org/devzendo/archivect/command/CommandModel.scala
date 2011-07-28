@@ -25,6 +25,15 @@ object CommandModel {
 import CommandModel.CommandMode._
 class CommandModel {
     var verbose: Boolean = false
-    var mode: Option[CommandMode] = None
+    private[this] var commandMode: Option[CommandMode] = None
+    
+    def mode_=(newMode: CommandMode) = {
+        if (commandMode != None) {
+            throw new IllegalStateException("Cannot set the mode multiple times")
+        }
+        commandMode = Some(newMode)
+    }
+    
+    def mode: Option[CommandMode] = commandMode
 }
 

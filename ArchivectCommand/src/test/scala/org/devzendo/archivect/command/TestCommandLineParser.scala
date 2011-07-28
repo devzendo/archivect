@@ -26,13 +26,13 @@ import org.devzendo.archivect.command.CommandModel.CommandMode._
 
 class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit {
     @Test
-    def nonVerboseByDefault() = {
+    def nonVerboseByDefault() {
         val model = parse("-archive") // -archive since a mode must be specified
         assertFalse(model.verbose)
     }
 
     @Test
-    def verboseCanBeSpecified() = {
+    def verboseCanBeSpecified() {
         val model = parse("-archive -v") // -archive since a mode must be specified
         assertTrue(model.verbose)
     }
@@ -43,12 +43,17 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
     }
 
     @Test
-    def allModesAreAccepted() = {
+    def allModesAreAccepted() {
         CommandModel.CommandMode.values.foreach {
             validMode =>
                 val modeArgumentString = "-" + validMode.toString().toLowerCase()
                 parse(modeArgumentString).mode must equal(Some(validMode))
         }
+    }
+    
+    @Test(expected = classOf[CommandLineException])
+    def cannotSpecifyMoreThanOneMode() {
+        parse("-archive -restore")
     }
     
     private def parse(line: String): CommandModel = {
