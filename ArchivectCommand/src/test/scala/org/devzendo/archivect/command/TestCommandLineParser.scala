@@ -27,20 +27,20 @@ import org.junit.Ignore
 class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit {
     @Test
     def nonVerboseByDefault() {
-        val model = parse("-archive") // -archive since a mode must be specified
+        val model = parse("-archive irrelevantsource") // -archive since a mode must be specified
         assertFalse(model.verbose)
     }
 
     @Test
     def verboseCanBeSpecified() {
-        val model = parse("-archive -v") // -archive since a mode must be specified
+        val model = parse("-archive -v irrelevantsource") // -archive since a mode must be specified
         assertTrue(model.verbose)
     }
 
     @Test
     def aModeMustBeSpecified() {
         val ex = intercept[CommandLineException] {
-            parse("-irrelevant")
+            parse("-irrelevant irrelevantsource")
         }
         ex.getMessage() must equal("A mode must be specified")
     }
@@ -50,22 +50,24 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         CommandModel.CommandMode.values.foreach {
             validMode =>
                 val modeArgumentString = "-" + validMode.toString().toLowerCase()
-                parse(modeArgumentString).mode must equal(Some(validMode))
+                parse(modeArgumentString + " irrelevantsource").mode must equal(Some(validMode))
         }
     }
     
     @Test
     def cannotSpecifyMoreThanOneMode() {
         val ex = intercept[CommandLineException] {
-            parse("-archive -restore")
+            parse("-archive -restore irrelevantsource")
         }
         ex.getMessage() must equal("Cannot set the mode multiple times")
     }
     
-    @Test(expected = classOf[CommandLineException])
-    @Ignore
+    @Test
     def archiveModeMustHaveSources() {
-        
+        val ex = intercept[CommandLineException] {
+            parse("-archive")
+        }
+        ex.getMessage() must equal("One or more sources must be specified")
     }
     
     private def parse(line: String): CommandModel = {

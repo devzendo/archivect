@@ -16,6 +16,8 @@
 
 package org.devzendo.archivect.command
 
+import scala.collection.mutable.ArrayBuffer
+
 object CommandModel {
     object CommandMode extends Enumeration {
         type CommandMode = Value
@@ -25,15 +27,24 @@ object CommandModel {
 import CommandModel.CommandMode._
 class CommandModel {
     var verbose: Boolean = false
-    private[this] var commandMode: Option[CommandMode] = None
+    private[this] var _commandMode: Option[CommandMode] = None
+    private[this] val _sources = new ArrayBuffer[String]()
     
     def mode_=(newMode: CommandMode) = {
-        if (commandMode != None) {
+        if (_commandMode != None) {
             throw new IllegalStateException("Cannot set the mode multiple times")
         }
-        commandMode = Some(newMode)
+        _commandMode = Some(newMode)
     }
     
-    def mode: Option[CommandMode] = commandMode
+    def mode: Option[CommandMode] = _commandMode
+    
+    def addSource(source: String) = {
+        _sources += source
+    }
+    
+    def sources: List[String] = {
+        _sources.toList
+    }
 }
 

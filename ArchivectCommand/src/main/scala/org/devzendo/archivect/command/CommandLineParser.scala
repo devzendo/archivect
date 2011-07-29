@@ -19,48 +19,95 @@ package org.devzendo.archivect.command
 import java.util.List
 import scala.collection.JavaConversions._
 import scala.util.parsing.combinator._
+import scala.collection.mutable.ArrayBuffer
 
 import org.devzendo.archivect.command.CommandModel.CommandMode._
 
 class CommandLineParser {
     private abstract class ModeSpecificParser(val model: CommandModel) {
-        def parse(specificArgs: List[String]): Unit
+        def parse(currentArg: String, args: Iterator[String]): Unit
+        def validate: Unit
     }
+
     private class UnknownModeParser(model: CommandModel) extends ModeSpecificParser(model) {
-        def parse(specificArgs: List[String]) = {
+        def parse(currentArg: String, args: Iterator[String]) = {
+            
+        }
+        def validate = {
             
         }
     }
+
     private class ArchiveSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
-        def parse(specificArgs: List[String]) = {
+        def parse(currentArg: String, args: Iterator[String]) = {
+            currentArg match {
+                case "-d" | "-destination" =>
+                    // TODO
+                case _ => 
+                    model.addSource(currentArg)
+            }
+        }
+        def validate = {
+            if (model.sources.isEmpty) {
+                throw new IllegalStateException("One or more sources must be specified")
+            }
+        }
+    }
+    private class BackupSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
+        def parse(currentArg: String, args: Iterator[String]) = {
+            
+        }
+        def validate = {
+            
+        }
+    }
+    private class RestoreSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
+        def parse(currentArg: String, args: Iterator[String]) = {
+            
+        }
+        def validate = {
+            
+        }
+    }
+    private class VerifySpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
+        def parse(currentArg: String, args: Iterator[String]) = {
+            
+        }
+        def validate = {
             
         }
     }
     @throws(classOf[CommandLineException])
     def parse(inputLine: java.util.List[String]): CommandModel = {
         val model = new CommandModel()
-        def disallowMultipleModes() = {
-            
-        }
-        var modeSpecificParser = new UnknownModeParser(model)
+        var modeSpecificParser: ModeSpecificParser = new UnknownModeParser(model)
+
         try {
-            for (arg <- inputLine) {
-                println("args is '" + arg + "'")
+            val inputBuffer: scala.collection.mutable.Buffer[String] = inputLine
+            val inputIterator = inputBuffer.iterator
+            while (inputIterator.hasNext) {
+                val arg = inputIterator.next()
+                println("arg is '" + arg + "'")
                 arg match {
                     case "-v" | "-verbose" =>
                         model.verbose = true
                     case "-a" | "-archive" =>
                         model.mode = CommandModel.CommandMode.Archive
+                        modeSpecificParser = new ArchiveSpecificParser(model)
                     case "-r" | "-restore" =>
                         model.mode = CommandModel.CommandMode.Restore
+                        modeSpecificParser = new RestoreSpecificParser(model)
                     case "-b" | "-backup" =>
                         model.mode = CommandModel.CommandMode.Backup
-                    case "-d" | "-verify" =>
+                        modeSpecificParser = new BackupSpecificParser(model)
+                    case "-y" | "-verify" =>
                         model.mode = CommandModel.CommandMode.Verify
+                        modeSpecificParser = new VerifySpecificParser(model)
                     case _ =>
-                    // something else
+                        modeSpecificParser.parse(arg, inputIterator)
                 }
             }
+            modeSpecificParser.validate
         } catch {
             case ill: IllegalStateException => throw new CommandLineException(ill.getMessage())
         }
