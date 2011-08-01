@@ -38,7 +38,7 @@ class CommandLineParser {
         }
     }
 
-    private class ArchiveSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
+    private class SourceValidator(model: CommandModel) extends ModeSpecificParser(model) {
         def parse(currentArg: String, args: Iterator[String]) = {
             currentArg match {
                 case "-d" | "-destination" =>
@@ -53,12 +53,24 @@ class CommandLineParser {
             }
         }
     }
-    private class BackupSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
+    private class ArchiveSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
+        val sourceValidator = new SourceValidator(model)
         def parse(currentArg: String, args: Iterator[String]) = {
-            
+            sourceValidator.parse(currentArg, args)
+            // Archive-specific options...
         }
         def validate = {
-            
+            sourceValidator.validate
+        }
+    }
+    private class BackupSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
+        val sourceValidator = new SourceValidator(model)
+        def parse(currentArg: String, args: Iterator[String]) = {
+            sourceValidator.parse(currentArg, args)
+            // Backup-specific options...
+        }
+        def validate = {
+            sourceValidator.validate
         }
     }
     private class RestoreSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {

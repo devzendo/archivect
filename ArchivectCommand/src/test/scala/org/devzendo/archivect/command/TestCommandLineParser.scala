@@ -69,6 +69,14 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         }
         ex.getMessage() must equal("One or more sources must be specified")
     }
+
+    @Test
+    def backupModeMustHaveSources() {
+        val ex = intercept[CommandLineException] {
+            parse("-backup")
+        }
+        ex.getMessage() must equal("One or more sources must be specified")
+    }
     
     private def parse(line: String): CommandModel = {
         val parser = new CommandLineParser()
