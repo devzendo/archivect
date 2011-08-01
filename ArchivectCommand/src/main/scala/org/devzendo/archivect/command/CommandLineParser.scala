@@ -42,7 +42,11 @@ class CommandLineParser {
         def parse(currentArg: String, args: Iterator[String]) = {
             currentArg match {
                 case "-d" | "-destination" =>
-                    // TODO
+                    if (args.hasNext) {
+                        model.destination = args.next()
+                    } else {
+                        throw new IllegalStateException("A destination must be given, following -destination")
+                    }
                 case _ => 
                     model.addSource(currentArg)
             }
@@ -51,8 +55,12 @@ class CommandLineParser {
             if (model.sources.isEmpty) {
                 throw new IllegalStateException("One or more sources must be specified")
             }
+            if (model.destination == None) {
+                throw new IllegalStateException("A destination must be specified")
+            }
         }
     }
+    
     private class ArchiveSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
         val sourceValidator = new SourceValidator(model)
         def parse(currentArg: String, args: Iterator[String]) = {
@@ -63,6 +71,7 @@ class CommandLineParser {
             sourceValidator.validate
         }
     }
+    
     private class BackupSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
         val sourceValidator = new SourceValidator(model)
         def parse(currentArg: String, args: Iterator[String]) = {
@@ -73,6 +82,7 @@ class CommandLineParser {
             sourceValidator.validate
         }
     }
+    
     private class RestoreSpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
         def parse(currentArg: String, args: Iterator[String]) = {
             
@@ -81,6 +91,7 @@ class CommandLineParser {
             
         }
     }
+    
     private class VerifySpecificParser(model: CommandModel) extends ModeSpecificParser(model) {
         def parse(currentArg: String, args: Iterator[String]) = {
             
@@ -89,6 +100,7 @@ class CommandLineParser {
             
         }
     }
+    
     @throws(classOf[CommandLineException])
     def parse(inputLine: java.util.List[String]): CommandModel = {
         val model = new CommandModel()
@@ -130,5 +142,4 @@ class CommandLineParser {
         
         model
     }
-    
 }

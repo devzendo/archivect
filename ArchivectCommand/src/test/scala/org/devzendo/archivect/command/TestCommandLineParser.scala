@@ -27,13 +27,13 @@ import org.junit.Ignore
 class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit {
     @Test
     def nonVerboseByDefault() {
-        val model = parse("-archive irrelevantsource") // -archive since a mode must be specified
+        val model = parse("-archive irrelevantsource -destination irrelevantdestination") // -archive since a mode must be specified
         assertFalse(model.verbose)
     }
 
     @Test
     def verboseCanBeSpecified() {
-        val model = parse("-archive -v irrelevantsource") // -archive since a mode must be specified
+        val model = parse("-archive -v irrelevantsource -destination irrelevantdestination") // -archive since a mode must be specified
         assertTrue(model.verbose)
     }
 
@@ -50,7 +50,7 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         CommandModel.CommandMode.values.foreach {
             validMode =>
                 val modeArgumentString = "-" + validMode.toString().toLowerCase()
-                parse(modeArgumentString + " irrelevantsource").mode must equal(Some(validMode))
+                parse(modeArgumentString + " irrelevantsource -destination irrelevantdestination").mode must equal(Some(validMode))
         }
     }
     
@@ -80,13 +80,37 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
     
     @Test
     def sourcesAreAvailable() {
-        val sources = parse("-archive sourceOne sourceTwo sourceThree").sources
+        val sources = parse("-archive sourceOne sourceTwo sourceThree -destination irrelevantdestination").sources
         sources must have size(3)
         sources must contain("sourceOne")
         sources must contain("sourceTwo")
         sources must contain("sourceThree")
     }
     
+    @Test
+    def archiveModeMostHaveDestination() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive sourceOne")
+        }
+        ex.getMessage() must equal("A destination must be specified")
+    }
+    
+    @Test
+    def cannotSpecifyDestinationMoreThanOnce() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive -destination foo -destination bar irrelevantsource")
+        }
+        ex.getMessage() must equal("Cannot set the destination multiple times")
+    }
+
+    @Test
+    def destinationMustNotBeFinalArgument() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive irrelevantsource -destination")
+        }
+        ex.getMessage() must equal("A destination must be given, following -destination")
+    }
+
     private def parse(line: String): CommandModel = {
         val parser = new CommandLineParser()
         parser.parse(split(line))

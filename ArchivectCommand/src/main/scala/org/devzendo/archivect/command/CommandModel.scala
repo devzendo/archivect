@@ -29,6 +29,7 @@ class CommandModel {
     var verbose: Boolean = false
     private[this] var _commandMode: Option[CommandMode] = None
     private[this] val _sources = new ArrayBuffer[String]()
+    private[this] var _destination: Option[String] = None
     
     def mode_=(newMode: CommandMode) = {
         if (_commandMode != None) {
@@ -46,5 +47,14 @@ class CommandModel {
     def sources: List[String] = {
         _sources.toList
     }
+    
+    def destination_=(newDestination: String) = {
+        if (_destination != None) {
+            throw new IllegalStateException("Cannot set the destination multiple times")
+        }
+        _destination = Some(newDestination)
+    }
+    
+    def destination: Option[String] = _destination
 }
 
