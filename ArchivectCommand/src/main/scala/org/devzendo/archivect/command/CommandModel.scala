@@ -30,6 +30,7 @@ class CommandModel {
     private[this] var _commandMode: Option[CommandMode] = None
     private[this] val _sources = new ArrayBuffer[String]()
     private[this] var _destination: Option[String] = None
+    private[this] var _name: Option[String] = None
     
     def mode_=(newMode: CommandMode) = {
         if (_commandMode != None) {
@@ -56,5 +57,14 @@ class CommandModel {
     }
     
     def destination: Option[String] = _destination
+
+    def name_=(newName: String) = {
+        if (_name != None) {
+            throw new IllegalStateException("Cannot set the name multiple times")
+        }
+        _name = Some(newName)
+    }
+    
+    def name: Option[String] = _name
 }
 

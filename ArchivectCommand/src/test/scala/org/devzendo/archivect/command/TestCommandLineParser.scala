@@ -27,20 +27,20 @@ import org.junit.Ignore
 class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit {
     @Test
     def nonVerboseByDefault() {
-        val model = parse("-archive irrelevantsource -destination irrelevantdestination") // -archive since a mode must be specified
+        val model = parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant") // -archive since a mode must be specified
         assertFalse(model.verbose)
     }
 
     @Test
     def verboseCanBeSpecified() {
-        val model = parse("-archive -v irrelevantsource -destination irrelevantdestination") // -archive since a mode must be specified
+        val model = parse("-archive -v irrelevantsource -destination irrelevantdestination -name irrelevant") // -archive since a mode must be specified
         assertTrue(model.verbose)
     }
 
     @Test
     def aModeMustBeSpecified() {
         val ex = intercept[CommandLineException] {
-            parse("-irrelevant irrelevantsource")
+            parse("-irrelevant irrelevantsource -name irrelevant")
         }
         ex.getMessage() must equal("A mode must be specified")
     }
@@ -50,7 +50,7 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         CommandModel.CommandMode.values.foreach {
             validMode =>
                 val modeArgumentString = "-" + validMode.toString().toLowerCase()
-                parse(modeArgumentString + " irrelevantsource -destination irrelevantdestination").mode must equal(Some(validMode))
+                parse(modeArgumentString + " irrelevantsource -destination irrelevantdestination -name irrelevant").mode must equal(Some(validMode))
         }
     }
     
@@ -80,7 +80,7 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
     
     @Test
     def sourcesAreAvailable() {
-        val sources = parse("-archive sourceOne sourceTwo sourceThree -destination irrelevantdestination").sources
+        val sources = parse("-archive sourceOne sourceTwo sourceThree -destination irrelevantdestination -name irrelevant").sources
         sources must have size(3)
         sources must contain("sourceOne")
         sources must contain("sourceTwo")
@@ -109,6 +109,30 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
             parse("-archive irrelevantsource -destination")
         }
         ex.getMessage() must equal("A destination must be given, following -destination")
+    }
+
+    @Test
+    def nameMustNotBeFinalArgument() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive irrelevantsource -destination irrelevantdestination -name")
+        }
+        ex.getMessage() must equal("A name must be given, following -name")
+    }
+
+    @Test
+    def archiveModeMostHaveName() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive irrelevantsource -destination irrelevant")
+        }
+        ex.getMessage() must equal("A name must be specified")
+    }
+    
+    @Test
+    def cannotSpecifyNameMoreThanOnce() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive -destination irrelevant -name foo -name bar irrelevantsource")
+        }
+        ex.getMessage() must equal("Cannot set the name multiple times")
     }
 
     private def parse(line: String): CommandModel = {

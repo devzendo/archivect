@@ -47,6 +47,12 @@ class CommandLineParser {
                     } else {
                         throw new IllegalStateException("A destination must be given, following -destination")
                     }
+                case "-n" | "-name" =>
+                    if (args.hasNext) {
+                        model.name = args.next()
+                    } else {
+                        throw new IllegalStateException("A name must be given, following -name")
+                    }
                 case _ => 
                     model.addSource(currentArg)
             }
@@ -57,6 +63,9 @@ class CommandLineParser {
             }
             if (model.destination == None) {
                 throw new IllegalStateException("A destination must be specified")
+            }
+            if (model.name == None) {
+                throw new IllegalStateException("A name must be specified")
             }
         }
     }
