@@ -28,6 +28,13 @@ class CommandLineParser {
     private abstract class ModeSpecificParser(val model: CommandModel) {
         def parse(currentArg: String, args: Iterator[String]): Unit
         def validate: Unit
+        def getNext(args: Iterator[String], failMessage: String, f: String => Unit): Unit = {
+            if (args.hasNext) {
+                f(args.next())
+            } else {
+                throw new IllegalStateException(failMessage)
+            }
+        }
     }
 
     private class UnknownModeParser(model: CommandModel) extends ModeSpecificParser(model) {
@@ -43,29 +50,13 @@ class CommandLineParser {
         def parse(currentArg: String, args: Iterator[String]) = {
             currentArg match {
                 case "-d" | "-destination" =>
-                    if (args.hasNext) {
-                        model.destination = args.next()
-                    } else {
-                        throw new IllegalStateException("A destination must be given, following -destination")
-                    }
+                    getNext(args, "A destination must be given, following -destination", { model.destination = _ })
                 case "-n" | "-name" =>
-                    if (args.hasNext) {
-                        model.name = args.next()
-                    } else {
-                        throw new IllegalStateException("A name must be given, following -name")
-                    }
+                    getNext(args, "A name must be given, following -name", { model.name = _ })
                 case "-e" | "-encoding" =>
-                    if (args.hasNext) {
-                        setEncodingAndCompression(args.next())
-                    } else {
-                        throw new IllegalStateException("An encoding must be given, following -encoding")
-                    }
+                    getNext(args, "An encoding must be given, following -encoding", { setEncodingAndCompression(_) })
                 case "-x" | "-exclude" =>
-                    if (args.hasNext) {
-                        model.addExclusion(args.next())
-                    } else {
-                        throw new IllegalStateException("An exclusion must be given, following -exclude")
-                    }
+                    getNext(args, "An exclusion must be given, following -exclude", { model.addExclusion(_) })
                 case _ => 
                     model.addSource(currentArg)
             }
@@ -87,11 +78,9 @@ class CommandLineParser {
         }
         
         private [this] def setEncodingAndCompression(encString: String) = {
-            println("enc '" + encString + "'")
             val splitter = """\.?(tar|tgz|tbz|zip|aar)(?:\.(gz|bz))?""".r
             encString.toLowerCase() match {
                 case splitter(format, compression) =>
-                    println("format '" + format + " compression '" + compression + "'")
                     format match {
                         case "tar" =>
                             model.encoding = CommandModel.Encoding.Tar
