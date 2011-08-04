@@ -60,6 +60,12 @@ class CommandLineParser {
                     } else {
                         throw new IllegalStateException("An encoding must be given, following -encoding")
                     }
+                case "-x" | "-exclude" =>
+                    if (args.hasNext) {
+                        model.addExclusion(args.next())
+                    } else {
+                        throw new IllegalStateException("An exclusion must be given, following -exclude")
+                    }
                 case _ => 
                     model.addSource(currentArg)
             }

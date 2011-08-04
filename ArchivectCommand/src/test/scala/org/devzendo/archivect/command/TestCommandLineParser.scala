@@ -223,6 +223,29 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         ex.getMessage() must equal("Cannot set the compression for Aar encoding")
     }
 
+    @Test
+    def noExclusionsIfNotSpecified() {
+        val model = parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar") // -archive since a mode must be specified
+        model.exclusions.size must equal(0)
+    }
+
+    @Test
+    def exclusionsCanBeSpecified() {
+        val model = parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -exclude /tmp/foo -exclude /bar/*.c")
+        val xs = model.exclusions
+        xs.size must equal(2)
+        xs must contain("/tmp/foo")
+        xs must contain("/bar/*.c")
+    }
+
+    @Test
+    def excludeMustNotBeFinalArgument() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -exclude")
+        }
+        ex.getMessage() must equal("An exclusion must be given, following -exclude")
+    }
+
     private def parseEncoding(encString: String, enc: Option[Encoding], cmp: Option[Compression]) = {
         val cmd = "-archive irrelevantsource -destination irrelevant -name irrelevant -encoding "
         val model = parse(cmd + encString)

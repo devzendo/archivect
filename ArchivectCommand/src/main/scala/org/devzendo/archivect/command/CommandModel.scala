@@ -44,6 +44,7 @@ class CommandModel {
     private[this] var _name: Option[String] = None
     private[this] var _encoding: Option[Encoding] = None
     private[this] var _compression: Option[Compression] = None
+    private[this] val _exclusions = new ArrayBuffer[String]()
     
     def mode_=(newMode: CommandMode) = {
         if (_commandMode != None) {
@@ -101,4 +102,11 @@ class CommandModel {
     
     def compression: Option[Compression] = _compression
 
+    def addExclusion(exclusion: String) = {
+        _exclusions += exclusion
+    }
+    
+    def exclusions: List[String] = {
+        _exclusions.toList
+    }
 }
