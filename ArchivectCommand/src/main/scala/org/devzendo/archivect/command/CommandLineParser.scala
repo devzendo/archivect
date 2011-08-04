@@ -22,6 +22,7 @@ import scala.util.parsing.combinator._
 import scala.collection.mutable.ArrayBuffer
 
 import org.devzendo.archivect.command.CommandModel.CommandMode._
+import org.devzendo.archivect.command.CommandModel.Encoding._
 
 class CommandLineParser {
     private abstract class ModeSpecificParser(val model: CommandModel) {
@@ -53,10 +54,17 @@ class CommandLineParser {
                     } else {
                         throw new IllegalStateException("A name must be given, following -name")
                     }
+                case "-e" | "-encoding" =>
+                    if (args.hasNext) {
+                        setEncodingAndCompression(args.next())
+                    } else {
+                        throw new IllegalStateException("An encoding must be given, following -encoding")
+                    }
                 case _ => 
                     model.addSource(currentArg)
             }
         }
+        
         def validate = {
             if (model.sources.isEmpty) {
                 throw new IllegalStateException("One or more sources must be specified")
@@ -66,6 +74,42 @@ class CommandLineParser {
             }
             if (model.name == None) {
                 throw new IllegalStateException("A name must be specified")
+            }
+            if (model.encoding == None) {
+                throw new IllegalStateException("An encoding must be specified")
+            }
+        }
+        
+        private [this] def setEncodingAndCompression(encString: String) = {
+            println("enc '" + encString + "'")
+            val splitter = """\.?(tar|tgz|tbz|zip|aar)(?:\.(gz|bz))?""".r
+            encString.toLowerCase() match {
+                case splitter(format, compression) =>
+                    println("format '" + format + " compression '" + compression + "'")
+                    format match {
+                        case "tar" =>
+                            model.encoding = CommandModel.Encoding.Tar
+                        case "tgz" =>
+                            model.encoding = CommandModel.Encoding.Tar
+                            model.compression = CommandModel.Compression.Gzip
+                        case "tbz" =>
+                            model.encoding = CommandModel.Encoding.Tar
+                            model.compression = CommandModel.Compression.Bzip
+                        case "zip" =>
+                            model.encoding = CommandModel.Encoding.Zip
+                        case "aar" =>
+                            model.encoding = CommandModel.Encoding.Aar
+                    }
+                    compression match {
+                        case "gz" =>
+                            model.compression = CommandModel.Compression.Gzip
+                        case "bz" =>
+                            model.compression = CommandModel.Compression.Bzip
+                        case null =>
+                            // default is None
+                    }
+                case _ =>
+                    throw new IllegalStateException("Unknown encoding '" + encString + "'")
             }
         }
     }

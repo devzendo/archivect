@@ -22,18 +22,20 @@ import org.junit.Assert._
 import org.junit.Test
 import org.junit.Before
 import org.devzendo.archivect.command.CommandModel.CommandMode._
+import org.devzendo.archivect.command.CommandModel.Encoding._
+import org.devzendo.archivect.command.CommandModel.Compression._
 import org.junit.Ignore
 
 class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit {
     @Test
     def nonVerboseByDefault() {
-        val model = parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant") // -archive since a mode must be specified
+        val model = parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar") // -archive since a mode must be specified
         assertFalse(model.verbose)
     }
 
     @Test
     def verboseCanBeSpecified() {
-        val model = parse("-archive -v irrelevantsource -destination irrelevantdestination -name irrelevant") // -archive since a mode must be specified
+        val model = parse("-archive -v irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar") // -archive since a mode must be specified
         assertTrue(model.verbose)
     }
 
@@ -50,7 +52,7 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         CommandModel.CommandMode.values.foreach {
             validMode =>
                 val modeArgumentString = "-" + validMode.toString().toLowerCase()
-                parse(modeArgumentString + " irrelevantsource -destination irrelevantdestination -name irrelevant").mode must equal(Some(validMode))
+                parse(modeArgumentString + " irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar").mode must equal(Some(validMode))
         }
     }
     
@@ -80,7 +82,7 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
     
     @Test
     def sourcesAreAvailable() {
-        val sources = parse("-archive sourceOne sourceTwo sourceThree -destination irrelevantdestination -name irrelevant").sources
+        val sources = parse("-archive sourceOne sourceTwo sourceThree -destination irrelevantdestination -name irrelevant -encoding tar").sources
         sources must have size(3)
         sources must contain("sourceOne")
         sources must contain("sourceTwo")
@@ -133,6 +135,99 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
             parse("-archive -destination irrelevant -name foo -name bar irrelevantsource")
         }
         ex.getMessage() must equal("Cannot set the name multiple times")
+    }
+
+    @Test
+    def encodingMustNotBeFinalArgument() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding")
+        }
+        ex.getMessage() must equal("An encoding must be given, following -encoding")
+    }
+
+    @Test
+    def archiveModeMostHaveEncoding() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive irrelevantsource -destination irrelevant -name irrelevant")
+        }
+        ex.getMessage() must equal("An encoding must be specified")
+    }
+    
+    @Test
+    def cannotSpecifyEncodingMoreThanOnce() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive -destination irrelevant -name irrelevant -encoding zip -encoding tar")
+        }
+        ex.getMessage() must equal("Cannot set the encoding multiple times")
+    }
+
+    @Test
+    def unknownEncodingIsNotAllowed() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive irrelevantsource -destination irrelevant -name irrelevant -encoding bar")
+        }
+        ex.getMessage() must equal("Unknown encoding 'bar'")
+    }
+
+    @Test
+    def unknownCompressionIsNotAllowed() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive irrelevantsource -destination irrelevant -name irrelevant -encoding tar.xx")
+        }
+        ex.getMessage() must equal("Unknown encoding 'tar.xx'")
+    }
+
+    @Test
+    def validCombinationsOfEncoding()
+    {
+        // leading dot
+        parseEncoding(".tar.gz", Some(CommandModel.Encoding.Tar), Some(CommandModel.Compression.Gzip))
+        parseEncoding(".tar.bz", Some(CommandModel.Encoding.Tar), Some(CommandModel.Compression.Bzip))
+        parseEncoding(".tgz", Some(CommandModel.Encoding.Tar), Some(CommandModel.Compression.Gzip))
+        parseEncoding(".tbz", Some(CommandModel.Encoding.Tar), Some(CommandModel.Compression.Bzip))
+        parseEncoding(".zip", Some(CommandModel.Encoding.Zip), None)
+        parseEncoding(".aar", Some(CommandModel.Encoding.Aar), None)
+        // and without
+        parseEncoding("tar.gz", Some(CommandModel.Encoding.Tar), Some(CommandModel.Compression.Gzip))
+        parseEncoding("tar.bz", Some(CommandModel.Encoding.Tar), Some(CommandModel.Compression.Bzip))
+        parseEncoding("tgz", Some(CommandModel.Encoding.Tar), Some(CommandModel.Compression.Gzip))
+        parseEncoding("tbz", Some(CommandModel.Encoding.Tar), Some(CommandModel.Compression.Bzip))
+        parseEncoding("zip", Some(CommandModel.Encoding.Zip), None)
+        parseEncoding("aar", Some(CommandModel.Encoding.Aar), None)
+        // Case insensitivity (incomplete)
+        parseEncoding("Aar", Some(CommandModel.Encoding.Aar), None)
+        parseEncoding(".TaR.gZ", Some(CommandModel.Encoding.Tar), Some(CommandModel.Compression.Gzip))
+    }
+
+    @Test
+    def cannotSpecifyCompressionMoreThanOnce() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive -destination irrelevant -name foo irrelevantsource -encoding .tgz.bz")
+        }
+        ex.getMessage() must equal("Cannot set the compression multiple times")
+    }
+
+    @Test
+    def zipIsInternallyCompressedAndCannotBeSpecified() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive -destination irrelevant -name foo irrelevantsource -encoding .zip.bz")
+        }
+        ex.getMessage() must equal("Cannot set the compression for Zip encoding")
+    }
+
+    @Test
+    def aarIsInternallyCompressedAndCannotBeSpecified() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive -destination irrelevant -name foo irrelevantsource -encoding .aar.bz")
+        }
+        ex.getMessage() must equal("Cannot set the compression for Aar encoding")
+    }
+
+    private def parseEncoding(encString: String, enc: Option[Encoding], cmp: Option[Compression]) = {
+        val cmd = "-archive irrelevantsource -destination irrelevant -name irrelevant -encoding "
+        val model = parse(cmd + encString)
+        model.encoding must equal(enc)
+        model.compression must equal(cmp)
     }
 
     private def parse(line: String): CommandModel = {

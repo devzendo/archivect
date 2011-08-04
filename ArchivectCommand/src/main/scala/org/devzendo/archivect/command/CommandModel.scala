@@ -23,14 +23,27 @@ object CommandModel {
         type CommandMode = Value
         val Archive, Backup, Restore, Verify = Value
     }
+    object Encoding extends Enumeration {
+        type Encoding = Value
+        val Tar, Zip, Aar = Value
+    }
+    object Compression extends Enumeration {
+        type Compression = Value
+        val Gzip, Bzip = Value
+    }
 }
 import CommandModel.CommandMode._
+import CommandModel.Encoding._
+import CommandModel.Compression._
+
 class CommandModel {
     var verbose: Boolean = false
     private[this] var _commandMode: Option[CommandMode] = None
     private[this] val _sources = new ArrayBuffer[String]()
     private[this] var _destination: Option[String] = None
     private[this] var _name: Option[String] = None
+    private[this] var _encoding: Option[Encoding] = None
+    private[this] var _compression: Option[Compression] = None
     
     def mode_=(newMode: CommandMode) = {
         if (_commandMode != None) {
@@ -66,5 +79,26 @@ class CommandModel {
     }
     
     def name: Option[String] = _name
-}
 
+    def encoding_=(newEncoding: Encoding) = {
+        if (_encoding != None) {
+            throw new IllegalStateException("Cannot set the encoding multiple times")
+        }
+        _encoding = Some(newEncoding)
+    }
+    
+    def encoding: Option[Encoding] = _encoding
+
+    def compression_=(newCompression: Compression) = {
+        if (_encoding == Some(Zip) || _encoding == Some(Aar)) {
+            throw new IllegalStateException("Cannot set the compression for " + _encoding.get.toString + " encoding")
+        }
+        if (_compression != None) {
+            throw new IllegalStateException("Cannot set the compression multiple times")
+        }
+        _compression = Some(newCompression)
+    }
+    
+    def compression: Option[Compression] = _compression
+
+}
