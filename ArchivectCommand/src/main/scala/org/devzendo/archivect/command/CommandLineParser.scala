@@ -57,6 +57,8 @@ class CommandLineParser {
                     getNext(args, "An encoding must be given, following -encoding", { setEncodingAndCompression(_) })
                 case "-x" | "-exclude" =>
                     getNext(args, "An exclusion must be given, following -exclude", { model.addExclusion(_) })
+                case "-X" | "-excludefrom" =>
+                    getNext(args, "An exclusion file must be given, following -excludefrom", { model.addExclusionsFromFile(_) })
                 case _ => 
                     model.addSource(currentArg)
             }
@@ -152,7 +154,8 @@ class CommandLineParser {
     @throws(classOf[CommandLineException])
     def parse(inputLine: java.util.List[String]): CommandModel = {
         val model = new CommandModel()
-        var modeSpecificParser: ModeSpecificParser = new UnknownModeParser(model)
+        val unknownModeParser = new UnknownModeParser(model)
+        var modeSpecificParser: ModeSpecificParser = unknownModeParser
 
         try {
             val inputBuffer: scala.collection.mutable.Buffer[String] = inputLine
@@ -175,6 +178,12 @@ class CommandLineParser {
                     case "-y" | "-verify" =>
                         model.mode = CommandModel.CommandMode.Verify
                         modeSpecificParser = new VerifySpecificParser(model)
+                    case "-?" | "-h" | "-help" =>
+                        model.mode = CommandModel.CommandMode.Help
+                        modeSpecificParser = unknownModeParser
+                    case "-V" | "-version" =>
+                        model.mode = CommandModel.CommandMode.Version
+                        modeSpecificParser = unknownModeParser
                     case _ =>
                         modeSpecificParser.parse(arg, inputIterator)
                 }

@@ -16,12 +16,14 @@
 
 package org.devzendo.archivect.command
 
+import java.io.{ IOException, FileNotFoundException }
 import scala.collection.mutable.ArrayBuffer
+import scala.io.Source
 
 object CommandModel {
     object CommandMode extends Enumeration {
         type CommandMode = Value
-        val Archive, Backup, Restore, Verify = Value
+        val Archive, Backup, Restore, Verify, Help, Version = Value
     }
     object Encoding extends Enumeration {
         type Encoding = Value
@@ -105,7 +107,16 @@ class CommandModel {
     def addExclusion(exclusion: String) = {
         _exclusions += exclusion
     }
-    
+
+    def addExclusionsFromFile(exclusionFile: String) = {
+        try {
+             _exclusions ++= Source.fromFile(exclusionFile).getLines.map(_.trim).filter(_.length() > 0)
+        } catch {
+            case fnf: FileNotFoundException => throw new IllegalStateException("The exclusion file '" + exclusionFile + "' does not exist") 
+            case ioe: IOException => throw new IllegalStateException("The exclusion file '" + exclusionFile + "' cannot be read: " + ioe.getMessage()) 
+        }
+    }
+
     def exclusions: List[String] = {
         _exclusions.toList
     }

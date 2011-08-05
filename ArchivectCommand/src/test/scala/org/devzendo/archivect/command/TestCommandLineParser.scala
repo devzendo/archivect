@@ -245,6 +245,33 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         }
         ex.getMessage() must equal("An exclusion must be given, following -exclude")
     }
+    
+    @Test
+    def excludeFromMustSupplyAnExistingFile() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -excludefrom doesnotexist.txt")
+        }
+        ex.getMessage() must equal("The exclusion file 'doesnotexist.txt' does not exist")
+    }
+
+    @Test
+    def excludeFromMustNotBeFinalArgument() {
+        val ex = intercept[CommandLineException] {
+            parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -excludefrom")
+        }
+        ex.getMessage() must equal("An exclusion file must be given, following -excludefrom")
+    }
+
+    @Test
+    def exclusionsCanBeSpecifiedViaAFile() {
+        val model = parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -exclude /tmp/foo -excludefrom src/test/resources/org/devzendo/archivect/command/exclusions.txt")
+        val xs = model.exclusions
+        xs.size must equal(4)
+        xs must contain("/tmp/foo") // command line
+        xs must contain("exclude1") // from file...
+        xs must contain("/foo/*.txt")
+        xs must contain("trimmed.filename")
+    }
 
     private def parseEncoding(encString: String, enc: Option[Encoding], cmp: Option[Compression]) = {
         val cmd = "-archive irrelevantsource -destination irrelevant -name irrelevant -encoding "

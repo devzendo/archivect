@@ -1,0 +1,6 @@
+exclude1
+
+/foo/*.txt
+
+  trimmed.filename      
+  
