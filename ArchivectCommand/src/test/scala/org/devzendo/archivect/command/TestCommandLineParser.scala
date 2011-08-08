@@ -41,10 +41,9 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
 
     @Test
     def aModeMustBeSpecified() {
-        val ex = intercept[CommandLineException] {
-            parse("-irrelevant irrelevantsource -name irrelevant")
-        }
-        ex.getMessage() must equal("A mode must be specified")
+        commandFailsWithMessage(
+            "-irrelevant irrelevantsource -name irrelevant",
+            "A mode must be specified")
     }
 
     @Test
@@ -58,26 +57,23 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
     
     @Test
     def cannotSpecifyMoreThanOneMode() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive -restore irrelevantsource")
-        }
-        ex.getMessage() must equal("Cannot set the mode multiple times")
+        commandFailsWithMessage(
+            "-archive -restore irrelevantsource",
+            "Cannot set the mode multiple times")
     }
     
     @Test
     def archiveModeMustHaveSources() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive")
-        }
-        ex.getMessage() must equal("One or more sources must be specified")
+        commandFailsWithMessage(
+            "-archive",
+            "One or more sources must be specified")
     }
 
     @Test
     def backupModeMustHaveSources() {
-        val ex = intercept[CommandLineException] {
-            parse("-backup")
-        }
-        ex.getMessage() must equal("One or more sources must be specified")
+        commandFailsWithMessage(
+            "-backup",
+            "One or more sources must be specified")
     }
     
     @Test
@@ -91,90 +87,79 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
     
     @Test
     def archiveModeMostHaveDestination() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive sourceOne")
-        }
-        ex.getMessage() must equal("A destination must be specified")
+        commandFailsWithMessage(
+            "-archive sourceOne", 
+            "A destination must be specified")
     }
     
     @Test
     def cannotSpecifyDestinationMoreThanOnce() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive -destination foo -destination bar irrelevantsource")
-        }
-        ex.getMessage() must equal("Cannot set the destination multiple times")
+        commandFailsWithMessage(
+            "-archive -destination foo -destination bar irrelevantsource",
+            "Cannot set the destination multiple times")
     }
 
     @Test
     def destinationMustNotBeFinalArgument() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive irrelevantsource -destination")
-        }
-        ex.getMessage() must equal("A destination must be given, following -destination")
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination",
+            "A destination must be given, following -destination")
     }
 
     @Test
     def nameMustNotBeFinalArgument() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive irrelevantsource -destination irrelevantdestination -name")
-        }
-        ex.getMessage() must equal("A name must be given, following -name")
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name",
+            "A name must be given, following -name")
     }
 
     @Test
     def archiveModeMostHaveName() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive irrelevantsource -destination irrelevant")
-        }
-        ex.getMessage() must equal("A name must be specified")
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevant",
+            "A name must be specified")
     }
     
     @Test
     def cannotSpecifyNameMoreThanOnce() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive -destination irrelevant -name foo -name bar irrelevantsource")
-        }
-        ex.getMessage() must equal("Cannot set the name multiple times")
+        commandFailsWithMessage(
+            "-archive -destination irrelevant -name foo -name bar irrelevantsource",
+            "Cannot set the name multiple times")
     }
 
     @Test
     def encodingMustNotBeFinalArgument() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding")
-        }
-        ex.getMessage() must equal("An encoding must be given, following -encoding")
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding",
+            "An encoding must be given, following -encoding")
     }
 
     @Test
     def archiveModeMostHaveEncoding() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive irrelevantsource -destination irrelevant -name irrelevant")
-        }
-        ex.getMessage() must equal("An encoding must be specified")
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevant -name irrelevant",
+            "An encoding must be specified")
     }
     
     @Test
     def cannotSpecifyEncodingMoreThanOnce() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive -destination irrelevant -name irrelevant -encoding zip -encoding tar")
-        }
-        ex.getMessage() must equal("Cannot set the encoding multiple times")
+        commandFailsWithMessage(
+            "-archive -destination irrelevant -name irrelevant -encoding zip -encoding tar",
+            "Cannot set the encoding multiple times")
     }
 
     @Test
     def unknownEncodingIsNotAllowed() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive irrelevantsource -destination irrelevant -name irrelevant -encoding bar")
-        }
-        ex.getMessage() must equal("Unknown encoding 'bar'")
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevant -name irrelevant -encoding bar",
+            "Unknown encoding 'bar'")
     }
 
     @Test
     def unknownCompressionIsNotAllowed() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive irrelevantsource -destination irrelevant -name irrelevant -encoding tar.xx")
-        }
-        ex.getMessage() must equal("Unknown encoding 'tar.xx'")
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevant -name irrelevant -encoding tar.xx",
+            "Unknown encoding 'tar.xx'")
     }
 
     @Test
@@ -201,26 +186,23 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
 
     @Test
     def cannotSpecifyCompressionMoreThanOnce() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive -destination irrelevant -name foo irrelevantsource -encoding .tgz.bz")
-        }
-        ex.getMessage() must equal("Cannot set the compression multiple times")
+        commandFailsWithMessage(
+            "-archive -destination irrelevant -name foo irrelevantsource -encoding .tgz.bz",
+            "Cannot set the compression multiple times")
     }
 
     @Test
     def zipIsInternallyCompressedAndCannotBeSpecified() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive -destination irrelevant -name foo irrelevantsource -encoding .zip.bz")
-        }
-        ex.getMessage() must equal("Cannot set the compression for Zip encoding")
+        commandFailsWithMessage(
+            "-archive -destination irrelevant -name foo irrelevantsource -encoding .zip.bz",
+            "Cannot set the compression for Zip encoding")
     }
 
     @Test
     def aarIsInternallyCompressedAndCannotBeSpecified() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive -destination irrelevant -name foo irrelevantsource -encoding .aar.bz")
-        }
-        ex.getMessage() must equal("Cannot set the compression for Aar encoding")
+        commandFailsWithMessage(
+            "-archive -destination irrelevant -name foo irrelevantsource -encoding .aar.bz",
+            "Cannot set the compression for Aar encoding")
     }
 
     @Test
@@ -240,26 +222,23 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
 
     @Test
     def excludeMustNotBeFinalArgument() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -exclude")
-        }
-        ex.getMessage() must equal("An exclusion must be given, following -exclude")
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -exclude",
+            "An exclusion must be given, following -exclude")
     }
     
     @Test
     def excludeFromMustSupplyAnExistingFile() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -excludefrom doesnotexist.txt")
-        }
-        ex.getMessage() must equal("The exclusion file 'doesnotexist.txt' does not exist")
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -excludefrom doesnotexist.txt",
+            "The exclusion file 'doesnotexist.txt' does not exist")
     }
 
     @Test
     def excludeFromMustNotBeFinalArgument() {
-        val ex = intercept[CommandLineException] {
-            parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -excludefrom")
-        }
-        ex.getMessage() must equal("An exclusion file must be given, following -excludefrom")
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -excludefrom",
+            "An exclusion file must be given, following -excludefrom")
     }
 
     @Test
@@ -273,6 +252,13 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         xs must contain("trimmed.filename")
     }
 
+    private def commandFailsWithMessage(cmdLine: String, message: String) = {
+        val ex = intercept[CommandLineException] {
+            parse(cmdLine)
+        }
+        ex.getMessage() must equal(message)
+    }
+    
     private def parseEncoding(encString: String, enc: Option[Encoding], cmp: Option[Compression]) = {
         val cmd = "-archive irrelevantsource -destination irrelevant -name irrelevant -encoding "
         val model = parse(cmd + encString)
