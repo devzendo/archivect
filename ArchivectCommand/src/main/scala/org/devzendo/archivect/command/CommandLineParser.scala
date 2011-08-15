@@ -16,15 +16,39 @@
 
 package org.devzendo.archivect.command
 
+import java.io.{ IOException, FileNotFoundException }
 import java.util.List
+
 import scala.collection.JavaConversions._
-import scala.util.parsing.combinator._
 import scala.collection.mutable.ArrayBuffer
+import scala.io.Source
+import scala.util.parsing.combinator._
 
 import org.devzendo.archivect.command.CommandModel.CommandMode._
 import org.devzendo.archivect.command.CommandModel.Encoding._
+import org.devzendo.archivect.command.CommandModel.Compression._
+import org.devzendo.archivect.command.CommandModel.RuleType._
 
 class CommandLineParser {
+    // TODO remove duplication of the RuleType strings here, and in RuleLineParser
+    private object RuleParser {
+        def parse(ruleType: String, ruleText: String, ruleDirectory: String): Rule = {
+            val ruleTypeTrimmed = ruleType.toLowerCase().trim()
+            ruleTypeTrimmed match {
+                case "glob" =>
+                    new Rule(Glob, ruleText, ruleDirectory)
+                case "regex" =>
+                    new Rule(Regex, ruleText, ruleDirectory)
+                case "iregex" =>
+                    new Rule(IRegex, ruleText, ruleDirectory)
+                case "filetype" | "type" =>
+                    new Rule(FileType, ruleText, ruleDirectory)
+                case _ =>
+                    throw new IllegalStateException("Unknown rule type '" + ruleTypeTrimmed + "'")
+            }
+        }
+    }
+    
     private abstract class ModeSpecificParser(val model: CommandModel) {
         def parse(currentArg: String, args: Iterator[String]): Unit
         def validate: Unit
@@ -35,6 +59,31 @@ class CommandLineParser {
                 throw new IllegalStateException(failMessage)
             }
         }
+        def getNext2(args: Iterator[String], failMessage: String, f: (String, String) => Unit): Unit = {
+            if (args.hasNext) {
+                val str1 = args.next()
+                if (args.hasNext) {
+                    val str2 = args.next()
+                    f(str1, str2)
+                    return
+                }
+            }
+            throw new IllegalStateException(failMessage)
+        }
+        def getNext3(args: Iterator[String], failMessage: String, f: (String, String, String) => Unit): Unit = {
+            if (args.hasNext) {
+                val str1 = args.next()
+                if (args.hasNext) {
+                    val str2 = args.next()
+                    if (args.hasNext) {
+                        val str3 = args.next
+                        f(str1, str2, str3)
+                        return
+                    }
+                }
+            }
+            throw new IllegalStateException(failMessage)
+        }
     }
 
     private class UnknownModeParser(model: CommandModel) extends ModeSpecificParser(model) {
@@ -43,6 +92,44 @@ class CommandLineParser {
         }
         def validate = {
             
+        }
+    }
+
+    private class RuleLineParser extends JavaTokenParsers {
+        def ruleLineParser: Parser[Option[Tuple2[Boolean, Rule]]] = (
+                opt(ruleStatement) ~ opt(comment)
+            ) ^^ {
+            case ruleStmt ~ comment =>
+                if (ruleStmt.isDefined) {
+                    Some(ruleStmt.get)
+                } else {
+                    None
+                }
+        }
+        def comment: Parser[String] = """#.*""".r
+        def ruleStatement: Parser[Tuple2[Boolean, Rule]] = inclusionExclusion ~ ruleType ~ possiblyQuotedWord ~ possiblyQuotedWord ^^ {
+            case isInclusion ~ ruleTypeEnum ~ ruleTextText ~ ruleAtText =>
+                (isInclusion, new Rule(ruleTypeEnum, ruleTextText, ruleAtText))
+        }
+        def inclusionExclusion: Parser[Boolean] = (
+              "+" ^^ (x => true)
+            | "-" ^^ (x => false)
+        )
+        def ruleType: Parser[RuleType] = (
+              "glob" ^^ (x => Glob)
+            | "regex" ^^ (x => Regex)
+            | "iregex" ^^ (x => IRegex)
+            | "type" ^^ (x => FileType)
+            | "filetype" ^^ (x => FileType)
+        )
+        def possiblyQuotedWord: Parser[String] = ( 
+              stringLiteral ^^ (x => x.substring(1, x.length - 1))
+            | word ^^ (x => x)
+        )
+        def word: Parser[String] = """\S+""".r // simplistic, compared with stringLiteral
+        
+        def parseLine(line: String) = {
+            parseAll(ruleLineParser, line)
         }
     }
 
@@ -58,10 +145,61 @@ class CommandLineParser {
                 case "-x" | "-exclude" =>
                     getNext(args, "An exclusion must be given, following -exclude", { model.addExclusion(_) })
                 case "-X" | "-excludefrom" =>
-                    getNext(args, "An exclusion file must be given, following -excludefrom", { model.addExclusionsFromFile(_) })
+                    getNext(args, "An exclusions file must be given, following -excludefrom", { model.addExclusionsFromFile(_) })
+                case "-r" | "-rule" =>
+                    getNext3(args, "A rule exclusion must be of the form -rule <ruletype> <ruletext> <ruledirectory>", { addRuleExclusion(_, _, _)})
+                case "+r" | "+rule" =>
+                    getNext3(args, "A rule inclusion must be of the form +rule <ruletype> <ruletext> <ruledirectory>", { addRuleInclusion(_, _, _)})
+                case "-R" | "-rulefrom" =>
+                    getNext(args, "A rules file must be given, following -rulefrom", { addRulesFromFile(_)})
                 case _ => 
                     model.addSource(currentArg)
             }
+        }
+    
+        def addRuleExclusion(ruleType: String, ruleText: String, ruleAt: String): Unit = {
+            model.addRuleExclusion(RuleParser.parse(ruleType, ruleText, ruleAt))
+        }
+
+        def addRuleInclusion(ruleType: String, ruleText: String, ruleAt: String): Unit = {
+            model.addRuleInclusion(RuleParser.parse(ruleType, ruleText, ruleAt))
+        }
+        
+        def addRulesFromFile(rulesFile: String): Unit = {
+            println("adding rules from file '" + rulesFile + "'")
+            val insertRuleIntoModel = (isInclusion: Boolean, rule: Rule) => {
+                if (isInclusion) {
+                    model.addRuleInclusion(rule)
+                } else {
+                    model.addRuleExclusion(rule)
+                }
+            } 
+            try {
+                Source.fromFile(rulesFile).getLines.map(_.trim).filter(_.length() > 0).foreach( (line) => {
+                    println("line: '" + line + "'")
+                    val optionalRule: Option[Tuple2[Boolean, Rule]] = parseRuleLine(line)
+                    println("optionalRule: '" + optionalRule + "'")
+                    println("")
+                    // I'd like to do this with foreach, but can't quite express it.
+                    if (optionalRule.isDefined) {
+                        val detail = optionalRule.get
+                        insertRuleIntoModel(detail._1, detail._2)
+                    }
+                })
+            } catch {
+                case fnf: FileNotFoundException => throw new IllegalStateException("The rules file '" + rulesFile + "' does not exist")
+                case ioe: IOException => throw new IllegalStateException("The rules file '" + rulesFile + "' cannot be read: " + ioe.getMessage())
+            }
+            
+            def parseRuleLine(line: String): Option[Tuple2[Boolean, Rule]] = {
+                val ruleLineParser = new RuleLineParser()
+                val parserOutput = ruleLineParser.parseLine(line)
+                parserOutput match {
+                    case ruleLineParser.Success(r, _) => return r
+                    case x => throw new IllegalStateException("Could not parse the rule line '" + line + "'")
+                }
+            }
+            
         }
         
         def validate = {
@@ -166,16 +304,16 @@ class CommandLineParser {
                 arg match {
                     case "-v" | "-verbose" =>
                         model.verbose = true
-                    case "-a" | "-archive" =>
+                    case "-archive" =>
                         model.mode = CommandModel.CommandMode.Archive
                         modeSpecificParser = new ArchiveSpecificParser(model)
-                    case "-r" | "-restore" =>
+                    case "-restore" =>
                         model.mode = CommandModel.CommandMode.Restore
                         modeSpecificParser = new RestoreSpecificParser(model)
-                    case "-b" | "-backup" =>
+                    case "-backup" =>
                         model.mode = CommandModel.CommandMode.Backup
                         modeSpecificParser = new BackupSpecificParser(model)
-                    case "-y" | "-verify" =>
+                    case "-verify" =>
                         model.mode = CommandModel.CommandMode.Verify
                         modeSpecificParser = new VerifySpecificParser(model)
                     case "-?" | "-h" | "-help" =>

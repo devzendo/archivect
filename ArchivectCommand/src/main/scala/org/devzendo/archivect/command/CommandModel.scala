@@ -33,10 +33,17 @@ object CommandModel {
         type Compression = Value
         val Gzip, Bzip = Value
     }
+    object RuleType extends Enumeration {
+        type RuleType = Value
+        val Glob, Regex, IRegex, FileType = Value
+    }
 }
 import CommandModel.CommandMode._
 import CommandModel.Encoding._
 import CommandModel.Compression._
+import CommandModel.RuleType._
+
+case class Rule(val ruleType: RuleType, val ruleText: String, val ruleAt: String)
 
 class CommandModel {
     var verbose: Boolean = false
@@ -47,6 +54,8 @@ class CommandModel {
     private[this] var _encoding: Option[Encoding] = None
     private[this] var _compression: Option[Compression] = None
     private[this] val _exclusions = new ArrayBuffer[String]()
+    private[this] val _excludeRules = new ArrayBuffer[Rule]()
+    private[this] val _includeRules = new ArrayBuffer[Rule]()
     
     def mode_=(newMode: CommandMode) = {
         if (_commandMode != None) {
@@ -108,16 +117,38 @@ class CommandModel {
         _exclusions += exclusion
     }
 
+    // TODO: move this to the parser 
     def addExclusionsFromFile(exclusionFile: String) = {
         try {
              _exclusions ++= Source.fromFile(exclusionFile).getLines.map(_.trim).filter(_.length() > 0)
         } catch {
-            case fnf: FileNotFoundException => throw new IllegalStateException("The exclusion file '" + exclusionFile + "' does not exist") 
-            case ioe: IOException => throw new IllegalStateException("The exclusion file '" + exclusionFile + "' cannot be read: " + ioe.getMessage()) 
+            case fnf: FileNotFoundException => throw new IllegalStateException("The exclusions file '" + exclusionFile + "' does not exist") 
+            case ioe: IOException => throw new IllegalStateException("The exclusions file '" + exclusionFile + "' cannot be read: " + ioe.getMessage()) 
         }
     }
 
     def exclusions: List[String] = {
         _exclusions.toList
     }
+
+    def addRuleExclusion(rule: Rule): Unit = {
+        _excludeRules += rule
+    }
+
+    def addRuleInclusion(rule: Rule): Unit = {
+        _includeRules += rule
+    }
+
+    def addRulesFromFile(rulesFile: String) = {
+        // TODO
+    }
+
+    def includeRules: List[Rule] = {
+        _includeRules.toList
+    }
+
+    def excludeRules: List[Rule] = {
+        _excludeRules.toList
+    }
+
 }

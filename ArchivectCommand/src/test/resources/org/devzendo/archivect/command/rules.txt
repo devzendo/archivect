@@ -1,0 +1,11 @@
+# comments are ignored
+   
++ glob *.cpp,*.h /some/subfolder
++ regex ^foobar$ /
++ iregex (?:master)?file c:\windows\filespec
++ type f /Users/matt/Documents
++ filetype l /Users/matt
+
+
+   -   glob   *.obj,*.o,*.exe,*.a,*.so,*.dll        "/some/subfolder with a silly space/in the path.txt"   
+

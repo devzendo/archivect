@@ -231,14 +231,14 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
     def excludeFromMustSupplyAnExistingFile() {
         commandFailsWithMessage(
             "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -excludefrom doesnotexist.txt",
-            "The exclusion file 'doesnotexist.txt' does not exist")
+            "The exclusions file 'doesnotexist.txt' does not exist")
     }
 
     @Test
     def excludeFromMustNotBeFinalArgument() {
         commandFailsWithMessage(
             "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -excludefrom",
-            "An exclusion file must be given, following -excludefrom")
+            "An exclusions file must be given, following -excludefrom")
     }
 
     @Test
@@ -252,6 +252,106 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         xs must contain("trimmed.filename")
     }
 
+    @Test
+    def noRulesIfNotSpecified() {
+        val model = parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar") // -archive since a mode must be specified
+        model.includeRules.size must equal(0)
+        model.excludeRules.size must equal(0)
+    }
+
+    @Test
+    def rulesCanBeSpecified() {
+        val model = parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -rule glob *.obj,*.o,*.exe,*.a,*.so,*.dll /some/subfolder +rule glob *.cpp,*.h /some/subfolder")
+        // parsing of rules is done in more detail in TestRuleParser,
+        // this is just to check they are obtainable in the CommandModel
+        val excs = model.excludeRules
+        excs.size must equal(1)
+        excs(0).ruleType must equal(CommandModel.RuleType.Glob)
+        excs(0).ruleText must equal("*.obj,*.o,*.exe,*.a,*.so,*.dll")
+        excs(0).ruleAt must equal("/some/subfolder")
+        val incs = model.includeRules
+        incs.size must equal(1)
+        incs(0).ruleType must equal(CommandModel.RuleType.Glob)
+        incs(0).ruleText must equal("*.cpp,*.h")
+        incs(0).ruleAt must equal("/some/subfolder")
+    }
+
+    @Test
+    def ruleExcludeMustNotBeFinalArgument() {
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -rule",
+            "A rule exclusion must be of the form -rule <ruletype> <ruletext> <ruledirectory>")
+    }
+
+    @Test
+    def ruleIncludeMustNotBeFinalArgument() {
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar +rule",
+            "A rule inclusion must be of the form +rule <ruletype> <ruletext> <ruledirectory>")
+    }
+
+    @Test
+    def ruleTypeMustNotBeFinalArgument() {
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -rule glob",
+            "A rule exclusion must be of the form -rule <ruletype> <ruletext> <ruledirectory>")
+    }
+
+    @Test
+    def ruleTextMustNotBeFinalArgument() {
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -rule glob *.cpp",
+            "A rule exclusion must be of the form -rule <ruletype> <ruletext> <ruledirectory>")
+    }
+
+    @Test
+    def ruleFromMustSupplyAnExistingFile() {
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -rulefrom doesnotexist.txt",
+            "The rules file 'doesnotexist.txt' does not exist")
+    }
+
+    @Test
+    def ruleFromMustNotBeFinalArgument() {
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -rulefrom",
+            "A rules file must be given, following -rulefrom")
+    }
+
+    @Test
+    def unknownRuleTypeIsNotAllowed() {
+        commandFailsWithMessage(
+            "-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -rule GaRbage bleh /tmp/foo",
+            "Unknown rule type 'garbage'")
+    }
+
+    @Test
+    def rulesCanBeSpecifiedViaAFile() {
+        val model = parse("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -exclude /tmp/foo -rulefrom src/test/resources/org/devzendo/archivect/command/rules.txt")
+        val excs = model.excludeRules
+        excs.size must equal(1)
+        excs(0).ruleType must equal(CommandModel.RuleType.Glob)
+        excs(0).ruleText must equal("*.obj,*.o,*.exe,*.a,*.so,*.dll")
+        excs(0).ruleAt must equal("/some/subfolder with a silly space/in the path.txt")
+        val incs = model.includeRules
+        incs.size must equal(5)
+        incs(0).ruleType must equal(CommandModel.RuleType.Glob)
+        incs(0).ruleText must equal("*.cpp,*.h")
+        incs(0).ruleAt must equal("/some/subfolder")
+        incs(1).ruleType must equal(CommandModel.RuleType.Regex)
+        incs(1).ruleText must equal("^foobar$")
+        incs(1).ruleAt must equal("/")
+        incs(2).ruleType must equal(CommandModel.RuleType.IRegex)
+        incs(2).ruleText must equal("(?:master)?file")
+        incs(2).ruleAt must equal("c:\\windows\\filespec")
+        incs(3).ruleType must equal(CommandModel.RuleType.FileType)
+        incs(3).ruleText must equal("f")
+        incs(3).ruleAt must equal("/Users/matt/Documents")
+        incs(4).ruleType must equal(CommandModel.RuleType.FileType)
+        incs(4).ruleText must equal("l")
+        incs(4).ruleAt must equal("/Users/matt")
+    }
+    
     private def commandFailsWithMessage(cmdLine: String, message: String) = {
         val ex = intercept[CommandLineException] {
             parse(cmdLine)
