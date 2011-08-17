@@ -20,6 +20,17 @@ import scala.util.parsing.combinator._
 
 import org.devzendo.archivect.command.CommandModel.RuleType._
 
+/**
+ * A parser of lines in a rule inclusion/exclusion file.
+ * These files can contain comments in any position, starting with # comment
+ * Blank lines are allowed, and rules are of the form:
+ * +|- <ruleType> <ruleText> <ruleAtDirectory>
+ * + denotes that the rule will accept files at this directory.
+ * - denotes that the rule will exclude files at this directory.
+ * 
+ * @author matt
+ *
+ */
 class RuleLineParser extends JavaTokenParsers {
     private def ruleLineParser: Parser[Option[Tuple2[Boolean, Rule]]] = (
           comment ^^ (x => None)
@@ -59,6 +70,13 @@ class RuleLineParser extends JavaTokenParsers {
           word ^^ (x => throw new IllegalStateException(msg + " '" + x + "'"))
     )
 
+    /**
+     * @param line a line of text from a rules file, can be blank, can contain
+     * comments starting with #
+     * @return Some inclusion/exclusion state and rule if this line
+     * contains a rule, and None if this line is blank or contains just a
+     * comment. 
+     */
     def parseLine(line: String): Option[Tuple2[Boolean, Rule]] = {
         val parserOutput = parseAll(ruleLineParser, line)
         parserOutput match {
