@@ -351,7 +351,19 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         incs(4).ruleText must equal("l")
         incs(4).ruleAt must equal("/Users/matt")
     }
-    
+
+    @Test
+    def rulesInTheFileMustHaveValidType() {
+        commandFailsWithMessage("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -exclude /tmp/foo -rulefrom src/test/resources/org/devzendo/archivect/command/badrule.txt",
+            "Unknown rule type 'vagueness'")
+    }
+
+    @Test
+    def rulesInTheFileMustHaveValidInclusionExclusionType() {
+        commandFailsWithMessage("-archive irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar -exclude /tmp/foo -rulefrom src/test/resources/org/devzendo/archivect/command/badruleincexc.txt",
+            "Unknown rule inclusion/exclusion type '%'")
+    }
+
     private def commandFailsWithMessage(cmdLine: String, message: String) = {
         val ex = intercept[CommandLineException] {
             parse(cmdLine)

@@ -1,9 +1,10 @@
 # comments are ignored
+   # comments don't have to start at the start of the line, no rule necessary
    
 + glob *.cpp,*.h /some/subfolder
 + regex ^foobar$ /
 + iregex (?:master)?file c:\windows\filespec
-+ type f /Users/matt/Documents
++ type f /Users/matt/Documents # comments can be at the end of lines
 + filetype l /Users/matt
 
 

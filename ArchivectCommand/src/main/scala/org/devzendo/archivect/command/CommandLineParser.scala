@@ -97,15 +97,16 @@ class CommandLineParser {
 
     private class RuleLineParser extends JavaTokenParsers {
         def ruleLineParser: Parser[Option[Tuple2[Boolean, Rule]]] = (
-                opt(ruleStatement) ~ opt(comment)
-            ) ^^ {
-            case ruleStmt ~ comment =>
-                if (ruleStmt.isDefined) {
-                    Some(ruleStmt.get)
-                } else {
-                    None
-                }
-        }
+              comment ^^ (x => None)
+            | opt(ruleStatement) ~ opt(comment) ^^ {
+                case ruleStmt ~ comment =>
+                    if (ruleStmt.isDefined) {
+                        Some(ruleStmt.get)
+                    } else {
+                        None
+                    }
+              }
+        )
         def comment: Parser[String] = """#.*""".r
         def ruleStatement: Parser[Tuple2[Boolean, Rule]] = inclusionExclusion ~ ruleType ~ possiblyQuotedWord ~ possiblyQuotedWord ^^ {
             case isInclusion ~ ruleTypeEnum ~ ruleTextText ~ ruleAtText =>
@@ -114,6 +115,7 @@ class CommandLineParser {
         def inclusionExclusion: Parser[Boolean] = (
               "+" ^^ (x => true)
             | "-" ^^ (x => false)
+            | failWith("Unknown rule inclusion/exclusion type") ^^ (x => true) // NOTE: throws instead
         )
         def ruleType: Parser[RuleType] = (
               "glob" ^^ (x => Glob)
@@ -121,13 +123,16 @@ class CommandLineParser {
             | "iregex" ^^ (x => IRegex)
             | "type" ^^ (x => FileType)
             | "filetype" ^^ (x => FileType)
+            | failWith("Unknown rule type") ^^ (x => Glob) // NOTE: throws instead
         )
         def possiblyQuotedWord: Parser[String] = ( 
               stringLiteral ^^ (x => x.substring(1, x.length - 1))
             | word ^^ (x => x)
         )
         def word: Parser[String] = """\S+""".r // simplistic, compared with stringLiteral
-        
+        def failWith(msg: String): Parser[String] = (
+              word ^^ (x => throw new IllegalStateException(msg + " '" + x + "'"))
+        )
         def parseLine(line: String) = {
             parseAll(ruleLineParser, line)
         }
@@ -166,7 +171,6 @@ class CommandLineParser {
         }
         
         def addRulesFromFile(rulesFile: String): Unit = {
-            println("adding rules from file '" + rulesFile + "'")
             val insertRuleIntoModel = (isInclusion: Boolean, rule: Rule) => {
                 if (isInclusion) {
                     model.addRuleInclusion(rule)
@@ -176,10 +180,7 @@ class CommandLineParser {
             } 
             try {
                 Source.fromFile(rulesFile).getLines.map(_.trim).filter(_.length() > 0).foreach( (line) => {
-                    println("line: '" + line + "'")
                     val optionalRule: Option[Tuple2[Boolean, Rule]] = parseRuleLine(line)
-                    println("optionalRule: '" + optionalRule + "'")
-                    println("")
                     // I'd like to do this with foreach, but can't quite express it.
                     if (optionalRule.isDefined) {
                         val detail = optionalRule.get
@@ -300,7 +301,6 @@ class CommandLineParser {
             val inputIterator = inputBuffer.iterator
             while (inputIterator.hasNext) {
                 val arg = inputIterator.next()
-                println("arg is '" + arg + "'")
                 arg match {
                     case "-v" | "-verbose" =>
                         model.verbose = true
