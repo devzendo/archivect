@@ -136,8 +136,9 @@ class CommandLineParser {
                 }
             } 
             try {
+                val ruleLineParser = new RuleLineParser()
                 Source.fromFile(rulesFile).getLines.map(_.trim).filter(_.length() > 0).foreach( (line) => {
-                    val optionalRule: Option[Tuple2[Boolean, Rule]] = parseRuleLine(line)
+                    val optionalRule: Option[Tuple2[Boolean, Rule]] = parseRuleLine(ruleLineParser, line)
                     // I'd like to do this with foreach, but can't quite express it.
                     if (optionalRule.isDefined) {
                         val detail = optionalRule.get
@@ -149,8 +150,7 @@ class CommandLineParser {
                 case ioe: IOException => throw new IllegalStateException("The rules file '" + rulesFile + "' cannot be read: " + ioe.getMessage())
             }
             
-            def parseRuleLine(line: String): Option[Tuple2[Boolean, Rule]] = {
-                val ruleLineParser = new RuleLineParser()
+            def parseRuleLine(ruleLineParser: RuleLineParser, line: String): Option[Tuple2[Boolean, Rule]] = {
                 val parserOutput = ruleLineParser.parseLine(line)
                 parserOutput match {
                     case ruleLineParser.Success(r, _) => return r
