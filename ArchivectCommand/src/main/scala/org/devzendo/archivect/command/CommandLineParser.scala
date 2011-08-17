@@ -95,49 +95,6 @@ class CommandLineParser {
         }
     }
 
-    private class RuleLineParser extends JavaTokenParsers {
-        def ruleLineParser: Parser[Option[Tuple2[Boolean, Rule]]] = (
-              comment ^^ (x => None)
-            | opt(ruleStatement) ~ opt(comment) ^^ {
-                case ruleStmt ~ comment =>
-                    if (ruleStmt.isDefined) {
-                        Some(ruleStmt.get)
-                    } else {
-                        None
-                    }
-              }
-        )
-        def comment: Parser[String] = """#.*""".r
-        def ruleStatement: Parser[Tuple2[Boolean, Rule]] = inclusionExclusion ~ ruleType ~ possiblyQuotedWord ~ possiblyQuotedWord ^^ {
-            case isInclusion ~ ruleTypeEnum ~ ruleTextText ~ ruleAtText =>
-                (isInclusion, new Rule(ruleTypeEnum, ruleTextText, ruleAtText))
-        }
-        def inclusionExclusion: Parser[Boolean] = (
-              "+" ^^ (x => true)
-            | "-" ^^ (x => false)
-            | failWith("Unknown rule inclusion/exclusion type") ^^ (x => true) // NOTE: throws instead
-        )
-        def ruleType: Parser[RuleType] = (
-              "glob" ^^ (x => Glob)
-            | "regex" ^^ (x => Regex)
-            | "iregex" ^^ (x => IRegex)
-            | "type" ^^ (x => FileType)
-            | "filetype" ^^ (x => FileType)
-            | failWith("Unknown rule type") ^^ (x => Glob) // NOTE: throws instead
-        )
-        def possiblyQuotedWord: Parser[String] = ( 
-              stringLiteral ^^ (x => x.substring(1, x.length - 1))
-            | word ^^ (x => x)
-        )
-        def word: Parser[String] = """\S+""".r // simplistic, compared with stringLiteral
-        def failWith(msg: String): Parser[String] = (
-              word ^^ (x => throw new IllegalStateException(msg + " '" + x + "'"))
-        )
-        def parseLine(line: String) = {
-            parseAll(ruleLineParser, line)
-        }
-    }
-
     private class SourceValidator(model: CommandModel) extends ModeSpecificParser(model) {
         def parse(currentArg: String, args: Iterator[String]) = {
             currentArg match {
