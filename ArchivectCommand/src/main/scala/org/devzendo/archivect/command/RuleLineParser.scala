@@ -58,7 +58,12 @@ class RuleLineParser extends JavaTokenParsers {
     private def failWith(msg: String): Parser[String] = (
           word ^^ (x => throw new IllegalStateException(msg + " '" + x + "'"))
     )
-    def parseLine(line: String) = {
-        parseAll(ruleLineParser, line)
+
+    def parseLine(line: String): Option[Tuple2[Boolean, Rule]] = {
+        val parserOutput = parseAll(ruleLineParser, line)
+        parserOutput match {
+            case this.Success(r, _) => return r
+            case x => throw new IllegalStateException("Could not parse the rule line '" + line + "'")
+        }
     }
 }
