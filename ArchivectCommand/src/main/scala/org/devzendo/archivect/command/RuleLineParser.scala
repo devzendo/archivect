@@ -69,6 +69,7 @@ class RuleLineParser extends JavaTokenParsers {
     // strings.
     private def stringLiteralWithQuotedSlash: Parser[String] = 
         ("\""+"""([^"\p{Cntrl}\\]|\\[\\/bfnrt]|\\u[a-fA-F0-9]{4})*"""+"\"").r
+    //   added ------------------^^^ this 
     private def word: Parser[String] = """\S+""".r // simplistic, compared with stringLiteral
     private def failWith(msg: String): Parser[String] = (
           word ^^ (x => throw new IllegalStateException(msg + " '" + x + "'"))
