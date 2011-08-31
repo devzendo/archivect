@@ -16,9 +16,7 @@
 
 package org.devzendo.archivect.command
 
-import java.io.{ IOException, FileNotFoundException }
 import scala.collection.mutable.ArrayBuffer
-import scala.io.Source
 
 object CommandModel {
     object CommandMode extends Enumeration {
@@ -129,10 +127,6 @@ class CommandModel {
         _includeRules += rule
     }
 
-    def addRulesFromFile(rulesFile: String) = {
-        // TODO
-    }
-
     def includeRules: List[Rule] = {
         _includeRules.toList
     }
@@ -140,5 +134,4 @@ class CommandModel {
     def excludeRules: List[Rule] = {
         _excludeRules.toList
     }
-
 }

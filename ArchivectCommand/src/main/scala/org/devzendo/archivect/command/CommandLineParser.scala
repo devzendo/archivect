@@ -107,7 +107,7 @@ class CommandLineParser {
                 case "-x" | "-exclude" =>
                     getNext(args, "An exclusion must be given, following -exclude", { model.addExclusion(_) })
                 case "-X" | "-excludefrom" =>
-                    getNext(args, "An exclusions file must be given, following -excludefrom", { exclusionsFromFile(_).foreach(ex => model.addExclusion(ex)) })
+                    getNext(args, "An exclusions file must be given, following -excludefrom", { addExclusionsFromFile(_) })
                 case "-r" | "-rule" =>
                     getNext3(args, "A rule exclusion must be of the form -rule <ruletype> <ruletext> <ruledirectory>", { addRuleExclusion(_, _, _)})
                 case "+r" | "+rule" =>
@@ -119,24 +119,24 @@ class CommandLineParser {
             }
         }
 
-        private def exclusionsFromFile(exclusionFile: String): Iterator[String] = {
+        private def addExclusionsFromFile(exclusionFile: String) = {
             try {
-                 Source.fromFile(exclusionFile).getLines.map(_.trim).filter(_.length() > 0)
+                 Source.fromFile(exclusionFile).getLines.map(_.trim).filter(_.length() > 0).foreach(ex => model.addExclusion(ex))
             } catch {
                 case fnf: FileNotFoundException => throw new IllegalStateException("The exclusions file '" + exclusionFile + "' does not exist") 
                 case ioe: IOException => throw new IllegalStateException("The exclusions file '" + exclusionFile + "' cannot be read: " + ioe.getMessage()) 
             }
         }
 
-        def addRuleExclusion(ruleType: String, ruleText: String, ruleAt: String): Unit = {
+        private def addRuleExclusion(ruleType: String, ruleText: String, ruleAt: String): Unit = {
             model.addRuleExclusion(RuleParser.parse(ruleType, ruleText, ruleAt))
         }
 
-        def addRuleInclusion(ruleType: String, ruleText: String, ruleAt: String): Unit = {
+        private def addRuleInclusion(ruleType: String, ruleText: String, ruleAt: String): Unit = {
             model.addRuleInclusion(RuleParser.parse(ruleType, ruleText, ruleAt))
         }
         
-        def addRulesFromFile(rulesFile: String): Unit = {
+        private def addRulesFromFile(rulesFile: String): Unit = {
             val insertRuleIntoModel = (isInclusion: Boolean, rule: Rule) => {
                 if (isInclusion) {
                     model.addRuleInclusion(rule)
