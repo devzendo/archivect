@@ -117,16 +117,6 @@ class CommandModel {
         _exclusions += exclusion
     }
 
-    // TODO: move this to the parser 
-    def exclusionsFromFile(exclusionFile: String): Iterator[String] = {
-        try {
-             Source.fromFile(exclusionFile).getLines.map(_.trim).filter(_.length() > 0)
-        } catch {
-            case fnf: FileNotFoundException => throw new IllegalStateException("The exclusions file '" + exclusionFile + "' does not exist") 
-            case ioe: IOException => throw new IllegalStateException("The exclusions file '" + exclusionFile + "' cannot be read: " + ioe.getMessage()) 
-        }
-    }
-
     def exclusions: List[String] = {
         _exclusions.toList
     }

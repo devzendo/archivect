@@ -107,7 +107,7 @@ class CommandLineParser {
                 case "-x" | "-exclude" =>
                     getNext(args, "An exclusion must be given, following -exclude", { model.addExclusion(_) })
                 case "-X" | "-excludefrom" =>
-                    getNext(args, "An exclusions file must be given, following -excludefrom", { model.exclusionsFromFile(_).foreach(ex => model.addExclusion(ex)) })
+                    getNext(args, "An exclusions file must be given, following -excludefrom", { exclusionsFromFile(_).foreach(ex => model.addExclusion(ex)) })
                 case "-r" | "-rule" =>
                     getNext3(args, "A rule exclusion must be of the form -rule <ruletype> <ruletext> <ruledirectory>", { addRuleExclusion(_, _, _)})
                 case "+r" | "+rule" =>
@@ -118,7 +118,16 @@ class CommandLineParser {
                     model.addSource(currentArg)
             }
         }
-    
+
+        private def exclusionsFromFile(exclusionFile: String): Iterator[String] = {
+            try {
+                 Source.fromFile(exclusionFile).getLines.map(_.trim).filter(_.length() > 0)
+            } catch {
+                case fnf: FileNotFoundException => throw new IllegalStateException("The exclusions file '" + exclusionFile + "' does not exist") 
+                case ioe: IOException => throw new IllegalStateException("The exclusions file '" + exclusionFile + "' cannot be read: " + ioe.getMessage()) 
+            }
+        }
+
         def addRuleExclusion(ruleType: String, ruleText: String, ruleAt: String): Unit = {
             model.addRuleExclusion(RuleParser.parse(ruleType, ruleText, ruleAt))
         }
