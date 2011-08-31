@@ -31,7 +31,15 @@ import org.devzendo.archivect.command.CommandModel.RuleType._
  * @author matt
  *
  */
-class RuleLineParser extends JavaTokenParsers {
+trait CustomRegexParsers extends RegexParsers {
+    // Same as stringLiteral in the base class, but can handle \\ in quoted
+    // strings.
+    def stringLiteralWithQuotedSlash: Parser[String] = 
+        ("\""+"""([^"\p{Cntrl}\\]|\\[\\/bfnrt]|\\|\\u[a-fA-F0-9]{4})*"""+"\"").r
+        //   added ---------------------------^^^ this 
+}
+
+class RuleLineParser extends JavaTokenParsers with CustomRegexParsers {
     private def ruleLineParser: Parser[Option[Tuple2[Boolean, Rule]]] = (
           comment ^^ (x => None)
         | opt(ruleStatement) ~ opt(comment) ^^ {
@@ -65,11 +73,6 @@ class RuleLineParser extends JavaTokenParsers {
           stringLiteralWithQuotedSlash ^^ (x => x.substring(1, x.length - 1))
         | word ^^ (x => x)
     )
-    // Same as stringLiteral in the base class, but can handle \\ in quoted
-    // strings.
-    private def stringLiteralWithQuotedSlash: Parser[String] = 
-        ("\""+"""([^"\p{Cntrl}\\]|\\[\\/bfnrt]|\\u[a-fA-F0-9]{4})*"""+"\"").r
-    //   added ------------------^^^ this 
     private def word: Parser[String] = """\S+""".r // simplistic, compared with stringLiteral
     private def failWith(msg: String): Parser[String] = (
           word ^^ (x => throw new IllegalStateException(msg + " '" + x + "'"))

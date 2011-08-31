@@ -9,15 +9,15 @@ import org.junit.{Test, Ignore}
  * \. to match a literal dot) be written, so they can be parsed?
  *
  */
-@Ignore
 class TestStringLiteralParser extends AssertionsForJUnit with MustMatchersForJUnit {
     @Test
-    def cannotBeParsedDueToEscapedSlash() {
+    def correctEscapingCannotBeParsedByLibraryStringLiterlParserDueToEscapedSlash() {
+        // but parses correctly using my version
         new ExampleParser().parseStringLiteral(""""^spaces in name.*\.c$"""") must be ("^spaces in name.*\\.c$")
     }
 
     @Test
-    def comparisonFailsDueToIncorrectlyEscapedSlash() {
+    def multipleSlashesAreFine() {
         new ExampleParser().parseStringLiteral(""""^spaces in name.*\\.c$"""") must be ("^spaces in name.*\\\\.c$")
     }
 
@@ -37,18 +37,17 @@ class TestStringLiteralParser extends AssertionsForJUnit with MustMatchersForJUn
     }
 
     @Test
-    def matchingDot() {
+    def whatIsTheCorrectRegexForMatchingDotAsARawString() {
         val r = """^\.$""".r
-        val s = "."
-        val x = r findFirstIn s 
+        val dotString = "."
+        val x = r findFirstIn dotString // regex . would match text ., hence the nonDotString test
         x must be (Some("."))
+        val nonDotString = "x"
+        val y = r findFirstIn nonDotString // the regex . would not give None here
+        y must be (None)
     }
     
-    class ExampleParser extends JavaTokenParsers {
-        private def stringLiteralWithQuotedSlash: Parser[String] = 
-            ("\""+"""([^"\p{Cntrl}\\]|\\[\\/bfnrt]|\\|\\u[a-fA-F0-9]{4})*"""+"\"").r
-            //   added ---------------------------^^^ this 
-
+    class ExampleParser extends JavaTokenParsers with CustomRegexParsers {
         def parseStringLiteral(line: String): String = {
             val parserOutput = parseAll(stringLiteralParser, line)
             parserOutput match {
@@ -57,7 +56,9 @@ class TestStringLiteralParser extends AssertionsForJUnit with MustMatchersForJUn
             }
         }
         private def stringLiteralParser: Parser[String] = ( 
-              stringLiteralWithQuotedSlash ^^ (x => x.substring(1, x.length - 1))
+            stringLiteralWithQuotedSlash ^^ (x => x.substring(1, x.length - 1))
+            // Standard library stringLiteral parser fails to parse slashes
+            //  stringLiteral ^^ (x => x.substring(1, x.length - 1))
         )
     }
 }
