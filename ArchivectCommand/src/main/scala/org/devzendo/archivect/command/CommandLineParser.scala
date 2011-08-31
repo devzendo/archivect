@@ -107,7 +107,7 @@ class CommandLineParser {
                 case "-x" | "-exclude" =>
                     getNext(args, "An exclusion must be given, following -exclude", { model.addExclusion(_) })
                 case "-X" | "-excludefrom" =>
-                    getNext(args, "An exclusions file must be given, following -excludefrom", { model.addExclusionsFromFile(_) })
+                    getNext(args, "An exclusions file must be given, following -excludefrom", { model.exclusionsFromFile(_).foreach(ex => model.addExclusion(ex)) })
                 case "-r" | "-rule" =>
                     getNext3(args, "A rule exclusion must be of the form -rule <ruletype> <ruletext> <ruledirectory>", { addRuleExclusion(_, _, _)})
                 case "+r" | "+rule" =>
