@@ -59,6 +59,24 @@ class TestRuleLineParser extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
+    def goodIRegexRuleIsParsed() {
+        val expected: Tuple2[Boolean, Rule] = (false, Rule(IRegex, "^.*\\.c$", "/tmp")) 
+        parser.parseLine("- iregex ^.*\\.c$ /tmp") must be (Some(expected))
+    }
+
+    @Test
+    def goodFiletypeRuleIsParsedWithType() {
+        val expected: Tuple2[Boolean, Rule] = (false, Rule(FileType, "f", "/tmp")) 
+        parser.parseLine("- type f /tmp") must be (Some(expected))
+    }
+
+    @Test
+    def goodFiletypeRuleIsParsedWithFiletype() {
+        val expected: Tuple2[Boolean, Rule] = (false, Rule(FileType, "f", "/tmp")) 
+        parser.parseLine("- filetype f /tmp") must be (Some(expected))
+    }
+
+    @Test
     def quotesAreAllowedInRuleText() {
         // TODO the cases where slash-escaped control chars or \\ are allowed
         val expected: Tuple2[Boolean, Rule] = (false, Rule(Regex, "^spaces in name.*.c$", "/tmp")) 
