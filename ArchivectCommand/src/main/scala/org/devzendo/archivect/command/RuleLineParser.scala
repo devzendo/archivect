@@ -21,12 +21,7 @@ import scala.util.parsing.combinator._
 import org.devzendo.archivect.command.CommandModel.RuleType._
 
 /**
- * A parser of lines in a rule inclusion/exclusion file.
- * These files can contain comments in any position, starting with # comment
- * Blank lines are allowed, and rules are of the form:
- * +|- <ruleType> <ruleText> <ruleAtDirectory>
- * + denotes that the rule will accept files at this directory.
- * - denotes that the rule will exclude files at this directory.
+ * Custom parsers using regular expressions.
  * 
  * @author matt
  *
@@ -39,6 +34,17 @@ trait CustomRegexParsers extends RegexParsers {
         //   added ---------------------------^^^ this 
 }
 
+/**
+ * A parser of lines in a rule inclusion/exclusion file.
+ * These files can contain comments in any position, starting with # comment
+ * Blank lines are allowed, and rules are of the form:
+ * +|- <ruleType> <ruleText> <ruleAtDirectory>
+ * + denotes that the rule will accept files at this directory.
+ * - denotes that the rule will exclude files at this directory.
+ * 
+ * @author matt
+ *
+ */
 class RuleLineParser extends JavaTokenParsers with CustomRegexParsers {
     private def ruleLineParser: Parser[Option[Tuple2[Boolean, Rule]]] = (
           comment ^^ (x => None)
