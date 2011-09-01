@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.devzendo.archivect.command.CommandLineParser;
 import org.devzendo.archivect.command.CommandLineException;
 import org.devzendo.archivect.model.CommandModel;
+import org.devzendo.archivect.rule.RuleCompiler;
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.Logging;
@@ -58,6 +59,7 @@ public class ArchivectMain {
         
         LOGGER.info("Hello world from Archivect");
         final CommandLineParser commandLineParser = springLoader.getBean("commandLineParser", CommandLineParser.class);
+        final RuleCompiler ruleCompiler = springLoader.getBean("ruleCompiler", RuleCompiler.class);
         try {
             final CommandModel operation = commandLineParser.parse(finalArgList);
             final FileSystemAccess fileSystemAccess = new FileSystemAccess();

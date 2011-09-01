@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
+import org.devzendo.archivect.rule.RuleCompiler;
 import org.devzendo.commonapp.prefs.PrefsFactory;
 import org.devzendo.commonapp.prefs.PrefsInstantiator;
 import org.devzendo.commonapp.prefs.DefaultPrefsLocation;
@@ -69,5 +70,10 @@ public final class TestEngineApplicationContextsLoadCorrectly {
     @Test
     public void prefsInstantiatorOk() {
         assertThat(springLoader.getBean("prefsInstantiator", PrefsInstantiator.class), notNullValue());
+    }
+
+    @Test
+    public void ruleCompilerOk() {
+        assertThat(springLoader.getBean("ruleCompiler", RuleCompiler.class), notNullValue());
     }
 }

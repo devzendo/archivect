@@ -12,4 +12,6 @@
     <bean id="prefs" class="org.devzendo.commonapp.prefs.PrefsFactory" />
     
     <bean id="prefsInstantiator" class="org.devzendo.archivect.prefs.DefaultPrefsInstantiator" />
+
+    <bean id="ruleCompiler" class="org.devzendo.archivect.rule.RuleCompiler" />
 </beans>
