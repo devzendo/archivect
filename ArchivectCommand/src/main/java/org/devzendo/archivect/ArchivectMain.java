@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.devzendo.archivect.command.CommandLineException;
 import org.devzendo.archivect.command.CommandLineParser;
-import org.devzendo.archivect.command.CommandModel;
+import org.devzendo.archivect.command.CommandLineException;
+import org.devzendo.archivect.model.CommandModel;
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.logging.Logging;

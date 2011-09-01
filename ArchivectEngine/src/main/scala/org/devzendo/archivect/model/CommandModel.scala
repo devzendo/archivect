@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.devzendo.archivect.command
+package org.devzendo.archivect.model
 
 import scala.collection.mutable.ArrayBuffer
 

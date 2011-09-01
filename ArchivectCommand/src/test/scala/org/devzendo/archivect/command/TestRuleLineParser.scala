@@ -22,10 +22,11 @@ import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.Before
-import org.devzendo.archivect.command.CommandModel.CommandMode._
-import org.devzendo.archivect.command.CommandModel.Encoding._
-import org.devzendo.archivect.command.CommandModel.Compression._
-import org.devzendo.archivect.command.CommandModel.RuleType._
+import org.devzendo.archivect.model.Rule
+import org.devzendo.archivect.model.CommandModel.CommandMode._
+import org.devzendo.archivect.model.CommandModel.Encoding._
+import org.devzendo.archivect.model.CommandModel.Compression._
+import org.devzendo.archivect.model.CommandModel.RuleType._
 import org.junit.Ignore
 
 class TestRuleLineParser extends AssertionsForJUnit with MustMatchersForJUnit {

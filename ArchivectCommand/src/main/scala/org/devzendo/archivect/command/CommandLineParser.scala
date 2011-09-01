@@ -24,10 +24,11 @@ import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 import scala.util.parsing.combinator._
 
-import org.devzendo.archivect.command.CommandModel.CommandMode._
-import org.devzendo.archivect.command.CommandModel.Encoding._
-import org.devzendo.archivect.command.CommandModel.Compression._
-import org.devzendo.archivect.command.CommandModel.RuleType._
+import org.devzendo.archivect.model.{ CommandModel, Rule }
+import org.devzendo.archivect.model.CommandModel.CommandMode._
+import org.devzendo.archivect.model.CommandModel.Encoding._
+import org.devzendo.archivect.model.CommandModel.Compression._
+import org.devzendo.archivect.model.CommandModel.RuleType._
 
 class CommandLineParser {
     // TODO remove duplication of the RuleType strings here, and in RuleLineParser

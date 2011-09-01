@@ -18,7 +18,8 @@ package org.devzendo.archivect.command
 
 import scala.util.parsing.combinator._
 
-import org.devzendo.archivect.command.CommandModel.RuleType._
+import org.devzendo.archivect.model.Rule
+import org.devzendo.archivect.model.CommandModel.RuleType._
 
 /**
  * Custom parsers using regular expressions.
