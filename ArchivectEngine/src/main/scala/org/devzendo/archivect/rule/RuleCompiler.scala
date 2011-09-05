@@ -16,6 +16,50 @@
 
 package org.devzendo.archivect.rule
 
-class RuleCompiler {
+import org.devzendo.archivect.model.Rule
+import org.devzendo.archivect.model.CommandModel.RuleType._
 
+private trait RulePredicateCompiler {
+    def compile(rule: Rule): RulePredicate
+}
+
+class RuleCompiler {
+    def compile(rule: Rule): RulePredicate = {
+        val compiler = getCompiler(rule.ruleType)
+        compiler.compile(rule)
+    }
+    
+    private def getCompiler(ruleType: RuleType): RulePredicateCompiler = {
+        ruleType match {
+            case Glob => GlobRuleCompiler
+            case Regex => RegexRuleCompiler
+            case IRegex => IRegexRuleCompiler
+            case FileType => FileTypeRuleCompiler
+            case _ => throw new UnsupportedOperationException("Cannot compile rule type " + ruleType)
+        }
+    }
+    
+    private object GlobRuleCompiler extends RulePredicateCompiler {
+        def compile(rule: Rule): RulePredicate = {
+            new GlobRulePredicate(rule)
+        }
+    }
+    
+    private object RegexRuleCompiler extends RulePredicateCompiler {
+        def compile(rule: Rule): RulePredicate = {
+            new RegexRulePredicate(rule)
+        }
+    }
+    
+    private object IRegexRuleCompiler extends RulePredicateCompiler {
+        def compile(rule: Rule): RulePredicate = {
+            new IRegexRulePredicate(rule)
+        }
+    }
+    
+    private object FileTypeRuleCompiler extends RulePredicateCompiler {
+        def compile(rule: Rule): RulePredicate = {
+            new FileTypeRulePredicate(rule)
+        }
+    }
 }
