@@ -56,18 +56,12 @@ public final class TestArchivectMainFrameFactory {
     private MainFrameFactory mMainFrameFactory;
     private MenuWiring mMenuWiring;
 
-    /**
-     * 
-     */
     @BeforeClass
     public static void setUpLogging() {
         LoggingUnittestHelper.setupLogging();
         ThreadCheckingRepaintManager.initialise();
     }
 
-    /**
-     * 
-     */
     @Before
     public void setUp() {
         // Could use a mock CursorManager since it's had an interface extracted,
@@ -79,9 +73,6 @@ public final class TestArchivectMainFrameFactory {
         mMenuWiring = new MenuWiring();
     }
     
-    /**
-     * 
-     */
     @After
     public void tearDown() {
         window.cleanUp();
