@@ -19,29 +19,31 @@ package org.devzendo.archivect.rule
 import org.devzendo.archivect.model.Rule
 import org.devzendo.xpfsa.DetailedFile
 
-sealed abstract class RulePredicate(val originalRule: Rule) {
+sealed abstract class RulePredicate(val rule: Rule) {
     def matches(file: DetailedFile): Boolean
 }
 
-case class GlobRulePredicate(override val originalRule: Rule) extends RulePredicate(originalRule) {
+case class GlobRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
+    val globAsRegex = GlobToRegex.globAsRegex(rule.ruleText).toString()
+    def matches(file: DetailedFile): Boolean = {
+        val name = file.getFile().getName()
+        name.matches(globAsRegex)
+    }
+}
+
+case class RegexRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
     def matches(file: DetailedFile): Boolean = {
         true
     }
 }
 
-case class RegexRulePredicate(override val originalRule: Rule) extends RulePredicate(originalRule) {
+case class IRegexRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
     def matches(file: DetailedFile): Boolean = {
         true
     }
 }
 
-case class IRegexRulePredicate(override val originalRule: Rule) extends RulePredicate(originalRule) {
-    def matches(file: DetailedFile): Boolean = {
-        true
-    }
-}
-
-case class FileTypeRulePredicate(override val originalRule: Rule) extends RulePredicate(originalRule) {
+case class FileTypeRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
     def matches(file: DetailedFile): Boolean = {
         true
     }

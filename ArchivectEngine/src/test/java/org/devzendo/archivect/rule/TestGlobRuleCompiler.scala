@@ -18,35 +18,35 @@ package org.devzendo.archivect.rule
 
 import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
 import org.junit.{ Test, Ignore }
+import org.jmock.integration.junit4.{ JMock, JUnit4Mockery }
+
+import java.io.File
+
+import org.devzendo.xpfsa.{ DetailedFile, FileStatus }
 
 import org.devzendo.archivect.model.Rule
 import org.devzendo.archivect.model.CommandModel.RuleType._
 
-
-class TestRuleCompiler extends AssertionsForJUnit with MustMatchersForJUnit {
+class TestGlobRuleCompiler extends AssertionsForJUnit with MustMatchersForJUnit {
     val compiler = new RuleCompiler()
     
     @Test
-    def globRuleReturnsGlobRulePredicate() {
+    def globRulePredicateMatchesCorrectly() {
         val predicate = compiler.compile(Rule(Glob, "*.c", "/tmp"))
-        predicate.isInstanceOf[GlobRulePredicate] must be (true)
+        val cFile = createDetailedFile("/tmp/foo.c")
+        predicate.matches(cFile) must be (true)
+        val txtFile = createDetailedFile("/tmp/foo.txt")
+        predicate.matches(txtFile) must be (false)
+    }
+    
+    private case class StubDetailedFile(val file: File) extends DetailedFile {
+        def getFile: File = file
+        def getLinkDetailedFile: DetailedFile = null
+        def getFileStatus: FileStatus = null
     }
 
-    @Test
-    def regexRuleReturnsGlobRulePredicate() {
-        val predicate = compiler.compile(Rule(Regex, "^*\\.c$", "/tmp"))
-        predicate.isInstanceOf[RegexRulePredicate] must be (true)
-    }
-
-    @Test
-    def iregexRuleReturnsGlobRulePredicate() {
-        val predicate = compiler.compile(Rule(IRegex, "^*\\.c$", "/tmp"))
-        predicate.isInstanceOf[IRegexRulePredicate] must be (true)
-    }
-
-    @Test
-    def filetypeRuleReturnsGlobRulePredicate() {
-        val predicate = compiler.compile(Rule(FileType, "f", "/tmp"))
-        predicate.isInstanceOf[FileTypeRulePredicate] must be (true)
+    private def createDetailedFile(fileName: String): DetailedFile = {
+        val file = new File(fileName)
+        StubDetailedFile(file)
     }
 }
