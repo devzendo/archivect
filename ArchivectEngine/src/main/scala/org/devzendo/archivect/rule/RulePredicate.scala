@@ -33,7 +33,8 @@ case class GlobRulePredicate(override val rule: Rule) extends RulePredicate(rule
 
 case class RegexRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
     def matches(file: DetailedFile): Boolean = {
-        true
+        val name = file.getFile().getName()
+        name.matches(rule.ruleText)
     }
 }
 
