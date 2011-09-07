@@ -18,7 +18,6 @@ package org.devzendo.archivect.rule
 
 import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
 import org.junit.{ Test, Ignore }
-import org.jmock.integration.junit4.{ JMock, JUnit4Mockery }
 
 import java.io.File
 
@@ -33,20 +32,9 @@ class TestRegexRuleCompiler extends AssertionsForJUnit with MustMatchersForJUnit
     @Test
     def regexRulePredicateMatchesCorrectly() {
         val predicate = compiler.compile(Rule(Regex, "^.*\\.c$", "/tmp"))
-        val cFile = createDetailedFile("/tmp/foo.c")
+        val cFile = StubDetailedFile("/tmp/foo.c")
         predicate.matches(cFile) must be (true)
-        val txtFile = createDetailedFile("/tmp/foo.txt")
+        val txtFile = StubDetailedFile("/tmp/foo.txt")
         predicate.matches(txtFile) must be (false)
-    }
-    
-    private case class StubDetailedFile(val file: File) extends DetailedFile {
-        def getFile: File = file
-        def getLinkDetailedFile: DetailedFile = null
-        def getFileStatus: FileStatus = null
-    }
-
-    private def createDetailedFile(fileName: String): DetailedFile = {
-        val file = new File(fileName)
-        StubDetailedFile(file)
     }
 }
