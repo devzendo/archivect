@@ -37,4 +37,11 @@ class TestGlobRuleCompiler extends AssertionsForJUnit with MustMatchersForJUnit 
         val txtFile = StubDetailedFile("/tmp/foo.txt")
         predicate.matches(txtFile) must be (false)
     }
+    
+    @Test
+    def globIsCaseSensitive() {
+        val predicate = compiler.compile(Rule(Glob, "*.c", "/tmp"))
+        val caseMismatchingFile = StubDetailedFile("/tmp/foo.C")
+        predicate.matches(caseMismatchingFile) must be (false)
+    }
 }

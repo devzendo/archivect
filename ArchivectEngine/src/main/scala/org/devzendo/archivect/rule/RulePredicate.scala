@@ -18,6 +18,7 @@ package org.devzendo.archivect.rule
 
 import org.devzendo.archivect.model.Rule
 import org.devzendo.xpfsa.DetailedFile
+import java.util.regex.Pattern
 
 sealed abstract class RulePredicate(val rule: Rule) {
     def matches(file: DetailedFile): Boolean
@@ -32,15 +33,18 @@ case class GlobRulePredicate(override val rule: Rule) extends RulePredicate(rule
 }
 
 case class RegexRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
+    val matcher = Pattern.compile(rule.ruleText).matcher("")
     def matches(file: DetailedFile): Boolean = {
         val name = file.getFile().getName()
-        name.matches(rule.ruleText)
+        matcher.reset(name).matches()
     }
 }
 
 case class IRegexRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
+    val matcher = Pattern.compile(rule.ruleText, Pattern.CASE_INSENSITIVE).matcher("")
     def matches(file: DetailedFile): Boolean = {
-        true
+        val name = file.getFile().getName()
+        matcher.reset(name).matches()
     }
 }
 
