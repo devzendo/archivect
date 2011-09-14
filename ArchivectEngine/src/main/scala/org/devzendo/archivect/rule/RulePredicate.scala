@@ -17,7 +17,7 @@
 package org.devzendo.archivect.rule
 
 import org.devzendo.archivect.model.Rule
-import org.devzendo.xpfsa.DetailedFile
+import org.devzendo.xpfsa.{ DetailedFile, FileStatus, UnixFileStatus }
 import java.util.regex.Pattern
 
 sealed abstract class RulePredicate(val rule: Rule) {
@@ -49,7 +49,32 @@ case class IRegexRulePredicate(override val rule: Rule) extends RulePredicate(ru
 }
 
 case class FileTypeRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
+    val fileTypeString = rule.ruleText.trim().toLowerCase()
+    if (!fileTypeString.matches("^[fdl]$")) {
+        throw new IllegalStateException("A file type must be a single letter: f, d, l")
+    }
+    
     def matches(file: DetailedFile): Boolean = {
-        true
+        val fs = file.getFileStatus()
+        fileTypeString match {
+            case "f" => {
+                fs match {
+                    case ufs: UnixFileStatus =>
+                        ufs.isRegularFile()
+                }
+            }
+            case "d" => {
+                fs match {
+                    case ufs: UnixFileStatus =>
+                        ufs.isDirectory()
+                }
+            }
+            case "l" => {
+                fs match {
+                    case ufs: UnixFileStatus =>
+                        ufs.isSymbolicLink()
+                }
+            }
+        }
     }
 }

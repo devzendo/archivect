@@ -23,12 +23,12 @@ import java.io.File
 object StubDetailedFile {
     def apply(fileName: String): StubDetailedFile = {
         val file = new File(fileName)
-        StubDetailedFile(file)
+        StubDetailedFile(file, null)
     }
 }
 
-case class StubDetailedFile(val file: File) extends DetailedFile {
+case class StubDetailedFile(val file: File, val fileStatus: FileStatus) extends DetailedFile {
     def getFile: File = file
     def getLinkDetailedFile: DetailedFile = null
-    def getFileStatus: FileStatus = null
+    def getFileStatus: FileStatus = fileStatus
 }
