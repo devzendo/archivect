@@ -28,7 +28,19 @@ import org.devzendo.archivect.model.CommandModel.RuleType._
 
 class TestIRegexRuleCompiler extends AssertionsForJUnit with MustMatchersForJUnit {
     val compiler = new RuleCompiler()
+
+    @Test
+    def garbageIRegexIsDetected() {
+        compileFailsWithMessage("[aeiou", "The case-insensitive regex rule '[aeiou' is not a valid regex: Unclosed character class (near position 5)")
+    }
     
+    private def compileFailsWithMessage(ruleText: String, message: String) = {
+        val ex = intercept[IllegalStateException] {
+            compiler.compile(Rule(IRegex, ruleText, "/tmp"))
+        }
+        ex.getMessage() must equal(message)
+    }
+
     @Test
     def iregexRulePredicateMatchesCorrectly() {
         val predicate = compiler.compile(Rule(IRegex, "^.*\\.c$", "/tmp"))

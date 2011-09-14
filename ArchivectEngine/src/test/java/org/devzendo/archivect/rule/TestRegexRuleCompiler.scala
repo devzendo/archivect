@@ -30,6 +30,18 @@ class TestRegexRuleCompiler extends AssertionsForJUnit with MustMatchersForJUnit
     val compiler = new RuleCompiler()
     
     @Test
+    def garbageRegexIsDetected() {
+        compileFailsWithMessage("[aeiou", "The regex rule '[aeiou' is not a valid regex: Unclosed character class (near position 5)")
+    }
+    
+    private def compileFailsWithMessage(ruleText: String, message: String) = {
+        val ex = intercept[IllegalStateException] {
+            compiler.compile(Rule(Regex, ruleText, "/tmp"))
+        }
+        ex.getMessage() must equal(message)
+    }
+
+    @Test
     def regexRulePredicateMatchesCorrectly() {
         val predicate = compiler.compile(Rule(Regex, "^.*\\.c$", "/tmp"))
         val cFile = StubDetailedFile("/tmp/foo.c")

@@ -18,7 +18,7 @@ package org.devzendo.archivect.rule
 
 import org.devzendo.archivect.model.Rule
 import org.devzendo.xpfsa.{ DetailedFile, FileStatus, UnixFileStatus }
-import java.util.regex.Pattern
+import java.util.regex.{ Pattern, PatternSyntaxException }
 
 sealed abstract class RulePredicate(val rule: Rule) {
     def matches(file: DetailedFile): Boolean
@@ -32,8 +32,28 @@ case class GlobRulePredicate(override val rule: Rule) extends RulePredicate(rule
     }
 }
 
+object RegexRuleHelper {
+    def error(message: String, pse: PatternSyntaxException) = {
+        throw new IllegalStateException(
+            if (pse.getIndex() >= 0)
+                message + " (near position " + pse.getIndex() + ")"
+            else 
+                message
+        )
+    }
+}
+
 case class RegexRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
-    val matcher = Pattern.compile(rule.ruleText).matcher("")
+    val matcher = {
+        try {
+            Pattern.compile(rule.ruleText).matcher("")
+        } catch {
+            case pse: PatternSyntaxException =>
+                val message = "The regex rule '" + rule.ruleText + 
+                    "' is not a valid regex: " + pse.getDescription()
+                RegexRuleHelper.error(message, pse)
+        }
+    }
     def matches(file: DetailedFile): Boolean = {
         val name = file.getFile().getName()
         matcher.reset(name).matches()
@@ -41,7 +61,16 @@ case class RegexRulePredicate(override val rule: Rule) extends RulePredicate(rul
 }
 
 case class IRegexRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
-    val matcher = Pattern.compile(rule.ruleText, Pattern.CASE_INSENSITIVE).matcher("")
+    val matcher = {
+        try {
+            Pattern.compile(rule.ruleText, Pattern.CASE_INSENSITIVE).matcher("")
+        } catch {
+            case pse: PatternSyntaxException =>
+                val message = "The case-insensitive regex rule '" + rule.ruleText + 
+                    "' is not a valid regex: " + pse.getDescription() 
+                RegexRuleHelper.error(message, pse)
+        }
+    }
     def matches(file: DetailedFile): Boolean = {
         val name = file.getFile().getName()
         matcher.reset(name).matches()
