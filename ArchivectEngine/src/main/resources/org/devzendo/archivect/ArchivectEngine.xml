@@ -17,5 +17,8 @@
 
     <bean id="finder" class="org.devzendo.archivect.finder.Finder" />
 
-    <bean id="finderInitialiser" class="org.devzendo.archivect.model2finder.FinderInitialiser" />
+    <bean id="finderInitialiser" class="org.devzendo.archivect.model2finder.FinderInitialiser">
+        <constructor-arg ref="ruleCompiler" />
+        <constructor-arg ref="finder" />
+    </bean>
 </beans>
