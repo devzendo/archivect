@@ -23,10 +23,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
+import org.devzendo.archivect.finder.Finder;
+import org.devzendo.archivect.model2finder.FinderInitialiser;
 import org.devzendo.archivect.rule.RuleCompiler;
+import org.devzendo.commonapp.prefs.DefaultPrefsLocation;
 import org.devzendo.commonapp.prefs.PrefsFactory;
 import org.devzendo.commonapp.prefs.PrefsInstantiator;
-import org.devzendo.commonapp.prefs.DefaultPrefsLocation;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -75,5 +77,14 @@ public final class TestEngineApplicationContextsLoadCorrectly {
     @Test
     public void ruleCompilerOk() {
         assertThat(springLoader.getBean("ruleCompiler", RuleCompiler.class), notNullValue());
+    }
+
+    @Test
+    public void finderCompilerOk() {
+        assertThat(springLoader.getBean("finder", Finder.class), notNullValue());
+    }
+    @Test
+    public void finderInitialiserOk() {
+        assertThat(springLoader.getBean("finderInitialiser", FinderInitialiser.class), notNullValue());
     }
 }

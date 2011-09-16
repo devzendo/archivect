@@ -14,4 +14,8 @@
     <bean id="prefsInstantiator" class="org.devzendo.archivect.prefs.DefaultPrefsInstantiator" />
 
     <bean id="ruleCompiler" class="org.devzendo.archivect.rule.RuleCompiler" />
+
+    <bean id="finder" class="org.devzendo.archivect.finder.Finder" />
+
+    <bean id="finderInitialiser" class="org.devzendo.archivect.model2finder.FinderInitialiser" />
 </beans>
