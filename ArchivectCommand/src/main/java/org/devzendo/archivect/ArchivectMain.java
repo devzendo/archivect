@@ -23,7 +23,9 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.devzendo.archivect.command.CommandLineParser;
 import org.devzendo.archivect.command.CommandLineException;
+import org.devzendo.archivect.finder.Finder;
 import org.devzendo.archivect.model.CommandModel;
+import org.devzendo.archivect.model2finder.FinderInitialiser;
 import org.devzendo.archivect.rule.RuleCompiler;
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
@@ -47,7 +49,7 @@ public class ArchivectMain {
         final Logging logging = Logging.getInstance();
         final List<String> finalArgList = logging.setupLoggingFromArgs(Arrays.asList(args));
         logging.setPackageLoggingLevel("org.springframework", Level.WARN);
-        LOGGER.debug("Starting Archivect command line tool");
+        LOGGER.debug("Starting java Archivect command line tool");
         
         final List<String> applicationContexts = new ArrayList<String>();
         applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
@@ -57,11 +59,15 @@ public class ArchivectMain {
         final LoggingPrefsStartupHelper prefsStartupHelper = springLoader.getBean("loggingPrefsStartupHelper", LoggingPrefsStartupHelper.class);
         prefsStartupHelper.initialisePrefs();
         
-        LOGGER.info("Hello world from Archivect");
+        LOGGER.info("Hello world from java Archivect");
         final CommandLineParser commandLineParser = springLoader.getBean("commandLineParser", CommandLineParser.class);
         final RuleCompiler ruleCompiler = springLoader.getBean("ruleCompiler", RuleCompiler.class);
         try {
             final CommandModel operation = commandLineParser.parse(finalArgList);
+            final Finder finder = springLoader.getBean("finder", Finder.class);
+            final FinderInitialiser finderInitialiser = springLoader.getBean("finderInitialiser", FinderInitialiser.class);
+            finderInitialiser.populateFromModel(operation);
+            
             final FileSystemAccess fileSystemAccess = new FileSystemAccess();
         } catch (final CommandLineException e) {
             LOGGER.error(e.getMessage());
