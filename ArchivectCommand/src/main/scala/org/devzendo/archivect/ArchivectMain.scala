@@ -19,7 +19,7 @@ package org.devzendo.archivect
 import java.util.{ ArrayList, Arrays, List }
 
 import org.apache.log4j.{ Level, Logger }
-import org.devzendo.archivect.command.{ CommandLineParser, SCommandLineException }
+import org.devzendo.archivect.command.{ CommandLineParser, CommandLineException }
 import org.devzendo.archivect.finder.Finder
 import org.devzendo.archivect.model.CommandModel
 import org.devzendo.archivect.model2finder.FinderInitialiser
@@ -74,7 +74,7 @@ object ArchivectMain {
             
             val fileSystemAccess: FileSystemAccess = new FileSystemAccess()
         } catch {
-            case e: SCommandLineException =>
+            case e: CommandLineException =>
                 LOGGER.error(e.getMessage())
             case fe: FileSystemAccessException =>
                 LOGGER.fatal("Could not load CrossPlatformFileSystemAccess library: " + fe.getMessage(), fe)

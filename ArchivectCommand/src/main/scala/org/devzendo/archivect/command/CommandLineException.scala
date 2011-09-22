@@ -16,6 +16,6 @@
  
 package org.devzendo.archivect.command
 
-class SCommandLineException(message: String) extends Exception(message) {
+class CommandLineException(message: String) extends Exception(message) {
 
 }
