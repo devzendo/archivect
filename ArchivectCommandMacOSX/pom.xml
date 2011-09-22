@@ -41,7 +41,7 @@
 							<os>MacOSX</os>
 							<launcherType>Console</launcherType>
 							<applicationName>${appName}</applicationName>
-							<mainClassName>org.devzendo.archivect.ArchivectSMain</mainClassName>
+							<mainClassName>org.devzendo.archivect.ArchivectMain</mainClassName>
 							<narClassifierTypes>
 								<param>x86_64-MacOSX-g++:jni</param>
 							</narClassifierTypes>

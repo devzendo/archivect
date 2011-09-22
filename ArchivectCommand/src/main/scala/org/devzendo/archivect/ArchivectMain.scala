@@ -19,8 +19,7 @@ package org.devzendo.archivect
 import java.util.{ ArrayList, Arrays, List }
 
 import org.apache.log4j.{ Level, Logger }
-import org.devzendo.archivect.{ ArchivectEngineApplicationContexts }
-import org.devzendo.archivect.command.{ CommandLineParser, CommandLineException }
+import org.devzendo.archivect.command.{ CommandLineParser, SCommandLineException }
 import org.devzendo.archivect.finder.Finder
 import org.devzendo.archivect.model.CommandModel
 import org.devzendo.archivect.model2finder.FinderInitialiser
@@ -38,11 +37,11 @@ import scala.collection.JavaConversions
  * @author matt
  *
  */
-class ArchivectSMain {
+class ArchivectMain {
     
 }
-object ArchivectSMain {
-    private val LOGGER = Logger.getLogger(classOf[ArchivectSMain])
+object ArchivectMain {
+    private val LOGGER = Logger.getLogger(classOf[ArchivectMain])
 
     /**
      * @param args the command line arguments.
@@ -53,7 +52,7 @@ object ArchivectSMain {
         args.foreach(s => argList.add(s))
         val finalArgList = logging.setupLoggingFromArgs(argList)
         logging.setPackageLoggingLevel("org.springframework", Level.WARN)
-        LOGGER.debug("Starting Archivect scala command line tool")
+        LOGGER.debug("Starting Archivect command line tool")
         
         val applicationContexts = new java.util.ArrayList[String]()
         ArchivectEngineApplicationContexts.getApplicationContexts().foreach(c => applicationContexts.add(c))
@@ -63,7 +62,7 @@ object ArchivectSMain {
         val prefsStartupHelper: LoggingPrefsStartupHelper = springLoader.getBean("loggingPrefsStartupHelper", classOf[LoggingPrefsStartupHelper])
         prefsStartupHelper.initialisePrefs()
         
-        LOGGER.info("Hello world from scala Archivect");
+        LOGGER.debug("Application contexts and prefs initialised");
 
         val commandLineParser: CommandLineParser = springLoader.getBean("commandLineParser", classOf[CommandLineParser])
         val ruleCompiler: RuleCompiler = springLoader.getBean("ruleCompiler", classOf[RuleCompiler])
@@ -75,7 +74,7 @@ object ArchivectSMain {
             
             val fileSystemAccess: FileSystemAccess = new FileSystemAccess()
         } catch {
-            case e: CommandLineException =>
+            case e: SCommandLineException =>
                 LOGGER.error(e.getMessage())
             case fe: FileSystemAccessException =>
                 LOGGER.fatal("Could not load CrossPlatformFileSystemAccess library: " + fe.getMessage(), fe)

@@ -248,7 +248,7 @@ class CommandLineParser {
         }
     }
     
-    @throws(classOf[CommandLineException])
+    @throws(classOf[SCommandLineException])
     def parse(inputLine: java.util.List[String]): CommandModel = {
         val model = new CommandModel()
         val unknownModeParser = new UnknownModeParser(model)
@@ -286,11 +286,11 @@ class CommandLineParser {
             }
             modeSpecificParser.validate
         } catch {
-            case ill: IllegalStateException => throw new CommandLineException(ill.getMessage())
+            case ill: IllegalStateException => throw new SCommandLineException(ill.getMessage())
         }
 
         if (model.mode == None) {
-            throw new CommandLineException("A mode must be specified")
+            throw new SCommandLineException("A mode must be specified")
         }
         
         model

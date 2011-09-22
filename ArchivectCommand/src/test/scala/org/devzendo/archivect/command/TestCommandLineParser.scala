@@ -366,7 +366,7 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
     }
 
     private def commandFailsWithMessage(cmdLine: String, message: String) = {
-        val ex = intercept[CommandLineException] {
+        val ex = intercept[SCommandLineException] {
             parse(cmdLine)
         }
         ex.getMessage() must equal(message)
