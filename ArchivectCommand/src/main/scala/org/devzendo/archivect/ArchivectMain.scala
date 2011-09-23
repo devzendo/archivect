@@ -56,7 +56,7 @@ object ArchivectMain {
         
         val applicationContexts = new java.util.ArrayList[String]()
         ArchivectEngineApplicationContexts.getApplicationContexts().foreach(c => applicationContexts.add(c))
-        SArchivectCommandApplicationContexts.getApplicationContexts().foreach(c => applicationContexts.add(c))
+        ArchivectCommandApplicationContexts.getApplicationContexts().foreach(c => applicationContexts.add(c))
         val springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader()
 
         val prefsStartupHelper: LoggingPrefsStartupHelper = springLoader.getBean("loggingPrefsStartupHelper", classOf[LoggingPrefsStartupHelper])

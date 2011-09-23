@@ -16,7 +16,7 @@
  
 package org.devzendo.archivect
 
-object SArchivectCommandApplicationContexts {
+object ArchivectCommandApplicationContexts {
     /**
      * @return an array of standard application contexts used by
      * the command line tool.
