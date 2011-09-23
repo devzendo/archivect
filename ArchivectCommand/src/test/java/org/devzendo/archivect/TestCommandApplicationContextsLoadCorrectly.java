@@ -43,7 +43,7 @@ public final class TestCommandApplicationContextsLoadCorrectly {
         
         final List<String> applicationContexts = new ArrayList<String>();
         applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
-        applicationContexts.addAll(Arrays.asList(ArchivectCommandApplicationContexts.getApplicationContexts()));
+        applicationContexts.addAll(Arrays.asList(SArchivectCommandApplicationContexts.getApplicationContexts()));
         springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
     }
 
