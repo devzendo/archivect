@@ -27,6 +27,7 @@ import org.devzendo.archivect.command.CommandLineParser;
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -48,17 +49,20 @@ public final class TestCommandApplicationContextsLoadCorrectly {
     }
 
     @Test
+    @Ignore
     public void applicationContextsLoadCorrectly() {
         assertThat(springLoader, notNullValue());
         // and no exceptions thrown.
     }
     
     @Test
+    @Ignore
     public void loggingPrefsStartupHelperOk() {
         assertThat(springLoader.getBean("loggingPrefsStartupHelper", LoggingPrefsStartupHelper.class), notNullValue());
     }
     
     @Test
+    @Ignore
     public void commandLineParserOk() {
         assertThat(springLoader.getBean("commandLineParser", CommandLineParser.class), notNullValue());
     }
