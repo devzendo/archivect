@@ -33,7 +33,7 @@ import org.devzendo.archivect.{ ArchivectEngineApplicationContexts, ArchivectSpr
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper
 import org.devzendo.commonapp.spring.springloader.SpringLoader
 
-object TestScalaEngineApplicationContextsLoadCorrectly {
+object TestEngineApplicationContextsLoadCorrectly {
     val springLoader: SpringLoader = setup()
     
     def setup(): SpringLoader = {
@@ -44,9 +44,9 @@ object TestScalaEngineApplicationContextsLoadCorrectly {
         new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader()
     }
 }
-import TestScalaEngineApplicationContextsLoadCorrectly._
+import TestEngineApplicationContextsLoadCorrectly._
 
-class TestScalaEngineApplicationContextsLoadCorrectly extends AssertionsForJUnit with MustMatchersForJUnit {
+class TestEngineApplicationContextsLoadCorrectly extends AssertionsForJUnit with MustMatchersForJUnit {
     
     @Test
     def applicationContextsLoadCorrectly() {
@@ -80,7 +80,7 @@ class TestScalaEngineApplicationContextsLoadCorrectly extends AssertionsForJUnit
     }
 
     @Test
-    def scalafinderInitialiserOk() {
+    def finderInitialiserOk() {
         assertThat(springLoader.getBean("finderInitialiser", classOf[FinderInitialiser]), notNullValue())
     }
 }
