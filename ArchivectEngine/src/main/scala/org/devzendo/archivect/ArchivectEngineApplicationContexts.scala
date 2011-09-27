@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008-2010 Matt Gumbley, DevZendo.org <http://devzendo.org>
+ * Copyright (C) 2008-2011 Matt Gumbley, DevZendo.org <http://devzendo.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.devzendo.archivect;
+ 
+package org.devzendo.archivect
 
-/**
- * The main engine application contexts.
- * 
- * @author matt
- *
- */
-public final class ArchivectEngineApplicationContexts {
-    /**
-     * No instances
-     */
-    private ArchivectEngineApplicationContexts() {
-        // nothing
-    }
-
+object ArchivectEngineApplicationContexts {
     /**
      * @return an array of standard application contexts used by
      * the engine.
      */
-    public static String[] getApplicationContexts() {
-        return new String[] {
-                "org/devzendo/archivect/ArchivectEngine.xml",
-                "org/devzendo/archivect/ArchivectEnginePersistence.xml"
-        };
+    def getApplicationContexts(): Array[String] = {
+        val contexts = new Array[String](2)
+        contexts(0) = "org/devzendo/archivect/ArchivectEngine.xml"
+        contexts(1) = "org/devzendo/archivect/ArchivectEnginePersistence.xml"
+        contexts
     }
-
 }
