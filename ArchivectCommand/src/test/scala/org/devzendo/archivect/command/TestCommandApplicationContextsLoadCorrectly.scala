@@ -26,11 +26,10 @@ import org.junit.{ Test, Before, BeforeClass, Ignore }
 import org.apache.log4j.BasicConfigurator
 import org.devzendo.archivect.ArchivectCommandApplicationContexts
 import org.devzendo.archivect.{ ArchivectEngineApplicationContexts, ArchivectSpringLoaderInitialiser }
-import org.devzendo.archivect.command.CommandLineParser
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper
 import org.devzendo.commonapp.spring.springloader.SpringLoader
 
-object STestCommandApplicationContextsLoadCorrectly {
+object TestCommandApplicationContextsLoadCorrectly {
     val springLoader: SpringLoader = setup()
     
     def setup(): SpringLoader = {
@@ -42,9 +41,9 @@ object STestCommandApplicationContextsLoadCorrectly {
         new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader()
     }
 }
-import STestCommandApplicationContextsLoadCorrectly._
+import TestCommandApplicationContextsLoadCorrectly._
 
-class STestCommandApplicationContextsLoadCorrectly extends AssertionsForJUnit with MustMatchersForJUnit {
+class TestCommandApplicationContextsLoadCorrectly extends AssertionsForJUnit with MustMatchersForJUnit {
     
     @Test
     def applicationContextsLoadCorrectly() {
