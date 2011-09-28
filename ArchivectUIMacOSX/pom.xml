@@ -40,7 +40,7 @@
 						<configuration>
 							<os>MacOSX</os>
 							<applicationName>${appName}</applicationName>
-							<mainClassName>org.devzendo.archivect.ArchivectUIMainS</mainClassName>
+							<mainClassName>org.devzendo.archivect.ArchivectUIMain</mainClassName>
 							<iconsFileName>Archivect.icns</iconsFileName>
 							<narClassifierTypes>
 								<param>x86_64-MacOSX-g++:jni</param>

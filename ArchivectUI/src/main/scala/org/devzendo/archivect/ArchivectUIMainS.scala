@@ -37,11 +37,11 @@ import org.devzendo.commoncode.logging.Logging
  * @author matt
  *
  */
-class ArchivectUIMainS {
+class ArchivectUIMain {
     
 }
-object ArchivectUIMainS {
-    private val LOGGER = Logger.getLogger(classOf[ArchivectUIMainS])
+object ArchivectUIMain {
+    private val LOGGER = Logger.getLogger(classOf[ArchivectUIMain])
 
     /**
      * @param args the command line arguments.
