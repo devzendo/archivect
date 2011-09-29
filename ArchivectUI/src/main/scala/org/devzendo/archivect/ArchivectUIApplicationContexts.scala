@@ -16,7 +16,7 @@
  
 package org.devzendo.archivect
 
-object ArchivectUIApplicationContextsS {
+object ArchivectUIApplicationContexts {
     /**
      * @return an array of standard application contexts used by
      * the UI.

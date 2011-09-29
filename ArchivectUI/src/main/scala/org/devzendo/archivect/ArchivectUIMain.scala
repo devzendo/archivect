@@ -63,7 +63,7 @@ object ArchivectUIMain {
 
         val applicationContexts = new java.util.ArrayList[String]()
         ArchivectEngineApplicationContexts.getApplicationContexts().foreach(c => applicationContexts.add(c))
-        ArchivectUIApplicationContextsS.getApplicationContexts().foreach(c => applicationContexts.add(c))
+        ArchivectUIApplicationContexts.getApplicationContexts().foreach(c => applicationContexts.add(c))
         val springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader()
 
         val prefsStartupHelper: GuiPrefsStartupHelper = springLoader.getBean("guiPrefsStartupHelper", classOf[GuiPrefsStartupHelper])
