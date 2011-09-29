@@ -54,7 +54,7 @@ public final class TestUIApplicationContextsLoadCorrectly {
         
         final List<String> applicationContexts = new ArrayList<String>();
         applicationContexts.addAll(Arrays.asList(ArchivectEngineApplicationContexts.getApplicationContexts()));
-        applicationContexts.addAll(Arrays.asList(ArchivectUIApplicationContexts.getApplicationContexts()));
+        applicationContexts.addAll(Arrays.asList(ArchivectUIApplicationContextsS.getApplicationContexts()));
         springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader();
     }
 

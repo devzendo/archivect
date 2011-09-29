@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008-2010 Matt Gumbley, DevZendo.org <http://devzendo.org>
+ * Copyright (C) 2008-2011 Matt Gumbley, DevZendo.org <http://devzendo.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.devzendo.archivect;
+ 
+package org.devzendo.archivect
 
-/**
- * The UI application contexts.
- * 
- * @author matt
- *
- */
-public final class ArchivectUIApplicationContexts {
-    /**
-     * No instances
-     */
-    private ArchivectUIApplicationContexts() {
-        // nothing
-    }
-
+object ArchivectUIApplicationContextsS {
     /**
      * @return an array of standard application contexts used by
      * the UI.
      */
-    public static String[] getApplicationContexts() {
-        return new String[] {
-                "org/devzendo/archivect/ArchivectUI.xml"
-        };
+    def getApplicationContexts(): Array[String] = {
+        val contexts = new Array[String](1)
+        contexts(0) = "org/devzendo/archivect/ArchivectUI.xml"
+        contexts
     }
-
 }
