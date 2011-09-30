@@ -42,7 +42,7 @@ import org.devzendo.commonapp.spring.springloader.SpringLoader
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper
 import org.devzendo.commonapp.spring.springloader.SpringLoader
 
-object TestUIApplicationContextsLoadCorrectlyS {
+object TestUIApplicationContextsLoadCorrectly {
     val springLoader: SpringLoader = setup()
     
     def setup(): SpringLoader = {
@@ -54,9 +54,9 @@ object TestUIApplicationContextsLoadCorrectlyS {
         new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader()
     }
 }
-import TestUIApplicationContextsLoadCorrectlyS._
+import TestUIApplicationContextsLoadCorrectly._
 
-class TestUIApplicationContextsLoadCorrectlyS extends AssertionsForJUnit with MustMatchersForJUnit {
+class TestUIApplicationContextsLoadCorrectly extends AssertionsForJUnit with MustMatchersForJUnit {
     
     @Test
     def applicationContextsLoadCorrectly() {
