@@ -36,7 +36,7 @@ import org.devzendo.commoncode.logging.LoggingUnittestHelper
  * @author matt
  *
  */
-object TestArchivectWindowGeometryStorePersistenceS {
+object TestArchivectWindowGeometryStorePersistence {
     val WINDOW_GEOMETRY = "20,20,700,500"
     val FOO = "foo"
 
@@ -46,9 +46,9 @@ object TestArchivectWindowGeometryStorePersistenceS {
     }
 }
 
-import TestArchivectWindowGeometryStorePersistenceS._
+import TestArchivectWindowGeometryStorePersistence._
 
-class TestArchivectWindowGeometryStorePersistenceS extends TemporaryDirUnittest with AssertionsForJUnit with MustMatchersForJUnit {
+class TestArchivectWindowGeometryStorePersistence extends TemporaryDirUnittest with AssertionsForJUnit with MustMatchersForJUnit {
     var persistence: ArchivectWindowGeometryStorePersistence = null
 
     /**
