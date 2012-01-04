@@ -15,7 +15,11 @@
 
     <bean id="ruleCompiler" class="org.devzendo.archivect.rule.RuleCompiler" />
 
-    <bean id="finder" class="org.devzendo.archivect.finder.Finder" />
+    <bean id="fileSystemAccess" class="org.devzendo.archivect.filesystemaccess.FileSystemAccessFactory" />
+	
+    <bean id="finder" class="org.devzendo.archivect.finder.Finder">
+    	<constructor-arg ref="fileSystemAccess" />
+	</bean>
 
     <bean id="finderInitialiser" class="org.devzendo.archivect.model2finder.FinderInitialiser">
         <constructor-arg ref="ruleCompiler" />

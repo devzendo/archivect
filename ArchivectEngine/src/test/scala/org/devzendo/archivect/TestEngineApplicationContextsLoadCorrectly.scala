@@ -24,6 +24,7 @@ import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
 import org.junit.Assert._
 import org.junit.{ Test, Before, BeforeClass, Ignore }
 import org.apache.log4j.BasicConfigurator
+import org.devzendo.archivect.filesystemaccess.FileSystemAccessFactory
 import org.devzendo.archivect.finder.Finder
 import org.devzendo.archivect.model2finder.FinderInitialiser
 import org.devzendo.archivect.rule.RuleCompiler
@@ -75,7 +76,12 @@ class TestEngineApplicationContextsLoadCorrectly extends AssertionsForJUnit with
     }
 
     @Test
-    def finderCompilerOk() {
+    def fileSystemAccessFactoryOk() {
+        assertThat(springLoader.getBean("&fileSystemAccess", classOf[FileSystemAccessFactory]), notNullValue())
+    }
+
+    @Test
+    def finderOk() {
         assertThat(springLoader.getBean("finder", classOf[Finder]), notNullValue())
     }
 

@@ -16,16 +16,22 @@
  
 package org.devzendo.archivect.finder
 
-import java.io.File
-import org.devzendo.xpfsa.{ DetailedFile, FileSystemAccess }
+import scala.collection.mutable.ListBuffer
+import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
+import org.junit.Assert._
+import org.junit.Test
+import org.junit.Before
+import org.devzendo.archivect.model.{ CommandModel, Rule }
+import org.devzendo.archivect.model.CommandModel.CommandMode._
+import org.devzendo.archivect.model.CommandModel.Encoding._
+import org.devzendo.archivect.model.CommandModel.Compression._
+import org.junit.Ignore
 
-class Finder(val fsa: FileSystemAccess) {
-    
-    def addSource(source: File) {
-        
-    }
-    
-    def find(callback: DetailedFile => Unit) {
-        
+class TestFinder extends AssertionsForJUnit with MustMatchersForJUnit {
+    //val finder = new Finder()
+    var found = new ListBuffer
+    @Test
+    def foo {
+       
     }
 }
