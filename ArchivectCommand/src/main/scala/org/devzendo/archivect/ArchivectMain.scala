@@ -27,7 +27,7 @@ import org.devzendo.archivect.rule.RuleCompiler
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper
 import org.devzendo.commonapp.spring.springloader.SpringLoader
 import org.devzendo.commoncode.logging.Logging
-import org.devzendo.xpfsa.{ FileSystemAccess, FileSystemAccessException }
+import org.devzendo.xpfsa.{ DefaultFileSystemAccess, FileSystemAccess, FileSystemAccessException }
 
 import scala.collection.JavaConversions
 
@@ -72,7 +72,7 @@ object ArchivectMain {
             val finderInitialiser: FinderInitialiser = springLoader.getBean("finderInitialiser", classOf[FinderInitialiser])
             finderInitialiser.populateFromModel(operation)
             
-            val fileSystemAccess: FileSystemAccess = new FileSystemAccess()
+            val fileSystemAccess: DefaultFileSystemAccess = new DefaultFileSystemAccess()
         } catch {
             case e: CommandLineException =>
                 LOGGER.error(e.getMessage())

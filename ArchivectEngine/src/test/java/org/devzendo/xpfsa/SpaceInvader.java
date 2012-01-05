@@ -28,7 +28,7 @@ public class SpaceInvader {
      * @param message the message
      * @param fsa the library
      */
-    public static void logMessage(final String message, final FileSystemAccess fsa) {
+    public static void logMessage(final String message, final DefaultFileSystemAccess fsa) {
         fsa.logDebugNative(message);
     }
 }
