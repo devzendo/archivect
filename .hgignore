@@ -25,3 +25,9 @@ syntax: regexp
 ^ArchivectCode/target$
 syntax: glob
 **/.scala_dependencies
+syntax: regexp
+^ArchivectCommand/\.cache$
+syntax: regexp
+^ArchivectEngine/\.cache$
+syntax: regexp
+^ArchivectUI/\.cache$
