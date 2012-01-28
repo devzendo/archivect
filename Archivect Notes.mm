@@ -36,5 +36,15 @@
 <node CREATED="1327741745580" ID="Freemind_Link_1198114" MODIFIED="1327741769207" TEXT="So I can know whether a dir/file has been archived or not"/>
 </node>
 </node>
+<node CREATED="1327749832728" ID="Freemind_Link_55757320" MODIFIED="1327749836060" POSITION="left" TEXT="Model2Finder">
+<node CREATED="1327749865234" ID="Freemind_Link_582178565" MODIFIED="1327749898121" TEXT="The model (either created by&#xa;the command line or via the&#xa;GUI) is String-based"/>
+<node CREATED="1327749836432" ID="Freemind_Link_114181921" MODIFIED="1327749975605" TEXT="Model2Finder validates the&#xa;model and parameterises a&#xa;Finder, Source and Destination (restore)&#xa;or Encoder/Destination (backup)">
+<node CREATED="1327750001105" ID="Freemind_Link_69075545" MODIFIED="1327750019660" TEXT="All paths (sources, rule/selection applications) need to be validated"/>
+<node CREATED="1327750042805" ID="Freemind_Link_673881084" MODIFIED="1327750050419" TEXT="Do they contain valid components?"/>
+<node CREATED="1327750050904" ID="Freemind_Link_930928882" MODIFIED="1327750064630" TEXT="the path a/b/c only makes sense if a and b are directories"/>
+<node CREATED="1327750065137" ID="Freemind_Link_9631404" MODIFIED="1327750073440" TEXT="need to take into account &apos;follow symlinks&apos;"/>
+</node>
+<node CREATED="1327749980091" ID="Freemind_Link_529308366" MODIFIED="1327749994712" TEXT="It&apos;s more like Model2EngineConfiguration"/>
+</node>
 </node>
 </map>
