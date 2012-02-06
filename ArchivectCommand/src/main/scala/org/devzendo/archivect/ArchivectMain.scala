@@ -20,6 +20,7 @@ import java.util.{ ArrayList, Arrays, List }
 
 import org.apache.log4j.{ Level, Logger }
 import org.devzendo.archivect.command.{ CommandLineParser, CommandLineException }
+import org.devzendo.archivect.filesystemaccess.FileSystemAccessFactory
 import org.devzendo.archivect.finder.Finder
 import org.devzendo.archivect.model.CommandModel
 import org.devzendo.archivect.model2finder.FinderInitialiser
@@ -67,12 +68,15 @@ object ArchivectMain {
         val commandLineParser: CommandLineParser = springLoader.getBean("commandLineParser", classOf[CommandLineParser])
         val ruleCompiler: RuleCompiler = springLoader.getBean("ruleCompiler", classOf[RuleCompiler])
         try {
+            val fileSystemAccess: DefaultFileSystemAccess = new DefaultFileSystemAccess()
+            val fileSystemAccessFactory: FileSystemAccessFactory = springLoader.getBean("&fileSystemAccessFactory", classOf[FileSystemAccessFactory])
+            fileSystemAccessFactory.setFileSystemAccess(fileSystemAccess)
+            
             val operation: CommandModel = commandLineParser.parse(finalArgList)
             val finder: Finder = springLoader.getBean("finder", classOf[Finder])
             val finderInitialiser: FinderInitialiser = springLoader.getBean("finderInitialiser", classOf[FinderInitialiser])
             finderInitialiser.populateFromModel(operation)
             
-            val fileSystemAccess: DefaultFileSystemAccess = new DefaultFileSystemAccess()
         } catch {
             case e: CommandLineException =>
                 LOGGER.error(e.getMessage())

@@ -23,6 +23,7 @@ import java.util.{ ArrayList, Arrays, List }
 import javax.swing.JFrame
 
 import org.apache.log4j.{ Level, Logger }
+import org.devzendo.archivect.filesystemaccess.FileSystemAccessFactory
 import org.devzendo.archivect.gui.{ ArchivectMainFrameFactory, LifecycleStartupAWTEventListener, MainFrameCloseActionListener }
 import org.devzendo.archivect.gui.menu.{ ArchivectMenuIdentifiers, Menu }
 import org.devzendo.commonapp.gui.{ Beautifier, GUIUtils, ThreadCheckingRepaintManager }
@@ -30,6 +31,7 @@ import org.devzendo.commonapp.gui.menu.MenuWiring
 import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper
 import org.devzendo.commonapp.spring.springloader.SpringLoader
 import org.devzendo.commoncode.logging.Logging
+import org.devzendo.xpfsa.{ DefaultFileSystemAccess, FileSystemAccess, FileSystemAccessException }
 
 /**
  * The Archivect UI.
@@ -66,56 +68,65 @@ object ArchivectUIMain {
         ArchivectUIApplicationContexts.getApplicationContexts().foreach(c => applicationContexts.add(c))
         val springLoader = new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader()
 
-        val prefsStartupHelper: GuiPrefsStartupHelper = springLoader.getBean("guiPrefsStartupHelper", classOf[GuiPrefsStartupHelper])
-        prefsStartupHelper.initialisePrefs()
+        try {
+            val fileSystemAccess: DefaultFileSystemAccess = new DefaultFileSystemAccess()
+            val fileSystemAccessFactory: FileSystemAccessFactory = springLoader.getBean("&fileSystemAccessFactory", classOf[FileSystemAccessFactory])
+            fileSystemAccessFactory.setFileSystemAccess(fileSystemAccess)
 
-        LOGGER.debug("Application contexts and prefs initialised")
-        // Sun changed their recommendations and now recommends the UI be built
-        // on the EDT, so I think flagging creation on non-EDT is OK.
-        // "We used to say that you could create the GUI on the main thread as
-        // long as you didn't modify components that had already been realized.
-        // While this worked for most applications, in certain situations it
-        // could cause problems."
-        // http://java.sun.com/docs/books/tutorial/uiswing/misc/threads.html
-        // So let's create it on the EDT anyway
-        //
-        GUIUtils.runOnEventThread(new Runnable() {
-            def run = {
-                try {
-                    Beautifier.makeBeautiful()
-
-                    // Process command line
-                    for (i <- 0 until finalArgList.size()) {
-                        LOGGER.debug("arg " + i + " = " + finalArgList.get(i) + "'")
+            val prefsStartupHelper: GuiPrefsStartupHelper = springLoader.getBean("guiPrefsStartupHelper", classOf[GuiPrefsStartupHelper])
+            prefsStartupHelper.initialisePrefs()
+    
+            LOGGER.debug("Application contexts and prefs initialised")
+            // Sun changed their recommendations and now recommends the UI be built
+            // on the EDT, so I think flagging creation on non-EDT is OK.
+            // "We used to say that you could create the GUI on the main thread as
+            // long as you didn't modify components that had already been realized.
+            // While this worked for most applications, in certain situations it
+            // could cause problems."
+            // http://java.sun.com/docs/books/tutorial/uiswing/misc/threads.html
+            // So let's create it on the EDT anyway
+            //
+            GUIUtils.runOnEventThread(new Runnable() {
+                def run = {
+                    try {
+                        Beautifier.makeBeautiful()
+    
+                        // Process command line
+                        for (i <- 0 until finalArgList.size()) {
+                            LOGGER.debug("arg " + i + " = " + finalArgList.get(i) + "'")
+                        }
+    
+                        val frameFactory = springLoader.getBean(
+                            "archivectMainFrameFactory",
+                            classOf[ArchivectMainFrameFactory])
+                        val mainFrame = frameFactory.createFrame
+                        
+                        val menu = springLoader.getBean("menu", classOf[Menu])
+                        menu.initialise
+                        mainFrame.setJMenuBar(menu.getMenuBar)
+    
+                        val closeAL = springLoader.getBean(
+                                "mainFrameCloseActionListener",
+                                classOf[MainFrameCloseActionListener])
+                        val menuWiring = springLoader.getBean("menuWiring", classOf[MenuWiring])
+                        menuWiring.setActionListener(ArchivectMenuIdentifiers.FILE_EXIT, closeAL)
+    
+                        val lifecycleStartup = springLoader.getBean(
+                            "lifecycleStartupAWTEventListener", 
+                            classOf[LifecycleStartupAWTEventListener])
+                        Toolkit.getDefaultToolkit().addAWTEventListener(lifecycleStartup, AWTEvent.WINDOW_EVENT_MASK)
+                        
+                        mainFrame.setVisible(true)
+                    } catch {
+                        case e: Exception =>
+                            LOGGER.fatal(e.getMessage(), e)
+                            System.exit(1)
                     }
-
-                    val frameFactory = springLoader.getBean(
-                        "archivectMainFrameFactory",
-                        classOf[ArchivectMainFrameFactory])
-                    val mainFrame = frameFactory.createFrame
-                    
-                    val menu = springLoader.getBean("menu", classOf[Menu])
-                    menu.initialise
-                    mainFrame.setJMenuBar(menu.getMenuBar)
-
-                    val closeAL = springLoader.getBean(
-                            "mainFrameCloseActionListener",
-                            classOf[MainFrameCloseActionListener])
-                    val menuWiring = springLoader.getBean("menuWiring", classOf[MenuWiring])
-                    menuWiring.setActionListener(ArchivectMenuIdentifiers.FILE_EXIT, closeAL)
-
-                    val lifecycleStartup = springLoader.getBean(
-                        "lifecycleStartupAWTEventListener", 
-                        classOf[LifecycleStartupAWTEventListener])
-                    Toolkit.getDefaultToolkit().addAWTEventListener(lifecycleStartup, AWTEvent.WINDOW_EVENT_MASK)
-                    
-                    mainFrame.setVisible(true)
-                } catch {
-                    case e: Exception =>
-                        LOGGER.fatal(e.getMessage(), e)
-                        System.exit(1)
                 }
-            }
-        })
+            })
+        } catch {
+            case fe: FileSystemAccessException =>
+                LOGGER.fatal("Could not load CrossPlatformFileSystemAccess library: " + fe.getMessage(), fe)
+        }
     }
 }
