@@ -13,23 +13,95 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
 package org.devzendo.archivect.sources
 
-import java.io.{ File, PrintStream, FileOutputStream }
-import scala.collection.mutable.ListBuffer
 import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
 import org.junit.Assert._
-import org.junit.{ Test, Before, After, Ignore }
-import org.junit.rules.TemporaryFolder
-import org.devzendo.archivect.model.{ CommandModel, Rule }
-import org.devzendo.archivect.model.CommandModel.CommandMode._
-import org.devzendo.archivect.model.CommandModel.Encoding._
-import org.devzendo.archivect.model.CommandModel.Compression._
-import org.easymock.EasyMock
-import org.easymock.EasyMock._
-import org.devzendo.xpfsa.{ DetailedFile, FileSystemAccess }
+import org.junit.{ Test }
+import org.devzendo.archivect.sources.Sources._
+
+// Slashes in strings....
+// """\\server\share""" is a good UNC path
+// "\\\\server\\share" is good also
 
 class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
+    @Test
+    def unrootedPathGivesUnrootedSource() {
+        val source = Sources.pathToSource("a/b/c")
+        source match {
+            case unrootedSource: UnrootedSource =>
+                println("got '" + unrootedSource.path + "'")
+                unrootedSource.path must be("a/b/c")
+            case _ => fail("did not return an UnrootedSource")
+        }
+    }
 
+    @Test
+    def uncPathWithoutSubcomponentsPathGivesUNCSource() {
+        val source = Sources.pathToSource("""\\server\share""")
+        source match {
+            case uncSource: UNCSource =>
+                uncSource.server must be("server")
+                uncSource.share must be("share")
+                uncSource.path must be("")
+            case x => fail("did not return a UNCSource; got a " + x.getClass().getName() + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def uncPathWithEmptySubcomponentsPathGivesUNCSource() {
+        val source = Sources.pathToSource("""\\server\share\""")
+        source match {
+            case uncSource: UNCSource =>
+                uncSource.server must be("server")
+                uncSource.share must be("share")
+                uncSource.path must be("")
+            case x => fail("did not return a UNCSource; got a " + x.getClass().getName() + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def uncPathWithNonEmptySubcomponentsPathGivesUNCSource() {
+        val source = Sources.pathToSource("""\\server\share\foo\bar\quux""")
+        source match {
+            case uncSource: UNCSource =>
+                uncSource.server must be("server")
+                uncSource.share must be("share")
+                uncSource.path must be("foo\\bar\\quux")
+            case x => fail("did not return a UNCSource; got a " + x.getClass().getName() + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def drivePathWithoutSubcomponentsPathGivesWindowsDriveSource() {
+        val source = Sources.pathToSource("""d:""")
+        source match {
+            case driveSource: WindowsDriveSource =>
+                driveSource.driveLetter must be("D:")
+                driveSource.path must be("")
+            case x => fail("did not return a WindowsDriveSource; got a " + x.getClass().getName() + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def drivePathWithSubcomponentsPathGivesWindowsDriveSource() {
+        val source = Sources.pathToSource("""d:test.foo""")
+        source match {
+            case driveSource: WindowsDriveSource =>
+                driveSource.driveLetter must be("D:")
+                driveSource.path must be("test.foo")
+            case x => fail("did not return a WindowsDriveSource; got a " + x.getClass().getName() + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def drivePathWithAbsoluteSubcomponentsPathGivesWindowsDriveSource() {
+        val source = Sources.pathToSource("""d:\path\to\test.foo""")
+        source match {
+            case driveSource: WindowsDriveSource =>
+                driveSource.driveLetter must be("D:")
+                driveSource.path must be("path\\to\\test.foo")
+            case x => fail("did not return a WindowsDriveSource; got a " + x.getClass().getName() + ": '" + x + "'")
+        }
+    }
 }

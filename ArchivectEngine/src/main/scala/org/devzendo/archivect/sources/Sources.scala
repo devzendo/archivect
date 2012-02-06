@@ -19,3 +19,56 @@ package org.devzendo.archivect.sources
 class Sources {
 
 }
+object Sources {
+    sealed abstract class Source(val path: String)
+    case class UnrootedSource(override val path: String) extends Source(path)
+    case class RootedSource(override val path: String) extends Source(path)
+    case class WindowsDriveSource(override val path: String, val driveLetter: String) extends Source(path)
+    // Not sure I want to support UNC paths as sources
+    case class UNCSource(override val path: String, val server: String, val share: String) extends Source(path)
+    
+    private[this] val drivePath = """^(\S):(\\)?(.*)$""".r // drive paths are absolute anyway, ignore leading \
+    private[this] val uncPath = """^\\\\(.+?)\\(.+?)(\\.*)?$""".r
+    private[this] val rootedPath = """^([/\\].*)$""".r
+    
+    def pathToSource(path: String): Source = {
+        val trimmedPath = path.trim
+        trimmedPath match {
+            case drivePath(driveLetter, ignoreLeadingSlash, path) =>
+                WindowsDriveSource(removeLeading(nullToEmpty(path), "\\"), endWith(driveLetter.toUpperCase(), ":"))
+                
+            case uncPath(server, share, path) =>
+                UNCSource(removeLeading(nullToEmpty(path), "\\"), server, share)
+                
+            case rootedPath(path) =>
+                RootedSource(path)
+
+            case x =>
+                UnrootedSource(x)
+        }
+    }
+    
+    private[this] def toPlatformSlashes(path: String): String = {
+        path.replaceAll("[/\\]", java.io.File.separator)
+    }
+    
+    private[this] def endWith(string: String, endWith: String): String = {
+        if (string.endsWith(endWith)) {
+            string
+        } else {
+            string + endWith
+        }
+    }
+    
+    private[this] def removeLeading(string: String, lead: String): String = {
+        if (string.startsWith(lead)) {
+            string.substring(lead.length)
+        } else {
+            string
+        }
+    }
+    
+    private[this] def nullToEmpty(in: String): String = {
+        if (in == null) "" else in
+    }
+}
