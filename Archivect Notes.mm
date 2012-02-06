@@ -31,10 +31,6 @@
 </node>
 </node>
 </node>
-<node CREATED="1327741635109" ID="Freemind_Link_825089563" MODIFIED="1327741781587" TEXT="Has a store-of-path-components-that-have-been-processed">
-<node CREATED="1327741710787" ID="Freemind_Link_1494619925" MODIFIED="1327741798917" TEXT="maintained as a tree of path components&#xa;with existence in the tree indicating that&#xa;they have been processed"/>
-<node CREATED="1327741745580" ID="Freemind_Link_1198114" MODIFIED="1327741769207" TEXT="So I can know whether a dir/file has been archived or not"/>
-</node>
 </node>
 <node CREATED="1327749832728" ID="Freemind_Link_55757320" MODIFIED="1327749836060" POSITION="left" TEXT="Model2Finder">
 <node CREATED="1327749865234" ID="Freemind_Link_582178565" MODIFIED="1327749898121" TEXT="The model (either created by&#xa;the command line or via the&#xa;GUI) is String-based"/>
@@ -45,6 +41,16 @@
 <node CREATED="1327750065137" ID="Freemind_Link_9631404" MODIFIED="1327750073440" TEXT="need to take into account &apos;follow symlinks&apos;"/>
 </node>
 <node CREATED="1327749980091" ID="Freemind_Link_529308366" MODIFIED="1327749994712" TEXT="It&apos;s more like Model2EngineConfiguration"/>
+</node>
+<node CREATED="1327750170030" ID="Freemind_Link_317407797" MODIFIED="1327750174382" POSITION="right" TEXT="Tree">
+<node CREATED="1327750175259" ID="Freemind_Link_1289269430" MODIFIED="1327750190291" TEXT="A tree of path components"/>
+<node CREATED="1327750191468" ID="Freemind_Link_1416525941" MODIFIED="1327750196838" TEXT="Uses">
+<node CREATED="1327741635109" ID="Freemind_Link_825089563" MODIFIED="1327750221020" TEXT="Processed components tree">
+<node CREATED="1327741710787" ID="Freemind_Link_1494619925" MODIFIED="1327741798917" TEXT="maintained as a tree of path components&#xa;with existence in the tree indicating that&#xa;they have been processed"/>
+<node CREATED="1327741745580" ID="Freemind_Link_1198114" MODIFIED="1327741769207" TEXT="So I can know whether a dir/file has been archived or not"/>
+</node>
+<node CREATED="1327750225068" ID="Freemind_Link_1119895434" MODIFIED="1327750249660" TEXT="Rule/Selection tree"/>
+</node>
 </node>
 </node>
 </map>
