@@ -30,7 +30,6 @@ import org.devzendo.archivect.model2finder.FinderInitialiser
 import org.devzendo.archivect.rule.RuleCompiler
 import org.devzendo.commonapp.prefs.{ DefaultPrefsLocation, PrefsFactory, PrefsInstantiator }
 
-import org.devzendo.archivect.{ ArchivectEngineApplicationContexts, ArchivectSpringLoaderInitialiser }
 import org.devzendo.commonapp.prefs.LoggingPrefsStartupHelper
 import org.devzendo.commonapp.spring.springloader.SpringLoader
 
@@ -42,7 +41,7 @@ object TestEngineApplicationContextsLoadCorrectly {
         
         val applicationContexts: List[String] = new ArrayList[String]()
         ArchivectEngineApplicationContexts.getApplicationContexts().foreach(c => applicationContexts.add(c))
-        new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader()
+        new ArchivectSpringLoaderInitialiser(applicationContexts).getSpringLoader
     }
 }
 import TestEngineApplicationContextsLoadCorrectly._
