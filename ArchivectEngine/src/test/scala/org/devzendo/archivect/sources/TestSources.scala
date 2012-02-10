@@ -32,6 +32,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
             case unrootedSource: UnrootedSource =>
                 println("got '" + unrootedSource.path + "'")
                 unrootedSource.path must be("a/b/c")
+                unrootedSource.pathComponents must be(List("a", "b", "c"))
             case _ => fail("did not return an UnrootedSource")
         }
     }
@@ -44,6 +45,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
                 uncSource.server must be("server")
                 uncSource.share must be("share")
                 uncSource.path must be("")
+                uncSource.pathComponents.size must equal(0)
             case x => fail("did not return a UNCSource; got a " + x.getClass().getName() + ": '" + x + "'")
         }
     }
@@ -56,6 +58,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
                 uncSource.server must be("server")
                 uncSource.share must be("share")
                 uncSource.path must be("")
+                uncSource.pathComponents.size must equal(0)
             case x => fail("did not return a UNCSource; got a " + x.getClass().getName() + ": '" + x + "'")
         }
     }
@@ -68,6 +71,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
                 uncSource.server must be("server")
                 uncSource.share must be("share")
                 uncSource.path must be("foo\\bar\\quux")
+                uncSource.pathComponents must be (List("foo", "bar", "quux"))
             case x => fail("did not return a UNCSource; got a " + x.getClass().getName() + ": '" + x + "'")
         }
     }
@@ -79,6 +83,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
             case driveSource: WindowsDriveSource =>
                 driveSource.driveLetter must be("D:")
                 driveSource.path must be("")
+                driveSource.pathComponents.size must equal(0)
             case x => fail("did not return a WindowsDriveSource; got a " + x.getClass().getName() + ": '" + x + "'")
         }
     }
@@ -90,6 +95,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
             case driveSource: WindowsDriveSource =>
                 driveSource.driveLetter must be("D:")
                 driveSource.path must be("test.foo")
+                driveSource.pathComponents must be (List("test.foo"))
             case x => fail("did not return a WindowsDriveSource; got a " + x.getClass().getName() + ": '" + x + "'")
         }
     }
@@ -101,6 +107,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
             case driveSource: WindowsDriveSource =>
                 driveSource.driveLetter must be("D:")
                 driveSource.path must be("path\\to\\test.foo")
+                driveSource.pathComponents must be (List("path", "to", "test.foo"))
             case x => fail("did not return a WindowsDriveSource; got a " + x.getClass().getName() + ": '" + x + "'")
         }
     }

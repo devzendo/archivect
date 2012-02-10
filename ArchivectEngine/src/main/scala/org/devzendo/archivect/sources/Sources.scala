@@ -19,13 +19,16 @@ package org.devzendo.archivect.sources
 class Sources {
 
 }
+
 object Sources {
-    sealed abstract class Source(val path: String)
-    case class UnrootedSource(override val path: String) extends Source(path)
-    case class RootedSource(override val path: String) extends Source(path)
-    case class WindowsDriveSource(override val path: String, val driveLetter: String) extends Source(path)
+    sealed abstract class Source(val path: String, val pathSeparator: String) {
+        val pathComponents: List[String] = path.split("""[/\\]""").filter(component => component.length() > 0).toList
+    }
+    case class UnrootedSource(override val path: String, override val pathSeparator: String) extends Source(path, pathSeparator)
+    case class RootedSource(override val path: String, override val pathSeparator: String) extends Source(path, pathSeparator)
+    case class WindowsDriveSource(override val path: String, val driveLetter: String) extends Source(path, "\\")
     // Not sure I want to support UNC paths as sources
-    case class UNCSource(override val path: String, val server: String, val share: String) extends Source(path)
+    case class UNCSource(override val path: String, val server: String, val share: String) extends Source(path, "\\")
     
     private[this] val drivePath = """^(\S):(\\)?(.*)$""".r // drive paths are absolute anyway, ignore leading \
     private[this] val uncPath = """^\\\\(.+?)\\(.+?)(\\.*)?$""".r
@@ -41,15 +44,15 @@ object Sources {
                 UNCSource(removeLeading(nullToEmpty(path), "\\"), server, share)
                 
             case rootedPath(path) =>
-                RootedSource(path)
+                RootedSource(toPlatformSlashes(path), java.io.File.separator)
 
-            case x =>
-                UnrootedSource(x)
+            case path =>
+                UnrootedSource(toPlatformSlashes(path), java.io.File.separator)
         }
     }
     
     private[this] def toPlatformSlashes(path: String): String = {
-        path.replaceAll("[/\\]", java.io.File.separator)
+        path.replaceAll("""[/\\]""", java.io.File.separator)
     }
     
     private[this] def endWith(string: String, endWith: String): String = {
