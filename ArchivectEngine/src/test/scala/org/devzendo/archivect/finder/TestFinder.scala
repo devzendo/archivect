@@ -78,6 +78,7 @@ class TestFinder extends AssertionsForJUnit with MustMatchersForJUnit {
     }
     
     @Test
+    @Ignore
     def findAllFiles {
         val fsa = EasyMock.createMock(classOf[FileSystemAccess])
         createMockTestFileHierarchy(fsa)
