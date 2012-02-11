@@ -16,8 +16,6 @@
 
 package org.devzendo.archivect.sources
 
-import scala.collection.mutable.ListBuffer
-
 class Sources {
 
 }
@@ -42,9 +40,9 @@ object Sources {
     /**
      * Convert a path given a path separator
      *
-     * @param inputPath
-     * @param pathSeparatorChar
-     * @return
+     * @param inputPath a path to convert into a Source
+     * @param pathSeparatorChar the separator to convert the path to use (for use in unrooted paths)
+     * @return an appropriate Source
      */
     def _pathToSource(inputPath: String, pathSeparatorChar: Char): Source = {
         val trimmedPath = inputPath.trim
@@ -101,7 +99,7 @@ object Sources {
                 out += c
             }
         })
-        out.toString
+        out.toString()
     }
 
     private[this] def nullToEmpty(in: String): String = {
