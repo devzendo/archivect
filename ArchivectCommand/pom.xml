@@ -30,7 +30,6 @@
             <artifactId>ArchivectEngine</artifactId>
             <version>0.1.0-SNAPSHOT</version>
             <type>nar</type>
-            <!-- strangely, not type nar -->
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
