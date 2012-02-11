@@ -61,6 +61,12 @@ object Sources {
         }
     }
 
+    /**
+     * Convert a path using the platform path separator for unrooted paths
+     *
+     * @param inputPath a path to convert into a Source
+     * @return an appropriate Source
+     */
     def pathToSource(inputPath: String): Source = {
         _pathToSource(inputPath, java.io.File.separatorChar)
     }
