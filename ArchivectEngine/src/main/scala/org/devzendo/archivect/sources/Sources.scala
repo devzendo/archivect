@@ -26,19 +26,19 @@ object Sources {
     }
     case class UnrootedSource(override val path: String, override val pathSeparator: String) extends Source(path, pathSeparator)
     case class RootedSource(override val path: String, override val pathSeparator: String) extends Source(path, pathSeparator)
-    case class WindowsDriveSource(override val path: String, val driveLetter: String) extends Source(path, "\\")
+    case class WindowsDriveSource(override val path: String, driveLetter: String) extends Source(path, "\\")
     // Not sure I want to support UNC paths as sources
-    case class UNCSource(override val path: String, val server: String, val share: String) extends Source(path, "\\")
+    case class UNCSource(override val path: String, server: String, share: String) extends Source(path, "\\")
     
     private[this] val drivePath = """^(\S):(\\)?(.*)$""".r // drive paths are absolute anyway, ignore leading \
     private[this] val uncPath = """^\\\\(.+?)\\(.+?)(\\.*)?$""".r
     private[this] val rootedPath = """^([/\\].*)$""".r
     
-    def pathToSource(path: String): Source = {
-        val trimmedPath = path.trim
+    def pathToSource(inputPath: String): Source = {
+        val trimmedPath = inputPath.trim
         trimmedPath match {
             case drivePath(driveLetter, ignoreLeadingSlash, path) =>
-                WindowsDriveSource(removeLeading(nullToEmpty(path), "\\"), endWith(driveLetter.toUpperCase(), ":"))
+                WindowsDriveSource(removeLeading(nullToEmpty(path), "\\"), endWith(driveLetter.toUpperCase, ":"))
                 
             case uncPath(server, share, path) =>
                 UNCSource(removeLeading(nullToEmpty(path), "\\"), server, share)
