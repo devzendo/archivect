@@ -17,32 +17,32 @@ package org.devzendo.archivect.sources
 
 import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
 import org.junit.{ Test }
-import org.devzendo.archivect.sources.Sources._
+import org.devzendo.archivect.sources.SourceFactory._
 
 // Slashes in strings....
 // """\\server\share""" is a good UNC path
 // "\\\\server\\share" is good also
 
-class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
+class TestSourceFactory extends AssertionsForJUnit with MustMatchersForJUnit {
     
     @Test
     def removeLeadingSlashes() {
-        Sources._removeLeadingSlashes("n/o slashes at start") must be("n/o slashes at start")
-        Sources._removeLeadingSlashes("\\\\windows \\ slashes") must be("windows \\ slashes")
-        Sources._removeLeadingSlashes("/////unix / slashes") must be("unix / slashes")
+        SourceFactory._removeLeadingSlashes("n/o slashes at start") must be("n/o slashes at start")
+        SourceFactory._removeLeadingSlashes("\\\\windows \\ slashes") must be("windows \\ slashes")
+        SourceFactory._removeLeadingSlashes("/////unix / slashes") must be("unix / slashes")
     }
 
     @Test
     def slashConversion() {
-        Sources._convertSlashes("""/one/two/three/""", Sources.UNIX_SEPARATOR) must be ("""/one/two/three/""")
-        Sources._convertSlashes("""/one/two/three/""", Sources.WINDOWS_SEPARATOR) must be ("""\one\two\three\""")
-        Sources._convertSlashes("""\one\two\three\""", Sources.UNIX_SEPARATOR) must be ("""/one/two/three/""")
-        Sources._convertSlashes("""\one\two\three\""", Sources.WINDOWS_SEPARATOR) must be ("""\one\two\three\""")
+        SourceFactory._convertSlashes("""/one/two/three/""", SourceFactory.UNIX_SEPARATOR) must be ("""/one/two/three/""")
+        SourceFactory._convertSlashes("""/one/two/three/""", SourceFactory.WINDOWS_SEPARATOR) must be ("""\one\two\three\""")
+        SourceFactory._convertSlashes("""\one\two\three\""", SourceFactory.UNIX_SEPARATOR) must be ("""/one/two/three/""")
+        SourceFactory._convertSlashes("""\one\two\three\""", SourceFactory.WINDOWS_SEPARATOR) must be ("""\one\two\three\""")
     }
 
     @Test
     def wrongSlashesInUnixRootedPathAreCorrected() {
-        val source = Sources._pathToSource("""\a\b\c""", Sources.UNIX_SEPARATOR)
+        val source = SourceFactory._pathToSource("""\a\b\c""", SourceFactory.UNIX_SEPARATOR)
         source match {
             case rootedSource: RootedSource =>
                 rootedSource.path must be("""/a/b/c""")
@@ -53,7 +53,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def wrongSlashesInWindowsRootedPathAreCorrected() {
-        val source = Sources._pathToSource("""/a/b/c""", Sources.WINDOWS_SEPARATOR)
+        val source = SourceFactory._pathToSource("""/a/b/c""", SourceFactory.WINDOWS_SEPARATOR)
         source match {
             case rootedSource: RootedSource =>
                 rootedSource.path must be("""\a\b\c""")
@@ -63,7 +63,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     def rightSlashesInUnixRootedPathAreNotChanged() {
-        val source = Sources._pathToSource("""/a/b/c""", Sources.UNIX_SEPARATOR)
+        val source = SourceFactory._pathToSource("""/a/b/c""", SourceFactory.UNIX_SEPARATOR)
         source match {
             case rootedSource: RootedSource =>
                 rootedSource.path must be("""/a/b/c""")
@@ -74,7 +74,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def rightSlashesInWindowsRootedPathAreNotChanged() {
-        val source = Sources._pathToSource("""\a\b\c""", Sources.WINDOWS_SEPARATOR)
+        val source = SourceFactory._pathToSource("""\a\b\c""", SourceFactory.WINDOWS_SEPARATOR)
         source match {
             case rootedSource: RootedSource =>
                 rootedSource.path must be("""\a\b\c""")
@@ -85,7 +85,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def wrongSlashesInUnixUnrootedPathAreCorrected() {
-        val source = Sources._pathToSource("""a\b\c""", Sources.UNIX_SEPARATOR)
+        val source = SourceFactory._pathToSource("""a\b\c""", SourceFactory.UNIX_SEPARATOR)
         source match {
             case unrootedSource: UnrootedSource =>
                 unrootedSource.path must be("""a/b/c""")
@@ -95,7 +95,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def wrongSlashesInWindowsUnrootedPathAreCorrected() {
-        val source = Sources._pathToSource("""a/b/c""", Sources.WINDOWS_SEPARATOR)
+        val source = SourceFactory._pathToSource("""a/b/c""", SourceFactory.WINDOWS_SEPARATOR)
         source match {
             case unrootedSource: UnrootedSource =>
                 unrootedSource.path must be("""a\b\c""")
@@ -105,7 +105,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def rightSlashesInUnixUnrootedPathAreNotChanged() {
-        val source = Sources._pathToSource("""a/b/c""", Sources.UNIX_SEPARATOR)
+        val source = SourceFactory._pathToSource("""a/b/c""", SourceFactory.UNIX_SEPARATOR)
         source match {
             case unrootedSource: UnrootedSource =>
                 unrootedSource.path must be("""a/b/c""")
@@ -115,7 +115,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def rightSlashesInWindowsUnrootedPathAreNotChanged() {
-        val source = Sources._pathToSource("""a\b\c""", Sources.WINDOWS_SEPARATOR)
+        val source = SourceFactory._pathToSource("""a\b\c""", SourceFactory.WINDOWS_SEPARATOR)
         source match {
             case unrootedSource: UnrootedSource =>
                 unrootedSource.path must be("""a\b\c""")
@@ -125,7 +125,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def uncPathWithWrongSlashesAndNonEmptySubcomponentsPathGivesUNCSource() {
-        val source = Sources.pathToSource("""//server/share/foo/bar/quux""")
+        val source = SourceFactory.pathToSource("""//server/share/foo/bar/quux""")
         source match {
             case uncSource: UNCSource =>
                 uncSource.server must be("server")
@@ -139,7 +139,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def drivePathWithWrongSlashesAndAbsoluteSubcomponentsPathGivesWindowsDriveSource() {
-        val source = Sources.pathToSource("""d:/path/to/test.foo""")
+        val source = SourceFactory.pathToSource("""d:/path/to/test.foo""")
         source match {
             case driveSource: WindowsDriveSource =>
                 driveSource.driveLetter must be("D:")
@@ -152,7 +152,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def unrootedPathGivesUnrootedSource() {
-        val source = Sources.pathToSource("a/b/c")
+        val source = SourceFactory.pathToSource("a/b/c")
         source match {
             case unrootedSource: UnrootedSource =>
                 unrootedSource.path must be("a/b/c")
@@ -163,7 +163,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def uncPathWithoutSubcomponentsPathGivesUNCSource() {
-        val source = Sources.pathToSource("""\\server\share""")
+        val source = SourceFactory.pathToSource("""\\server\share""")
         source match {
             case uncSource: UNCSource =>
                 uncSource.server must be("server")
@@ -177,7 +177,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def uncPathWithEmptySubcomponentsPathGivesUNCSource() {
-        val source = Sources.pathToSource("""\\server\share\""")
+        val source = SourceFactory.pathToSource("""\\server\share\""")
         source match {
             case uncSource: UNCSource =>
                 uncSource.server must be("server")
@@ -191,7 +191,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def uncPathWithNonEmptySubcomponentsPathGivesUNCSource() {
-        val source = Sources.pathToSource("""\\server\share\foo\bar\quux""")
+        val source = SourceFactory.pathToSource("""\\server\share\foo\bar\quux""")
         source match {
             case uncSource: UNCSource =>
                 uncSource.server must be("server")
@@ -205,7 +205,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def drivePathWithoutSubcomponentsPathGivesWindowsDriveSource() {
-        val source = Sources.pathToSource("""d:""")
+        val source = SourceFactory.pathToSource("""d:""")
         source match {
             case driveSource: WindowsDriveSource =>
                 driveSource.driveLetter must be("D:")
@@ -218,7 +218,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def drivePathWithSubcomponentsPathGivesWindowsDriveSource() {
-        val source = Sources.pathToSource("""d:test.foo""")
+        val source = SourceFactory.pathToSource("""d:test.foo""")
         source match {
             case driveSource: WindowsDriveSource =>
                 driveSource.driveLetter must be("D:")
@@ -231,7 +231,7 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def drivePathWithAbsoluteSubcomponentsPathGivesWindowsDriveSource() {
-        val source = Sources.pathToSource("""d:\path\to\test.foo""")
+        val source = SourceFactory.pathToSource("""d:\path\to\test.foo""")
         source match {
             case driveSource: WindowsDriveSource =>
                 driveSource.driveLetter must be("D:")

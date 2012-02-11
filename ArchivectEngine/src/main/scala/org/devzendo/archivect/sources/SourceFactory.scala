@@ -16,11 +16,11 @@
 
 package org.devzendo.archivect.sources
 
-class Sources {
+class SourceFactory {
 
 }
 
-object Sources {
+object SourceFactory {
     val UNIX_SEPARATOR = '/'
     val WINDOWS_SEPARATOR = '\\'
 
