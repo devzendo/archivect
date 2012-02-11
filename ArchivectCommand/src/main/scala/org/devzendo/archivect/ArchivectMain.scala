@@ -69,7 +69,7 @@ object ArchivectMain {
         val ruleCompiler: RuleCompiler = springLoader.getBean("ruleCompiler", classOf[RuleCompiler])
         try {
             val fileSystemAccess: DefaultFileSystemAccess = new DefaultFileSystemAccess()
-            val fileSystemAccessFactory: FileSystemAccessFactory = springLoader.getBean("&fileSystemAccessFactory", classOf[FileSystemAccessFactory])
+            val fileSystemAccessFactory: FileSystemAccessFactory = springLoader.getBean("&fileSystemAccess", classOf[FileSystemAccessFactory])
             fileSystemAccessFactory.setFileSystemAccess(fileSystemAccess)
             
             val operation: CommandModel = commandLineParser.parse(finalArgList)

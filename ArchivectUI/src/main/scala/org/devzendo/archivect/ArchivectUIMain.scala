@@ -70,7 +70,7 @@ object ArchivectUIMain {
 
         try {
             val fileSystemAccess: DefaultFileSystemAccess = new DefaultFileSystemAccess()
-            val fileSystemAccessFactory: FileSystemAccessFactory = springLoader.getBean("&fileSystemAccessFactory", classOf[FileSystemAccessFactory])
+            val fileSystemAccessFactory: FileSystemAccessFactory = springLoader.getBean("&fileSystemAccess", classOf[FileSystemAccessFactory])
             fileSystemAccessFactory.setFileSystemAccess(fileSystemAccess)
 
             val prefsStartupHelper: GuiPrefsStartupHelper = springLoader.getBean("guiPrefsStartupHelper", classOf[GuiPrefsStartupHelper])
