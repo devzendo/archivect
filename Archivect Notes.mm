@@ -1,4 +1,4 @@
-<map version="0.8.1">
+<map version="0.9.0">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1327740957207" ID="Freemind_Link_579136631" MODIFIED="1327740995692" TEXT="Archivect Notes">
 <node CREATED="1327741061249" ID="_" MODIFIED="1327741062727" POSITION="right" TEXT="Finder">
@@ -42,7 +42,7 @@
 </node>
 <node CREATED="1327749980091" ID="Freemind_Link_529308366" MODIFIED="1327749994712" TEXT="It&apos;s more like Model2EngineConfiguration"/>
 </node>
-<node CREATED="1327750170030" ID="Freemind_Link_317407797" MODIFIED="1327750174382" POSITION="right" TEXT="Tree">
+<node CREATED="1327750170030" ID="Freemind_Link_317407797" MODIFIED="1328990963025" POSITION="right" TEXT="Tree">
 <node CREATED="1327750175259" ID="Freemind_Link_1289269430" MODIFIED="1327750190291" TEXT="A tree of path components"/>
 <node CREATED="1327750191468" ID="Freemind_Link_1416525941" MODIFIED="1327750196838" TEXT="Uses">
 <node CREATED="1327741635109" ID="Freemind_Link_825089563" MODIFIED="1327750221020" TEXT="Processed components tree">
