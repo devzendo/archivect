@@ -29,9 +29,9 @@ object Sources {
     }
     case class UnrootedSource(override val path: String, override val pathSeparatorChar: Char) extends Source(path, pathSeparatorChar)
     case class RootedSource(override val path: String, override val pathSeparatorChar: Char) extends Source(path, pathSeparatorChar)
-    case class WindowsDriveSource(override val path: String, driveLetter: String) extends Source(path, '\\')
+    case class WindowsDriveSource(override val path: String, driveLetter: String) extends RootedSource(path, '\\')
     // Not sure I want to support UNC paths as sources
-    case class UNCSource(override val path: String, server: String, share: String) extends Source(path, '\\')
+    case class UNCSource(override val path: String, server: String, share: String) extends RootedSource(path, '\\')
     
     private[this] val drivePath = """^(\S):([/\\])?(.*)$""".r // drive paths are absolute anyway, ignore leading \
     private[this] val uncPath = """^[/\\]{2}(.+?)[/\\](.+?)([/\\].*)?$""".r
