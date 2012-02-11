@@ -28,10 +28,10 @@ object Sources {
         val pathComponents: List[String] = path.split("""[/\\]""").filter(component => component.length() > 0).toList
     }
     case class UnrootedSource(override val path: String, override val pathSeparatorChar: Char) extends Source(path, pathSeparatorChar)
-    case class RootedSource(override val path: String, override val pathSeparatorChar: Char) extends Source(path, pathSeparatorChar)
-    case class WindowsDriveSource(override val path: String, driveLetter: String) extends RootedSource(path, '\\')
+    case class RootedSource(override val path: String, override val pathSeparatorChar: Char, root: String) extends Source(path, pathSeparatorChar)
+    case class WindowsDriveSource(override val path: String, driveLetter: String) extends RootedSource(path, '\\', driveLetter)
     // Not sure I want to support UNC paths as sources
-    case class UNCSource(override val path: String, server: String, share: String) extends RootedSource(path, '\\')
+    case class UNCSource(override val path: String, override val root: String, server: String, share: String) extends RootedSource(path, '\\', root)
     
     private[this] val drivePath = """^(\S):([/\\])?(.*)$""".r // drive paths are absolute anyway, ignore leading \
     private[this] val uncPath = """^[/\\]{2}(.+?)[/\\](.+?)([/\\].*)?$""".r
@@ -51,10 +51,10 @@ object Sources {
                 WindowsDriveSource(_convertSlashes(removeLeading(nullToEmpty(path), "\\"), WINDOWS_SEPARATOR), endWith(driveLetter.toUpperCase, ":"))
 
             case uncPath(server, share, path) =>
-                UNCSource(_convertSlashes(_removeLeadingSlashes(nullToEmpty(path)), WINDOWS_SEPARATOR), server, share)
+                UNCSource(_convertSlashes(_removeLeadingSlashes(nullToEmpty(path)), WINDOWS_SEPARATOR), "\\\\" + server + "\\" + share, server, share)
 
             case rootedPath(path) =>
-                RootedSource(_convertSlashes(path, pathSeparatorChar), pathSeparatorChar)
+                RootedSource(_convertSlashes(path, pathSeparatorChar), pathSeparatorChar, pathSeparatorChar.toString)
 
             case path =>
                 UnrootedSource(_convertSlashes(path, pathSeparatorChar), pathSeparatorChar)
