@@ -41,6 +41,49 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
+    def wrongSlashesInUnixRootedPathAreCorrected() {
+        val source = Sources._pathToSource("""\a\b\c""", Sources.UNIX_SEPARATOR)
+        source match {
+            case rootedSource: RootedSource =>
+                rootedSource.path must be("""/a/b/c""")
+                rootedSource.root must be("/")
+            case _ => fail("did not return an RootedSource")
+        }
+    }
+
+    @Test
+    def wrongSlashesInWindowsRootedPathAreCorrected() {
+        val source = Sources._pathToSource("""/a/b/c""", Sources.WINDOWS_SEPARATOR)
+        source match {
+            case rootedSource: RootedSource =>
+                rootedSource.path must be("""\a\b\c""")
+                rootedSource.root must be("\\")
+            case _ => fail("did not return an RootedSource")
+        }
+    }
+
+    def rightSlashesInUnixRootedPathAreNotChanged() {
+        val source = Sources._pathToSource("""/a/b/c""", Sources.UNIX_SEPARATOR)
+        source match {
+            case rootedSource: RootedSource =>
+                rootedSource.path must be("""/a/b/c""")
+                rootedSource.root must be("/")
+            case _ => fail("did not return an RootedSource")
+        }
+    }
+
+    @Test
+    def rightSlashesInWindowsRootedPathAreNotChanged() {
+        val source = Sources._pathToSource("""\a\b\c""", Sources.WINDOWS_SEPARATOR)
+        source match {
+            case rootedSource: RootedSource =>
+                rootedSource.path must be("""\a\b\c""")
+                rootedSource.root must be("\\")
+            case _ => fail("did not return an UnrootedSource")
+        }
+    }
+
+    @Test
     def wrongSlashesInUnixUnrootedPathAreCorrected() {
         val source = Sources._pathToSource("""a\b\c""", Sources.UNIX_SEPARATOR)
         source match {
