@@ -24,6 +24,87 @@ import org.devzendo.archivect.sources.Sources._
 // "\\\\server\\share" is good also
 
 class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
+    
+    @Test
+    def removeLeadingSlashes() {
+        Sources._removeLeadingSlashes("n/o slashes at start") must be("n/o slashes at start")
+        Sources._removeLeadingSlashes("\\\\windows \\ slashes") must be("windows \\ slashes")
+        Sources._removeLeadingSlashes("/////unix / slashes") must be("unix / slashes")
+    }
+
+    @Test
+    def slashConversion() {
+        Sources._convertSlashes("""/one/two/three/""", Sources.UNIX_SEPARATOR) must be ("""/one/two/three/""")
+        Sources._convertSlashes("""/one/two/three/""", Sources.WINDOWS_SEPARATOR) must be ("""\one\two\three\""")
+        Sources._convertSlashes("""\one\two\three\""", Sources.UNIX_SEPARATOR) must be ("""/one/two/three/""")
+        Sources._convertSlashes("""\one\two\three\""", Sources.WINDOWS_SEPARATOR) must be ("""\one\two\three\""")
+    }
+
+    @Test
+    def wrongSlashesInUnixUnrootedPathAreCorrected() {
+        val source = Sources._pathToSource("""a\b\c""", Sources.UNIX_SEPARATOR)
+        source match {
+            case unrootedSource: UnrootedSource =>
+                unrootedSource.path must be("""a/b/c""")
+            case _ => fail("did not return an UnrootedSource")
+        }
+    }
+
+    @Test
+    def wrongSlashesInWindowsUnrootedPathAreCorrected() {
+        val source = Sources._pathToSource("""a/b/c""", Sources.WINDOWS_SEPARATOR)
+        source match {
+            case unrootedSource: UnrootedSource =>
+                unrootedSource.path must be("""a\b\c""")
+            case _ => fail("did not return an UnrootedSource")
+        }
+    }
+
+    @Test
+    def rightSlashesInUnixUnrootedPathAreNotChanged() {
+        val source = Sources._pathToSource("""a/b/c""", Sources.UNIX_SEPARATOR)
+        source match {
+            case unrootedSource: UnrootedSource =>
+                unrootedSource.path must be("""a/b/c""")
+            case _ => fail("did not return an UnrootedSource")
+        }
+    }
+
+    @Test
+    def rightSlashesInWindowsUnrootedPathAreNotChanged() {
+        val source = Sources._pathToSource("""a\b\c""", Sources.WINDOWS_SEPARATOR)
+        source match {
+            case unrootedSource: UnrootedSource =>
+                unrootedSource.path must be("""a\b\c""")
+            case _ => fail("did not return an UnrootedSource")
+        }
+    }
+
+    @Test
+    def uncPathWithWrongSlashesAndNonEmptySubcomponentsPathGivesUNCSource() {
+        val source = Sources.pathToSource("""//server/share/foo/bar/quux""")
+        source match {
+            case uncSource: UNCSource =>
+                uncSource.server must be("server")
+                uncSource.share must be("share")
+                uncSource.path must be("foo\\bar\\quux")
+                uncSource.pathComponents must be (List("foo", "bar", "quux"))
+            case x => fail("did not return a UNCSource; got a " + x.getClass.getName + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def drivePathWithWrongSlashesAndAbsoluteSubcomponentsPathGivesWindowsDriveSource() {
+        val source = Sources.pathToSource("""d:/path/to/test.foo""")
+        source match {
+            case driveSource: WindowsDriveSource =>
+                driveSource.driveLetter must be("D:")
+                driveSource.path must be("path\\to\\test.foo")
+                driveSource.pathComponents must be (List("path", "to", "test.foo"))
+            case x => fail("did not return a WindowsDriveSource; got a " + x.getClass.getName + ": '" + x + "'")
+        }
+    }
+
     @Test
     def unrootedPathGivesUnrootedSource() {
         val source = Sources.pathToSource("a/b/c")

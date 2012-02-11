@@ -16,43 +16,63 @@
 
 package org.devzendo.archivect.sources
 
+import scala.collection.mutable.ListBuffer
+
 class Sources {
 
 }
 
 object Sources {
-    sealed abstract class Source(val path: String, val pathSeparator: String) {
+    val UNIX_SEPARATOR = '/'
+    val WINDOWS_SEPARATOR = '\\'
+
+    sealed abstract class Source(val path: String, val pathSeparatorChar: Char) {
         val pathComponents: List[String] = path.split("""[/\\]""").filter(component => component.length() > 0).toList
     }
-    case class UnrootedSource(override val path: String, override val pathSeparator: String) extends Source(path, pathSeparator)
-    case class RootedSource(override val path: String, override val pathSeparator: String) extends Source(path, pathSeparator)
-    case class WindowsDriveSource(override val path: String, driveLetter: String) extends Source(path, "\\")
+    case class UnrootedSource(override val path: String, override val pathSeparatorChar: Char) extends Source(path, pathSeparatorChar)
+    case class RootedSource(override val path: String, override val pathSeparatorChar: Char) extends Source(path, pathSeparatorChar)
+    case class WindowsDriveSource(override val path: String, driveLetter: String) extends Source(path, '\\')
     // Not sure I want to support UNC paths as sources
-    case class UNCSource(override val path: String, server: String, share: String) extends Source(path, "\\")
+    case class UNCSource(override val path: String, server: String, share: String) extends Source(path, '\\')
     
-    private[this] val drivePath = """^(\S):(\\)?(.*)$""".r // drive paths are absolute anyway, ignore leading \
-    private[this] val uncPath = """^\\\\(.+?)\\(.+?)(\\.*)?$""".r
+    private[this] val drivePath = """^(\S):([/\\])?(.*)$""".r // drive paths are absolute anyway, ignore leading \
+    private[this] val uncPath = """^[/\\]{2}(.+?)[/\\](.+?)([/\\].*)?$""".r
     private[this] val rootedPath = """^([/\\].*)$""".r
-    
-    def pathToSource(inputPath: String): Source = {
+
+    /**
+     * Convert a path given a path separator
+     *
+     * @param inputPath
+     * @param pathSeparatorChar
+     * @return
+     */
+    def _pathToSource(inputPath: String, pathSeparatorChar: Char): Source = {
         val trimmedPath = inputPath.trim
         trimmedPath match {
             case drivePath(driveLetter, ignoreLeadingSlash, path) =>
-                WindowsDriveSource(removeLeading(nullToEmpty(path), "\\"), endWith(driveLetter.toUpperCase, ":"))
-                
+                WindowsDriveSource(_convertSlashes(removeLeading(nullToEmpty(path), "\\"), WINDOWS_SEPARATOR), endWith(driveLetter.toUpperCase, ":"))
+
             case uncPath(server, share, path) =>
-                UNCSource(removeLeading(nullToEmpty(path), "\\"), server, share)
-                
+                UNCSource(_convertSlashes(_removeLeadingSlashes(nullToEmpty(path)), WINDOWS_SEPARATOR), server, share)
+
             case rootedPath(path) =>
-                RootedSource(toPlatformSlashes(path), java.io.File.separator)
+                RootedSource(_convertSlashes(path, pathSeparatorChar), pathSeparatorChar)
 
             case path =>
-                UnrootedSource(toPlatformSlashes(path), java.io.File.separator)
+                UnrootedSource(_convertSlashes(path, pathSeparatorChar), pathSeparatorChar)
         }
     }
+
+    def pathToSource(inputPath: String): Source = {
+        _pathToSource(inputPath, java.io.File.separatorChar)
+    }
     
-    private[this] def toPlatformSlashes(path: String): String = {
-        path.replaceAll("""[/\\]""", java.io.File.separator)
+    private[this] def isSlash(c: Char): Boolean = {
+        (c == '/' || c == '\\')
+    }
+    
+    def _convertSlashes(path: String, pathSeparatorChar: Char): String = {
+        path.map((c: Char) => if (isSlash(c)) pathSeparatorChar else c)
     }
     
     private[this] def endWith(string: String, endWith: String): String = {
@@ -70,7 +90,20 @@ object Sources {
             string
         }
     }
-    
+
+    def _removeLeadingSlashes(string: String): String = {
+        val out = new StringBuilder
+        var copy = false
+        string.foreach((c: Char) => {
+            val slash = isSlash(c)
+            if (!slash) { copy = true }
+            if (copy) {
+                out += c
+            }
+        })
+        out.toString
+    }
+
     private[this] def nullToEmpty(in: String): String = {
         if (in == null) "" else in
     }
