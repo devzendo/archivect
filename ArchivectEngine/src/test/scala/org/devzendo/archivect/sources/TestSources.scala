@@ -30,7 +30,6 @@ class TestSources extends AssertionsForJUnit with MustMatchersForJUnit {
         val source = Sources.pathToSource("a/b/c")
         source match {
             case unrootedSource: UnrootedSource =>
-                println("got '" + unrootedSource.path + "'")
                 unrootedSource.path must be("a/b/c")
                 unrootedSource.pathComponents must be(List("a", "b", "c"))
             case _ => fail("did not return an UnrootedSource")
