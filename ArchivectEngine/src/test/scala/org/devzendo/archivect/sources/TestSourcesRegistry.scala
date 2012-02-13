@@ -16,26 +16,18 @@
 
 package org.devzendo.archivect.sources
 
-import scala.collection.mutable.{ ListBuffer}
-
+import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
+import org.junit.{ Test }
+//import org.devzendo.archivect.sources.Sources._
 import org.devzendo.archivect.sources.SourceFactory._
-import collection.immutable.{TreeMap, TreeSet}
 
-class Sources {
-    var roots = new ListBuffer[String]()
-    var unrootedSources = new TreeSet[UnrootedSource]
-    var uncRootedSources = new TreeMap[String, Source] // keyed on root
+class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
 
-    def getSources(): List[Source] = {
-        val sources = new ListBuffer[Source]
-        sources ++= unrootedSources
-        sources += rootedSources
-        sources.readOnly
+    @Test
+    def newSourcesHaveNoSourcesAndNoRoots() {
+//        val sources = new Sources()
+//        sources.getRoots().size must be(0)
+//        sources.getSources().size() must be(0)
+
     }
-
-
-    def getRoots(): List[String] = {
-        roots.readOnly
-    }
-
 }
