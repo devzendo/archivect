@@ -18,16 +18,97 @@ package org.devzendo.archivect.sources
 
 import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
 import org.junit.{ Test }
-//import org.devzendo.archivect.sources.Sources._
-import org.devzendo.archivect.sources.SourceFactory._
+import org.devzendo.archivect.sources.SourceTreeFactory._
 
 class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
+    val sources = new SourcesRegistry()
 
     @Test
-    def newSourcesHaveNoSourcesAndNoRoots() {
-//        val sources = new Sources()
-//        sources.getRoots().size must be(0)
-//        sources.getSources().size() must be(0)
+    def newSourcesHaveNoSources() {
+        sources.getSources.size must be(0)
+    }
 
+    @Test
+    def unrootedSourcesAreStoredInSameSourceTree() {
+        val sourceTree1 = sources.addSource(SourceFactory._pathToSource("""a\b\c""",
+            SourceFactory.UNIX_SEPARATOR))
+        val sourceTree2 = sources.addSource(SourceFactory._pathToSource("""r\s\t""",
+            SourceFactory.UNIX_SEPARATOR))
+        sourceTree1 must be theSameInstanceAs sourceTree2
+        sourceTree1 match {
+            case unrootedSourceTree: UnrootedSourceTree =>
+            case x => fail("did not return a UnrootedSourceTree; got a " +
+                x.getClass.getName + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def rootedSourcesAreStoredInSameSourceTree() {
+        val sourceTree1 = sources.addSource(SourceFactory._pathToSource("""\a\b\c""",
+            SourceFactory.UNIX_SEPARATOR))
+        val sourceTree2 = sources.addSource(SourceFactory._pathToSource("""\r\s\t""",
+            SourceFactory.UNIX_SEPARATOR))
+        sourceTree1 must be theSameInstanceAs sourceTree2
+        sourceTree1 match {
+            case rootedSourceTree: RootedSourceTree =>
+            case x => fail("did not return a RootedSourceTree; got a " +
+                x.getClass.getName + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def windowsDriveSourcesWithSameDriveAreStoredInSameSourceTree() {
+        val sourceTree1 = sources.addSource(SourceFactory._pathToSource("""D:\a\b\c""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        val sourceTree2 = sources.addSource(SourceFactory._pathToSource("""D:\r\s\t""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        sourceTree1 must be theSameInstanceAs sourceTree2
+        sourceTree1 match {
+            case windowsDriveSourceTree: WindowsDriveSourceTree =>
+            case x => fail("did not return a WindowsDriveSourceTree; got a " +
+                x.getClass.getName + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def windowsDriveSourcesWithDifferentDriveAreStoredInSameDifferentTree() {
+        val sourceTree1 = sources.addSource(SourceFactory._pathToSource("""D:\a\b\c""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        val sourceTree2 = sources.addSource(SourceFactory._pathToSource("""C:\r\s\t""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        sourceTree1 must not (be theSameInstanceAs sourceTree2)
+        sourceTree1 match {
+            case windowsDriveSourceTree: WindowsDriveSourceTree =>
+            case x => fail("did not return a WindowsDriveSourceTree; got a " +
+                x.getClass.getName + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def uncSourcesWithSameRootAreStoredInSameSourceTree() {
+        val sourceTree1 = sources.addSource(SourceFactory._pathToSource("""\\server\share\a\b\c""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        val sourceTree2 = sources.addSource(SourceFactory._pathToSource("""\\server\share\r\s\t""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        sourceTree1 must be theSameInstanceAs sourceTree2
+        sourceTree1 match {
+            case uncSourceTree: UNCSourceTree =>
+            case x => fail("did not return a UNCSourceTree; got a " +
+                x.getClass.getName + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def uncSourcesWithDifferentRootAreStoredInSameDifferentTree() {
+        val sourceTree1 = sources.addSource(SourceFactory._pathToSource("""\\server1\share\a\b\c""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        val sourceTree2 = sources.addSource(SourceFactory._pathToSource("""\\server2\share\r\s\t""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        sourceTree1 must not (be theSameInstanceAs sourceTree2)
+        sourceTree1 match {
+            case uncSourceTree: UNCSourceTree =>
+            case x => fail("did not return a UNCSourceTree; got a " +
+                x.getClass.getName + ": '" + x + "'")
+        }
     }
 }

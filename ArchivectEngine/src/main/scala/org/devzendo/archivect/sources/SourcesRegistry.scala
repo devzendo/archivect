@@ -17,9 +17,10 @@
 package org.devzendo.archivect.sources
 
 import scala.collection.mutable.ListBuffer
+import collection.immutable.TreeMap
 
 import org.devzendo.archivect.sources.SourceFactory._
-import collection.immutable.TreeSet
+import org.devzendo.archivect.sources.SourceTreeFactory._
 
 /**
  * The SourcesRegistry allows Sources to be added,
@@ -68,36 +69,69 @@ object SourcesRegistry {
     }
 
     val pathOrdering = Ordering.fromLessThan[Source](lessThan)
-
 }
 
 class SourcesRegistry {
 
     var roots = new ListBuffer[String]()
-    var unrootedSourceTrees = TreeSet.empty(SourcesRegistry.pathOrdering)
+    var unrootedSourceTree: Option[UnrootedSourceTree] = None
+    var rootedSourceTrees = new TreeMap[String, SourceTree] // keyed on root
+    var uncSourceTrees = new TreeMap[String, UNCSourceTree] // keyed on root
+    var windowsDriveSourceTrees = new TreeMap[String, WindowsDriveSourceTree]
+        // keyed on root
+
 //    implicit def unrootedSource2
 //    var uncRootedSources = new TreeMap[String, Source] // keyed on root
 
-    def getSources(): List[Source] = {
+    def getSources: List[Source] = {
         val sources = new ListBuffer[Source]
         //sources ++= unrootedSources
 //        sources += rootedSources
         sources.readOnly
     }
 
-
-    def getRoots(): List[String] = {
+    def getRoots: List[String] = {
         roots.readOnly
     }
 
-    def addSource(source: Source) = {
-//        source match {
-//            case unrootedSource: UnrootedSource =>
-//          //      unrootedSources += unrootedSource
-//            case rootedSource: RootedSource =>
-//            case uncSource: UNCSource =>
-//            case driveSource: WindowsDriveSource =>
-//        }
-
+    def addSource(source: Source): SourceTree = {
+        source match {
+            case unrootedSource: UnrootedSource =>
+                if (unrootedSourceTree.isEmpty) {
+                   unrootedSourceTree = Some(UnrootedSourceTree())
+                }
+                unrootedSourceTree.get
+            case uncSource: UNCSource =>
+                val root = uncSource.root
+                val tree = uncSourceTrees.get(root)
+                if (tree.isEmpty) {
+                    val newRoot =  UNCSourceTree(uncSource.server,
+                        uncSource.share)
+                    uncSourceTrees = uncSourceTrees.insert(root, newRoot)
+                    newRoot
+                } else {
+                    tree.get
+                }
+            case driveSource: WindowsDriveSource =>
+                val root = driveSource.root
+                val tree = windowsDriveSourceTrees.get(root)
+                if (tree.isEmpty) {
+                    val newRoot =  WindowsDriveSourceTree(driveSource.driveLetter)
+                    windowsDriveSourceTrees = windowsDriveSourceTrees.insert(root, newRoot)
+                    newRoot
+                } else {
+                    tree.get
+                }
+            case rootedSource: RootedSource =>
+                val root = rootedSource.root
+                val tree = rootedSourceTrees.get(root)
+                if (tree.isEmpty) {
+                    val newRoot =  RootedSourceTree(root)
+                    rootedSourceTrees = rootedSourceTrees.insert(root, newRoot)
+                    newRoot
+                } else {
+                    tree.get
+                }
+        }
     }
 }
