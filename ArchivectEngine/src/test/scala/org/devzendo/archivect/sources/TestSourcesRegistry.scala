@@ -17,7 +17,7 @@
 package org.devzendo.archivect.sources
 
 import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
-import org.junit.{ Test }
+import org.junit.Test
 import org.devzendo.archivect.sources.SourceTreeFactory._
 
 class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
