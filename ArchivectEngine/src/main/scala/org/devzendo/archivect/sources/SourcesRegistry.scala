@@ -76,18 +76,20 @@ class SourcesRegistry {
     var roots = new ListBuffer[String]()
     var unrootedSourceTree: Option[UnrootedSourceTree] = None
     var rootedSourceTrees = new TreeMap[String, SourceTree] // keyed on root
+    var windowsDriveSourceTrees = new TreeMap[String, WindowsDriveSourceTree] // keyed on root
     var uncSourceTrees = new TreeMap[String, UNCSourceTree] // keyed on root
-    var windowsDriveSourceTrees = new TreeMap[String, WindowsDriveSourceTree]
-        // keyed on root
 
-//    implicit def unrootedSource2
-//    var uncRootedSources = new TreeMap[String, Source] // keyed on root
-
-    def getSources: List[Source] = {
-        val sources = new ListBuffer[Source]
+    def getSourceTrees: List[SourceTree] = {
+        val sourceTrees = new ListBuffer[SourceTree]
+        if (unrootedSourceTree.isDefined) {
+            sourceTrees += unrootedSourceTree.get
+        }
+        sourceTrees ++= rootedSourceTrees.values // TODO sort by root
+        sourceTrees ++= windowsDriveSourceTrees.values
+        sourceTrees ++= uncSourceTrees.values // TODO sort by server, share
         //sources ++= unrootedSources
 //        sources += rootedSources
-        sources.readOnly
+        sourceTrees.readOnly
     }
 
     def getRoots: List[String] = {

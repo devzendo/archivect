@@ -16,6 +16,7 @@
 
 package org.devzendo.archivect.sources
 
+import scala.util.Random
 import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
 import org.junit.Test
 import org.devzendo.archivect.sources.SourceTreeFactory._
@@ -25,7 +26,96 @@ class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
 
     @Test
     def newSourcesHaveNoSources() {
-        sources.getSources.size must be(0)
+        sources.getSourceTrees.size must be(0)
+    }
+
+    @Test
+    def sourcesAreReturnedInOrder() {
+        sources.addSource(SourceFactory._pathToSource
+            ("""\\zenserver\emptiness\0""", SourceFactory.WINDOWS_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource("""a\b\c""",
+            SourceFactory.UNIX_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource("""a\c""",
+            SourceFactory.UNIX_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource("""\z""",
+            SourceFactory.UNIX_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource("""\a\b\c""",
+            SourceFactory.UNIX_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource("""\a""",
+            SourceFactory.UNIX_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource("""Z:\a\c""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource("""D:\a\b\c""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource("""D:\z""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource("""D:\a""",
+            SourceFactory.WINDOWS_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource
+            ("""\\abcserver\share\a\b\c""", SourceFactory.WINDOWS_SEPARATOR))
+        sources.addSource(SourceFactory._pathToSource
+            ("""\\abcserver\aardvark\a\b\c""", SourceFactory.WINDOWS_SEPARATOR))
+
+        val src = sources.getSourceTrees
+        src.size must be(7)
+        expectTree(src(0), classOf[UnrootedSourceTree])
+        expectTree(src(1), classOf[RootedSourceTree])
+        expectTree(src(2), classOf[WindowsDriveSourceTree], "D:")
+        expectTree(src(3), classOf[WindowsDriveSourceTree], "Z:")
+        expectTree(src(4), classOf[UNCSourceTree], """\\abcserver\aardvark""")
+        expectTree(src(5), classOf[UNCSourceTree], """\\abcserver\share""")
+        expectTree(src(6), classOf[UNCSourceTree], """\\zenserver\emptiness""")
+
+        /*
+        expectSource(src(0), """a\c""")
+        expectSource(src(1), """a\b\c""")
+        expectSource(src(2), """\a""")
+        expectSource(src(3), """\a\b\c""")
+        expectSource(src(4), """\z""")
+        expectSource(src(5), "D:", """\a""")
+        expectSource(src(6), "D:", """\a\b\c""")
+        expectSource(src(7), "D:", """\z""")
+        expectSource(src(8), "Z:", """\a\c""")
+        expectSource(src(9), """\\abcserver\aardvark""", """\a\b\c""")
+        expectSource(src(10), """\\abcserver\share""", """\a\b\c""")
+        expectSource(src(11), """\\zenserver\emptiness""", """\0""")
+        */
+    }
+
+    def expectTree(tree: SourceTree, clazz: Class[_ <: SourceTree]) {
+        tree.getClass must be(clazz)
+    }
+
+    def expectTree(tree: SourceTree, clazz: Class[_ <: RootedSourceTree],
+                   root: String) {
+        tree.getClass must be(clazz)
+        tree match {
+            case rootedSourceTree: RootedSourceTree =>
+                rootedSourceTree.root must be(root)
+            case x => fail("did not return a RootedSourceTree; got a " +
+                x.getClass.getName + ": '" + x + "'")
+        }
+    }
+
+    @Test
+    def windowsDriveSourcesAreReturnedInDriveOrder() {
+        val drives = ('A' to 'Z').toList
+        for (drive <- Random.shuffle(drives)) {
+            sources.addSource(SourceFactory._pathToSource("" + drive + """:\a""",
+                SourceFactory.WINDOWS_SEPARATOR))
+        }
+        val sourceTrees = sources.getSourceTrees
+        sourceTrees.size must be(26)
+        val driveCharZSourceTrees = drives zip sourceTrees
+
+        for (driveCharZSourceTree <- driveCharZSourceTrees) {
+            driveCharZSourceTree._2 match {
+                case windowsDriveSourceTree: WindowsDriveSourceTree =>
+                    windowsDriveSourceTree.driveLetter must be(driveCharZSourceTree._1 + ":")
+                case x => fail("did not return a WindowsDriveSourceTree; got a " +
+                    x.getClass.getName + ": '" + x + "'")
+            }
+        }
     }
 
     @Test
@@ -37,7 +127,7 @@ class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
         sourceTree1 must be theSameInstanceAs sourceTree2
         sourceTree1 match {
             case unrootedSourceTree: UnrootedSourceTree =>
-            case x => fail("did not return a UnrootedSourceTree; got a " +
+            case x => fail("did not return an UnrootedSourceTree; got a " +
                 x.getClass.getName + ": '" + x + "'")
         }
     }
