@@ -119,6 +119,44 @@ class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
+    def uncSourcesAreReturnedInServerThenShareOrder() {
+        addSource("""\\xyz\xyz\a""")
+        addSource("""\\xyz\rst\b""")
+        addSource("""\\xyz\abc\c""")
+        addSource("""\\rst\xyz\d""")
+        addSource("""\\rst\rst\e""")
+        addSource("""\\rst\abc\f""")
+        addSource("""\\abc\xyz\g""")
+        addSource("""\\abc\rst\h""")
+        addSource("""\\abc\abc\i""")
+
+        val sourceTrees = sources.getSourceTrees
+        sourceTrees.size must be(9)
+        expectUnc(sourceTrees(0), """\\abc\abc""")
+        expectUnc(sourceTrees(1), """\\abc\rst""")
+        expectUnc(sourceTrees(2), """\\abc\xyz""")
+        expectUnc(sourceTrees(3), """\\rst\abc""")
+        expectUnc(sourceTrees(4), """\\rst\rst""")
+        expectUnc(sourceTrees(5), """\\rst\xyz""")
+        expectUnc(sourceTrees(6), """\\xyz\abc""")
+        expectUnc(sourceTrees(7), """\\xyz\rst""")
+        expectUnc(sourceTrees(8), """\\xyz\xyz""")
+    }
+
+    def addSource(source: String) {
+        sources.addSource(SourceFactory._pathToSource(source, SourceFactory.WINDOWS_SEPARATOR))
+    }
+
+    def expectUnc(tree: SourceTree, root: String) {
+        tree match {
+            case uncSourceTree: UNCSourceTree =>
+                uncSourceTree.root must be(root)
+            case x => fail("did not return a UNCSourceTree; got a " +
+                x.getClass.getName + ": '" + x + "'")
+        }
+    }
+    
+    @Test
     def unrootedSourcesAreStoredInSameSourceTree() {
         val sourceTree1 = sources.addSource(SourceFactory._pathToSource("""a\b\c""",
             SourceFactory.UNIX_SEPARATOR))
