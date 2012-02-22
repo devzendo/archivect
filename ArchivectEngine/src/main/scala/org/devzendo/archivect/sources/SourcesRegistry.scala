@@ -84,11 +84,9 @@ class SourcesRegistry {
         if (unrootedSourceTree.isDefined) {
             sourceTrees += unrootedSourceTree.get
         }
-        sourceTrees ++= rootedSourceTrees.values // TODO sort by root
+        sourceTrees ++= rootedSourceTrees.values
         sourceTrees ++= windowsDriveSourceTrees.values
-        sourceTrees ++= uncSourceTrees.values // TODO sort by server, share
-        //sources ++= unrootedSources
-//        sources += rootedSources
+        sourceTrees ++= uncSourceTrees.values
         sourceTrees.readOnly
     }
 
@@ -97,6 +95,12 @@ class SourcesRegistry {
     }
 
     def addSource(source: Source): SourceTree = {
+        val sourceTree = getSourceTree(source)
+        // TODO add the source to the sourceTree
+        sourceTree
+    }
+
+    private[this] def getSourceTree(source: Source): SourceTree = {
         source match {
             case unrootedSource: UnrootedSource =>
                 if (unrootedSourceTree.isEmpty) {
@@ -107,8 +111,7 @@ class SourcesRegistry {
                 val root = uncSource.root
                 val tree = uncSourceTrees.get(root)
                 if (tree.isEmpty) {
-                    val newRoot =  UNCSourceTree(uncSource.server,
-                        uncSource.share)
+                    val newRoot =  UNCSourceTree(uncSource.server, uncSource.share)
                     uncSourceTrees = uncSourceTrees.insert(root, newRoot)
                     newRoot
                 } else {
