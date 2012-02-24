@@ -1,6 +1,6 @@
 <map version="0.9.0">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node CREATED="1327740957207" ID="Freemind_Link_579136631" MODIFIED="1327740995692" TEXT="Archivect Notes">
+<node CREATED="1327740957207" ID="Freemind_Link_579136631" MODIFIED="1329985900137" TEXT="Archivect Notes">
 <node CREATED="1327741061249" ID="_" MODIFIED="1327741062727" POSITION="right" TEXT="Finder">
 <node CREATED="1327741063373" ID="Freemind_Link_1518532506" MODIFIED="1327741083608" TEXT="Has a Sources">
 <node CREATED="1327741084405" ID="Freemind_Link_1605461299" MODIFIED="1327741092214" TEXT="Contains all the sources the user has specified"/>
@@ -50,6 +50,29 @@
 <node CREATED="1327741745580" ID="Freemind_Link_1198114" MODIFIED="1327741769207" TEXT="So I can know whether a dir/file has been archived or not"/>
 </node>
 <node CREATED="1327750225068" ID="Freemind_Link_1119895434" MODIFIED="1327750249660" TEXT="Rule/Selection tree"/>
+</node>
+</node>
+<node CREATED="1329985901301" ID="ID_264659955" MODIFIED="1329985939661" POSITION="left" TEXT="SourcesRegistry needs to add the Source to the SourceTree">
+<node CREATED="1329985947695" ID="ID_1922813670" MODIFIED="1329986172887" TEXT="What is the API of the SourceTree?"/>
+<node CREATED="1329986179873" ID="ID_500608667" MODIFIED="1329986189117" TEXT="What does the Finder expect?">
+<node CREATED="1329986190071" ID="ID_366339259" MODIFIED="1329986207088" TEXT="cd-like navigation?"/>
+<node CREATED="1329986486611" ID="ID_105285568" MODIFIED="1329986563240" TEXT="getHead?">
+<node CREATED="1329986588338" ID="ID_1527944282" MODIFIED="1329986600226" TEXT="returns a SourceNode">
+<node CREATED="1329986608875" ID="ID_1341441696" MODIFIED="1329986616314" TEXT="has Rules"/>
+<node CREATED="1329986634470" ID="ID_857007250" MODIFIED="1329986641165" TEXT="has DirectoryNodes"/>
+<node CREATED="1329986641567" ID="ID_1239110741" MODIFIED="1329986647341" TEXT="has FileNodes"/>
+</node>
+<node CREATED="1329986563778" ID="ID_1789534366" MODIFIED="1329986574288" TEXT="can then getDirectoryNodes"/>
+<node CREATED="1329986577106" ID="ID_918867968" MODIFIED="1329986581329" TEXT="can then getFileNodes"/>
+</node>
+<node CREATED="1329986207431" ID="ID_1788371762" MODIFIED="1329986212872" TEXT="isDirectoryPresent?"/>
+<node CREATED="1329986213336" ID="ID_705957354" MODIFIED="1329986219632" TEXT="getRulesForPath?"/>
+<node CREATED="1329986219897" ID="ID_356389536" MODIFIED="1329986226830" TEXT="getExclusionsForPath?"/>
+</node>
+<node CREATED="1329986236520" ID="ID_1574828888" MODIFIED="1329986243491" TEXT="Can add a source /dir/dir/dir"/>
+<node CREATED="1329986244113" ID="ID_1549472579" MODIFIED="1329986250536" TEXT="Can add a source /dir/file"/>
+<node CREATED="1329986267407" ID="ID_177944964" MODIFIED="1329986292216" TEXT="SourceTree needs a helper to determine whether path components of the Source are files or directories">
+<node CREATED="1329986373426" ID="ID_1245303798" MODIFIED="1329986385856" TEXT="Must throw if any path components don&apos;t exist"/>
 </node>
 </node>
 </node>
