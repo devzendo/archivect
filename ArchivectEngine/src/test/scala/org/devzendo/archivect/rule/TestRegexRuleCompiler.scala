@@ -1,3 +1,5 @@
+package org.devzendo.archivect.rule
+
 /**
  * Copyright (C) 2008-2011 Matt Gumbley, DevZendo.org <http://devzendo.org>
  *
@@ -13,47 +15,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-package org.devzendo.archivect.rule
 
-import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
-import org.junit.{ Test, Ignore }
+import org.scalatest.junit.{AssertionsForJUnit, MustMatchersForJUnit}
+import org.junit.{Test, Ignore}
 
 import java.io.File
 
-import org.devzendo.xpfsa.{ DetailedFile, FileStatus }
+import org.devzendo.xpfsa.{DetailedFile, FileStatus}
 
 import org.devzendo.archivect.model.Rule
 import org.devzendo.archivect.model.CommandModel.RuleType._
 
-class TestIRegexRuleCompiler extends AssertionsForJUnit with MustMatchersForJUnit {
+class TestRegexRuleCompiler extends AssertionsForJUnit with MustMatchersForJUnit {
     val compiler = new RuleCompiler()
 
     @Test
-    def garbageIRegexIsDetected() {
-        compileFailsWithMessage("[aeiou", "The case-insensitive regex rule '[aeiou' is not a valid regex: Unclosed character class (near position 5)")
+    def garbageRegexIsDetected() {
+        compileFailsWithMessage("[aeiou", "The regex rule '[aeiou' is not a valid regex: Unclosed character class (near position 5)")
     }
-    
+
     private def compileFailsWithMessage(ruleText: String, message: String) = {
         val ex = intercept[IllegalStateException] {
-            compiler.compile(Rule(IRegex, ruleText, "/tmp"))
+            compiler.compile(Rule(Regex, ruleText, "/tmp"))
         }
         ex.getMessage() must equal(message)
     }
 
     @Test
-    def iregexRulePredicateMatchesCorrectly() {
-        val predicate = compiler.compile(Rule(IRegex, "^.*\\.c$", "/tmp"))
+    def regexRulePredicateMatchesCorrectly() {
+        val predicate = compiler.compile(Rule(Regex, "^.*\\.c$", "/tmp"))
         val cFile = StubDetailedFile("/tmp/foo.c")
-        predicate.matches(cFile) must be (true)
+        predicate.matches(cFile) must be(true)
         val txtFile = StubDetailedFile("/tmp/foo.txt")
-        predicate.matches(txtFile) must be (false)
+        predicate.matches(txtFile) must be(false)
     }
-    
+
     @Test
-    def regexIsCaseInsensitive() {
-        val predicate = compiler.compile(Rule(IRegex, "^.*\\.c$", "/tmp"))
+    def regexIsCaseSensitive() {
+        val predicate = compiler.compile(Rule(Regex, "^.*\\.c$", "/tmp"))
         val caseMismatchingFile = StubDetailedFile("/tmp/foo.C")
-        predicate.matches(caseMismatchingFile) must be (true)
+        predicate.matches(caseMismatchingFile) must be(false)
     }
 }

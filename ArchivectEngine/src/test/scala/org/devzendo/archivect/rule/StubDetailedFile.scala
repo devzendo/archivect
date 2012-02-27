@@ -1,3 +1,5 @@
+package org.devzendo.archivect.rule
+
 /**
  * Copyright (C) 2008-2011 Matt Gumbley, DevZendo.org <http://devzendo.org>
  *
@@ -13,10 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-  
-package org.devzendo.archivect.rule
 
-import org.devzendo.xpfsa.{ DetailedFile, FileStatus }
+import org.devzendo.xpfsa.{DetailedFile, FileStatus}
 
 import java.io.File
 
@@ -29,6 +29,8 @@ object StubDetailedFile {
 
 case class StubDetailedFile(val file: File, val fileStatus: FileStatus) extends DetailedFile {
     def getFile: File = file
+
     def getLinkDetailedFile: DetailedFile = null
+
     def getFileStatus: FileStatus = fileStatus
 }

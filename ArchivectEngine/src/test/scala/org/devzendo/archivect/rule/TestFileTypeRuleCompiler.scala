@@ -1,3 +1,5 @@
+package org.devzendo.archivect.rule
+
 /**
  * Copyright (C) 2008-2011 Matt Gumbley, DevZendo.org <http://devzendo.org>
  *
@@ -13,15 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-package org.devzendo.archivect.rule
 
-import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
-import org.junit.{ Test, Ignore }
+import org.scalatest.junit.{AssertionsForJUnit, MustMatchersForJUnit}
+import org.junit.{Test, Ignore}
 
 import java.io.File
 
-import org.devzendo.xpfsa.{ DetailedFile, FileStatus, UnixFileStatus, WindowsFileStatus, MacOSXFileStatus }
+import org.devzendo.xpfsa.{DetailedFile, FileStatus, UnixFileStatus, WindowsFileStatus, MacOSXFileStatus}
 import org.devzendo.xpfsa.UnixFileStatus._
 import org.devzendo.xpfsa.impl.UnixFileStatusImpl
 import org.devzendo.xpfsa.impl.UnixFileStatusImpl._
@@ -45,13 +45,13 @@ class TestFileTypeRuleCompiler extends AssertionsForJUnit with MustMatchersForJU
     }
 
     // Tests for UNIX
-    
+
     @Test
     def unixMatchesFileCorrectlyWithF() {
         val predicate = compiler.compile(Rule(FileType, "f", "/tmp"))
         val cFileStatus = new UnixFileStatusImpl(0L, 0L, S_IFREG, 0, 0, 0, 0L, 0L, 0, 0L, 0, 0, 0)
         val cFile = StubDetailedFile(new File("/tmp/foo.c"), cFileStatus)
-        predicate.matches(cFile) must be (true)
+        predicate.matches(cFile) must be(true)
     }
 
     @Test
@@ -59,7 +59,7 @@ class TestFileTypeRuleCompiler extends AssertionsForJUnit with MustMatchersForJU
         val predicate = compiler.compile(Rule(FileType, "d", "/tmp"))
         val cFileStatus = new UnixFileStatusImpl(0L, 0L, S_IFREG, 0, 0, 0, 0L, 0L, 0, 0L, 0, 0, 0)
         val cFile = StubDetailedFile(new File("/tmp/foo.c"), cFileStatus)
-        predicate.matches(cFile) must be (false)
+        predicate.matches(cFile) must be(false)
     }
 
     @Test
@@ -67,7 +67,7 @@ class TestFileTypeRuleCompiler extends AssertionsForJUnit with MustMatchersForJU
         val predicate = compiler.compile(Rule(FileType, "l", "/tmp"))
         val cFileStatus = new UnixFileStatusImpl(0L, 0L, S_IFREG, 0, 0, 0, 0L, 0L, 0, 0L, 0, 0, 0)
         val cFile = StubDetailedFile(new File("/tmp/foo.c"), cFileStatus)
-        predicate.matches(cFile) must be (false)
+        predicate.matches(cFile) must be(false)
     }
 
     @Test
@@ -75,7 +75,7 @@ class TestFileTypeRuleCompiler extends AssertionsForJUnit with MustMatchersForJU
         val predicate = compiler.compile(Rule(FileType, "d", "/tmp"))
         val tmpDirStatus = new UnixFileStatusImpl(0L, 0L, S_IFDIR, 0, 0, 0, 0L, 0L, 0, 0L, 0, 0, 0)
         val tmpDir = StubDetailedFile(new File("/tmp"), tmpDirStatus)
-        predicate.matches(tmpDir) must be (true)
+        predicate.matches(tmpDir) must be(true)
     }
 
     @Test
@@ -83,7 +83,7 @@ class TestFileTypeRuleCompiler extends AssertionsForJUnit with MustMatchersForJU
         val predicate = compiler.compile(Rule(FileType, "f", "/tmp"))
         val tmpDirStatus = new UnixFileStatusImpl(0L, 0L, S_IFDIR, 0, 0, 0, 0L, 0L, 0, 0L, 0, 0, 0)
         val tmpDir = StubDetailedFile(new File("/tmp"), tmpDirStatus)
-        predicate.matches(tmpDir) must be (false)
+        predicate.matches(tmpDir) must be(false)
     }
 
     @Test
@@ -91,7 +91,7 @@ class TestFileTypeRuleCompiler extends AssertionsForJUnit with MustMatchersForJU
         val predicate = compiler.compile(Rule(FileType, "l", "/tmp"))
         val tmpDirStatus = new UnixFileStatusImpl(0L, 0L, S_IFDIR, 0, 0, 0, 0L, 0L, 0, 0L, 0, 0, 0)
         val tmpDir = StubDetailedFile(new File("/tmp"), tmpDirStatus)
-        predicate.matches(tmpDir) must be (false)
+        predicate.matches(tmpDir) must be(false)
     }
 
     @Test
@@ -99,7 +99,7 @@ class TestFileTypeRuleCompiler extends AssertionsForJUnit with MustMatchersForJU
         val predicate = compiler.compile(Rule(FileType, "l", "/tmp"))
         val tmpLinkStatus = new UnixFileStatusImpl(0L, 0L, S_IFLNK, 0, 0, 0, 0L, 0L, 0, 0L, 0, 0, 0)
         val tmpLink = StubDetailedFile(new File("/tmp/link"), tmpLinkStatus)
-        predicate.matches(tmpLink) must be (true)
+        predicate.matches(tmpLink) must be(true)
     }
 
     @Test
@@ -107,7 +107,7 @@ class TestFileTypeRuleCompiler extends AssertionsForJUnit with MustMatchersForJU
         val predicate = compiler.compile(Rule(FileType, "f", "/tmp"))
         val tmpLinkStatus = new UnixFileStatusImpl(0L, 0L, S_IFLNK, 0, 0, 0, 0L, 0L, 0, 0L, 0, 0, 0)
         val tmpLink = StubDetailedFile(new File("/tmp/link"), tmpLinkStatus)
-        predicate.matches(tmpLink) must be (false)
+        predicate.matches(tmpLink) must be(false)
     }
 
     @Test
@@ -115,10 +115,10 @@ class TestFileTypeRuleCompiler extends AssertionsForJUnit with MustMatchersForJU
         val predicate = compiler.compile(Rule(FileType, "d", "/tmp"))
         val tmpLinkStatus = new UnixFileStatusImpl(0L, 0L, S_IFLNK, 0, 0, 0, 0L, 0L, 0, 0L, 0, 0, 0)
         val tmpLink = StubDetailedFile(new File("/tmp/link"), tmpLinkStatus)
-        predicate.matches(tmpLink) must be (false)
+        predicate.matches(tmpLink) must be(false)
     }
 
     // Tests for Windows
-    
+
     // Tests for Mac OSX
 }
