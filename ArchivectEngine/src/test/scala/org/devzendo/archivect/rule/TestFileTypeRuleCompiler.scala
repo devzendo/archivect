@@ -17,14 +17,12 @@ package org.devzendo.archivect.rule
  */
 
 import org.scalatest.junit.{AssertionsForJUnit, MustMatchersForJUnit}
-import org.junit.{Test, Ignore}
+import org.junit.{Test}
 
 import java.io.File
 
-import org.devzendo.xpfsa.{DetailedFile, FileStatus, UnixFileStatus, WindowsFileStatus, MacOSXFileStatus}
 import org.devzendo.xpfsa.UnixFileStatus._
 import org.devzendo.xpfsa.impl.UnixFileStatusImpl
-import org.devzendo.xpfsa.impl.UnixFileStatusImpl._
 
 import org.devzendo.archivect.model.Rule
 import org.devzendo.archivect.model.CommandModel.RuleType._
@@ -37,11 +35,11 @@ class TestFileTypeRuleCompiler extends AssertionsForJUnit with MustMatchersForJU
         compileFailsWithMessage("garbage", "A file type must be a single letter: f, d, l")
     }
 
-    private def compileFailsWithMessage(ruleText: String, message: String) = {
+    private def compileFailsWithMessage(ruleText: String, message: String) {
         val ex = intercept[IllegalStateException] {
             compiler.compile(Rule(FileType, ruleText, "/tmp"))
         }
-        ex.getMessage() must equal(message)
+        ex.getMessage must equal(message)
     }
 
     // Tests for UNIX

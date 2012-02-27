@@ -17,7 +17,7 @@ package org.devzendo.archivect.rule
  */
 
 import org.scalatest.junit.{AssertionsForJUnit, MustMatchersForJUnit}
-import org.junit.{Test, Ignore}
+import org.junit.{Test}
 
 import org.devzendo.archivect.model.Rule
 import org.devzendo.archivect.model.CommandModel.RuleType._

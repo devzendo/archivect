@@ -27,7 +27,7 @@ object StubDetailedFile {
     }
 }
 
-case class StubDetailedFile(val file: File, val fileStatus: FileStatus) extends DetailedFile {
+case class StubDetailedFile(file: File, fileStatus: FileStatus) extends DetailedFile {
     def getFile: File = file
 
     def getLinkDetailedFile: DetailedFile = null

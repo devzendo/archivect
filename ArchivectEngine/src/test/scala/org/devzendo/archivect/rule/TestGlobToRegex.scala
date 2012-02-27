@@ -1,7 +1,7 @@
 package org.devzendo.archivect.rule
 
 import org.devzendo.archivect.rule.GlobToRegex.globAsRegex
-import org.junit.{Test, Ignore}
+import org.junit.{Test}
 import org.scalatest.junit.{AssertionsForJUnit, MustMatchersForJUnit}
 
 class TestGlobToRegex extends AssertionsForJUnit with MustMatchersForJUnit {

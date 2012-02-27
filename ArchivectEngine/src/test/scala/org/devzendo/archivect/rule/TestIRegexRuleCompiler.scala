@@ -17,11 +17,7 @@ package org.devzendo.archivect.rule
  */
 
 import org.scalatest.junit.{AssertionsForJUnit, MustMatchersForJUnit}
-import org.junit.{Test, Ignore}
-
-import java.io.File
-
-import org.devzendo.xpfsa.{DetailedFile, FileStatus}
+import org.junit.{Test}
 
 import org.devzendo.archivect.model.Rule
 import org.devzendo.archivect.model.CommandModel.RuleType._
@@ -34,11 +30,11 @@ class TestIRegexRuleCompiler extends AssertionsForJUnit with MustMatchersForJUni
         compileFailsWithMessage("[aeiou", "The case-insensitive regex rule '[aeiou' is not a valid regex: Unclosed character class (near position 5)")
     }
 
-    private def compileFailsWithMessage(ruleText: String, message: String) = {
+    private def compileFailsWithMessage(ruleText: String, message: String) {
         val ex = intercept[IllegalStateException] {
             compiler.compile(Rule(IRegex, ruleText, "/tmp"))
         }
-        ex.getMessage() must equal(message)
+        ex.getMessage must equal(message)
     }
 
     @Test

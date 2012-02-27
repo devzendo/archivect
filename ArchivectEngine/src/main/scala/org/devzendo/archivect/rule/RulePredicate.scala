@@ -17,7 +17,7 @@
 package org.devzendo.archivect.rule
 
 import org.devzendo.archivect.model.Rule
-import org.devzendo.xpfsa.{ DetailedFile, FileStatus, UnixFileStatus }
+import org.devzendo.xpfsa.{ DetailedFile, UnixFileStatus }
 import java.util.regex.{ Pattern, PatternSyntaxException }
 
 sealed abstract class RulePredicate(val rule: Rule) {
@@ -27,7 +27,7 @@ sealed abstract class RulePredicate(val rule: Rule) {
 case class GlobRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
     val globAsRegex = GlobToRegex.globAsRegex(rule.ruleText).toString()
     def matches(file: DetailedFile): Boolean = {
-        val name = file.getFile().getName()
+        val name = file.getFile.getName
         name.matches(globAsRegex)
     }
 }
@@ -35,8 +35,8 @@ case class GlobRulePredicate(override val rule: Rule) extends RulePredicate(rule
 object RegexRuleHelper {
     def error(message: String, pse: PatternSyntaxException) = {
         throw new IllegalStateException(
-            if (pse.getIndex() >= 0)
-                message + " (near position " + pse.getIndex() + ")"
+            if (pse.getIndex >= 0)
+                message + " (near position " + pse.getIndex + ")"
             else 
                 message
         )
@@ -50,12 +50,12 @@ case class RegexRulePredicate(override val rule: Rule) extends RulePredicate(rul
         } catch {
             case pse: PatternSyntaxException =>
                 val message = "The regex rule '" + rule.ruleText + 
-                    "' is not a valid regex: " + pse.getDescription()
+                    "' is not a valid regex: " + pse.getDescription
                 RegexRuleHelper.error(message, pse)
         }
     }
     def matches(file: DetailedFile): Boolean = {
-        val name = file.getFile().getName()
+        val name = file.getFile.getName
         matcher.reset(name).matches()
     }
 }
@@ -67,41 +67,41 @@ case class IRegexRulePredicate(override val rule: Rule) extends RulePredicate(ru
         } catch {
             case pse: PatternSyntaxException =>
                 val message = "The case-insensitive regex rule '" + rule.ruleText + 
-                    "' is not a valid regex: " + pse.getDescription() 
+                    "' is not a valid regex: " + pse.getDescription
                 RegexRuleHelper.error(message, pse)
         }
     }
     def matches(file: DetailedFile): Boolean = {
-        val name = file.getFile().getName()
+        val name = file.getFile.getName
         matcher.reset(name).matches()
     }
 }
 
 case class FileTypeRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
-    val fileTypeString = rule.ruleText.trim().toLowerCase()
+    val fileTypeString = rule.ruleText.trim().toLowerCase
     if (!fileTypeString.matches("^[fdl]$")) {
         throw new IllegalStateException("A file type must be a single letter: f, d, l")
     }
     
     def matches(file: DetailedFile): Boolean = {
-        val fs = file.getFileStatus()
+        val fs = file.getFileStatus
         fileTypeString match {
             case "f" => {
                 fs match {
                     case ufs: UnixFileStatus =>
-                        ufs.isRegularFile()
+                        ufs.isRegularFile
                 }
             }
             case "d" => {
                 fs match {
                     case ufs: UnixFileStatus =>
-                        ufs.isDirectory()
+                        ufs.isDirectory
                 }
             }
             case "l" => {
                 fs match {
                     case ufs: UnixFileStatus =>
-                        ufs.isSymbolicLink()
+                        ufs.isSymbolicLink
                 }
             }
         }
