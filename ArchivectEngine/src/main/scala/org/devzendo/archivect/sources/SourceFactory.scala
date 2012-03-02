@@ -28,7 +28,9 @@ object SourceFactory {
     case class WindowsDriveSource(override val path: String, driveLetter: String) extends RootedSource(path, '\\', driveLetter)
     // Not sure I want to support UNC paths as sources
     case class UNCSource(override val path: String, override val root: String, server: String, share: String) extends RootedSource(path, '\\', root)
-    
+
+    trait SourcePredicate extends Function1[Source, Boolean]
+
     private[this] val drivePath = """^(\S):([/\\])?(.*)$""".r // drive paths are absolute anyway, ignore leading \
     private[this] val uncPath = """^[/\\]{2}(.+?)[/\\](.+?)([/\\].*)?$""".r
     private[this] val rootedPath = """^([/\\].*)$""".r
