@@ -16,16 +16,12 @@
 
 package org.devzendo.archivect.command
 
-import scala.collection.mutable.ListBuffer
 import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
 import org.junit.Assert._
 import org.junit.Test
-import org.junit.Before
-import org.devzendo.archivect.model.{ CommandModel, Rule }
-import org.devzendo.archivect.model.CommandModel.CommandMode._
+import org.devzendo.archivect.model.CommandModel
 import org.devzendo.archivect.model.CommandModel.Encoding._
 import org.devzendo.archivect.model.CommandModel.Compression._
-import org.junit.Ignore
 
 class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit {
     @Test
@@ -51,7 +47,7 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
     def allModesAreAccepted() {
         CommandModel.CommandMode.values.foreach {
             validMode =>
-                val modeArgumentString = "-" + validMode.toString().toLowerCase()
+                val modeArgumentString = "-" + validMode.toString.toLowerCase
                 parse(modeArgumentString + " irrelevantsource -destination irrelevantdestination -name irrelevant -encoding tar").mode must equal(Some(validMode))
         }
     }
@@ -365,14 +361,14 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
             "Unknown rule inclusion/exclusion type '%'")
     }
 
-    private def commandFailsWithMessage(cmdLine: String, message: String) = {
+    private def commandFailsWithMessage(cmdLine: String, message: String) {
         val ex = intercept[CommandLineException] {
             parse(cmdLine)
         }
-        ex.getMessage() must equal(message)
+        ex.getMessage must equal(message)
     }
     
-    private def parseEncoding(encString: String, enc: Option[Encoding], cmp: Option[Compression]) = {
+    private def parseEncoding(encString: String, enc: Option[Encoding], cmp: Option[Compression]) {
         val cmd = "-archive irrelevantsource -destination irrelevant -name irrelevant -encoding "
         val model = parse(cmd + encString)
         model.encoding must equal(enc)
