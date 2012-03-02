@@ -18,11 +18,12 @@ package org.devzendo.archivect.sources
 
 import scala.util.Random
 import org.scalatest.junit.{ AssertionsForJUnit, MustMatchersForJUnit }
-import org.junit.Test
+import org.junit.{ Test, Ignore }
 import org.devzendo.archivect.sources.SourceTreeFactory._
+//import org.devzendo.archivect.sources.SourceFactory.{ Source, SourcePredicate }
 
 class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
-    val sources = new SourcesRegistry()
+    val sources = new SourcesRegistry(FakeDirPredicate)
 
     @Test
     def newSourcesHaveNoSources() {
@@ -82,11 +83,11 @@ class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
         */
     }
 
-    def expectTree(tree: SourceTree, clazz: Class[_ <: SourceTree]) {
+    private[this] def expectTree(tree: SourceTree, clazz: Class[_ <: SourceTree]) {
         tree.getClass must be(clazz)
     }
 
-    def expectTree(tree: SourceTree, clazz: Class[_ <: RootedSourceTree],
+    private[this] def expectTree(tree: SourceTree, clazz: Class[_ <: RootedSourceTree],
                    root: String) {
         tree.getClass must be(clazz)
         tree match {
@@ -143,11 +144,11 @@ class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
         expectUnc(sourceTrees(8), """\\xyz\xyz""")
     }
 
-    def addSource(source: String) {
+    private[this] def addSource(source: String) {
         sources.addSource(SourceFactory._pathToSource(source, SourceFactory.WINDOWS_SEPARATOR))
     }
 
-    def expectUnc(tree: SourceTree, root: String) {
+    private[this] def expectUnc(tree: SourceTree, root: String) {
         tree match {
             case uncSourceTree: UNCSourceTree =>
                 uncSourceTree.root must be(root)
@@ -156,6 +157,22 @@ class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
         }
     }
     
+    @Test
+    @Ignore
+    def sourceIsAddedToSourceTree() {
+        addSource("""\\xyz\xyz\a""")
+        val sourceTrees = sources.getSourceTrees
+        sourceTrees.size must be(1)
+        sourceTrees(0) match {
+            case uncSourceTree: UNCSourceTree =>
+                val dirNodes = uncSourceTree.getRootNode.getDirNodes
+                dirNodes.size must be(1) // TODO unfinished
+                dirNodes.get("a").get.name must be("a")
+            case x => fail("did not return a UNCSourceTree; got a " +
+                x.getClass.getName + ": '" + x + "'")
+        }
+    }
+
     @Test
     def unrootedSourcesAreStoredInSameSourceTree() {
         val sourceTree1 = sources.addSource(SourceFactory._pathToSource("""a\b\c""",

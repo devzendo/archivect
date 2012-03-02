@@ -15,14 +15,73 @@
  */
 package org.devzendo.archivect.sources
 
+import scala.collection.mutable.Map
+import org.devzendo.archivect.rule.RulePredicate
+import org.devzendo.archivect.sources.SourceFactory._
+import scala.throws
+
 object SourceTreeFactory {
-    sealed abstract class SourceTree() {
+    case class DirNode(name: String) {
+
+        val dirMap = Map.empty[String, DirNode]
+
+        def getDirNodes: Map[String, DirNode] = {
+            dirMap
+        }
+
+        def addDir(name: String): DirNode = {
+            val dn = dirMap.get(name)
+            if (dn.isEmpty) {
+                val newDirNode = new DirNode(name)
+                dirMap += (name -> newDirNode)
+                newDirNode
+            } else {
+                dn.get
+            }
+        }
     }
-    case class UnrootedSourceTree() extends SourceTree()
-    case class RootedSourceTree(root: String) extends SourceTree()
-    case class WindowsDriveSourceTree(driveLetter: String) extends
-        RootedSourceTree(driveLetter)
+
+    sealed abstract case class SourceTree(allPathsAreDirectoriesPredicate:
+                                          SourcePredicate) {
+        val rootNode = new DirNode("")
+        def getRootNode: DirNode = {
+            rootNode
+        }
+
+        def getRulesAtDir(path: String): List[RulePredicate] = {
+            val source = SourceFactory.pathToSource(path)
+            List.empty[RulePredicate]
+        }
+
+        @throws(classOf[SourceTreeException])
+        def addIncludeRule(predicate: RulePredicate) {
+            val ruleAtSource = SourceFactory.pathToSource(predicate.rule.ruleAt)
+
+            if (!allPathsAreDirectoriesPredicate(ruleAtSource)) {
+                throw new SourceTreeException("Cannot add rule '" +
+                    predicate.rule.ruleText + "' at '" +
+                    predicate.rule.ruleAt + "': rules can only be added to directories")
+            }
+        }
+
+    }
+    case class UnrootedSourceTree(
+         override val allPathsAreDirectoriesPredicate: SourcePredicate)
+        extends SourceTree(allPathsAreDirectoriesPredicate) {
+    }
+
+    case class RootedSourceTree(
+         override val allPathsAreDirectoriesPredicate: SourcePredicate, root: String)
+        extends SourceTree(allPathsAreDirectoriesPredicate)
+
+    case class WindowsDriveSourceTree(
+         override val allPathsAreDirectoriesPredicate: SourcePredicate,
+         driveLetter: String)
+        extends RootedSourceTree(allPathsAreDirectoriesPredicate, driveLetter)
+
     // Not sure I want to support UNC paths as sources
-    case class UNCSourceTree(server: String, share: String) extends
-        RootedSourceTree("""\\""" + server + """\""" + share)
+    case class UNCSourceTree(
+         override val allPathsAreDirectoriesPredicate: SourcePredicate, server: String,
+         share: String)
+        extends RootedSourceTree(allPathsAreDirectoriesPredicate, """\\""" + server + """\""" + share)
 }

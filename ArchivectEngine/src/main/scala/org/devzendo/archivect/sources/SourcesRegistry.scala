@@ -70,8 +70,8 @@ object SourcesRegistry {
 
     val pathOrdering = Ordering.fromLessThan[Source](lessThan)
 }
-
-class SourcesRegistry {
+class SourcesRegistry(
+    val allPathsAreDirectoriesPredicate: SourcePredicate) {
 
     var roots = new ListBuffer[String]()
     var unrootedSourceTree: Option[UnrootedSourceTree] = None
@@ -104,14 +104,15 @@ class SourcesRegistry {
         source match {
             case unrootedSource: UnrootedSource =>
                 if (unrootedSourceTree.isEmpty) {
-                   unrootedSourceTree = Some(UnrootedSourceTree())
+                   unrootedSourceTree = Some(UnrootedSourceTree
+                    (allPathsAreDirectoriesPredicate))
                 }
                 unrootedSourceTree.get
             case uncSource: UNCSource =>
                 val root = uncSource.root
                 val tree = uncSourceTrees.get(root)
                 if (tree.isEmpty) {
-                    val newRoot =  UNCSourceTree(uncSource.server, uncSource.share)
+                    val newRoot = new UNCSourceTree(allPathsAreDirectoriesPredicate, uncSource.server, uncSource.share)
                     uncSourceTrees = uncSourceTrees.insert(root, newRoot)
                     newRoot
                 } else {
@@ -121,7 +122,7 @@ class SourcesRegistry {
                 val root = driveSource.root
                 val tree = windowsDriveSourceTrees.get(root)
                 if (tree.isEmpty) {
-                    val newRoot =  WindowsDriveSourceTree(driveSource.driveLetter)
+                    val newRoot = WindowsDriveSourceTree(allPathsAreDirectoriesPredicate, driveSource.driveLetter)
                     windowsDriveSourceTrees = windowsDriveSourceTrees.insert(root, newRoot)
                     newRoot
                 } else {
@@ -131,7 +132,7 @@ class SourcesRegistry {
                 val root = rootedSource.root
                 val tree = rootedSourceTrees.get(root)
                 if (tree.isEmpty) {
-                    val newRoot =  RootedSourceTree(root)
+                    val newRoot = RootedSourceTree(allPathsAreDirectoriesPredicate, root)
                     rootedSourceTrees = rootedSourceTrees.insert(root, newRoot)
                     newRoot
                 } else {
