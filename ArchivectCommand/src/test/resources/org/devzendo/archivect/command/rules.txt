@@ -8,5 +8,5 @@
 + filetype l /Users/matt
 
 
-   -   glob   *.obj,*.o,*.exe,*.a,*.so,*.dll        "/some/subfolder with a silly space/in the path.txt"   
+   -   glob   *.obj,*.o,*.exe,*.a,*.so,*.dll        "/some/subfolder with a silly space/in the path"
 

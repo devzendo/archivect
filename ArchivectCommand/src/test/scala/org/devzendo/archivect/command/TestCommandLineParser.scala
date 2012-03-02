@@ -333,7 +333,7 @@ class TestCommandLineParser extends AssertionsForJUnit with MustMatchersForJUnit
         excs.size must equal(1)
         excs(0).ruleType must equal(CommandModel.RuleType.Glob)
         excs(0).ruleText must equal("*.obj,*.o,*.exe,*.a,*.so,*.dll")
-        excs(0).ruleAt must equal("/some/subfolder with a silly space/in the path.txt")
+        excs(0).ruleAt must equal("/some/subfolder with a silly space/in the path")
         val incs = model.includeRules
         incs.size must equal(5)
         incs(0).ruleType must equal(CommandModel.RuleType.Glob)
