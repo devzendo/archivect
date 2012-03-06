@@ -96,8 +96,8 @@ class SourcesRegistry(
 
     def addSource(source: Source): SourceTree = {
         val sourceTree = getSourceTree(source)
-        // TODO add the source to the sourceTree
-        sourceTree
+        sourceTree.addSource(source)
+        return sourceTree
     }
 
     private[this] def getSourceTree(source: Source): SourceTree = {

@@ -18,7 +18,7 @@ class FinderInitialiser(ruleCompiler: RuleCompiler, finder: Finder) {
         for (sourceString <- model.sources) {
             val source = SourceFactory.pathToSource(sourceString)
             // TODO how to tie up the source to rules that apply to it?
-            sourcesRegistry.addSource(source)
+            sourcesRegistry._addSource(source)
         }
         for (exclusionString <- model.exclusions) {
             val exclusion = SourceFactory.pathToSource(exclusionString)

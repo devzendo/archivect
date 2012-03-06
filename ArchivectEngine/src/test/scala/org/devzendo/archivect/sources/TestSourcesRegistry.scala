@@ -158,7 +158,6 @@ class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
     }
     
     @Test
-    @Ignore
     def sourceIsAddedToSourceTree() {
         addSource("""\\xyz\xyz\a""")
         val sourceTrees = sources.getSourceTrees

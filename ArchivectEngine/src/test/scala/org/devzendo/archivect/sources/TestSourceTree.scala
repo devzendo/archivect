@@ -26,13 +26,13 @@ import org.devzendo.archivect.rule.RuleCompiler
 
 class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     val compiler = new RuleCompiler()
-    val sources = new SourcesRegistry(FakeDirPredicate)
     val sourceTree = new UnrootedSourceTree(FakeDirPredicate)
     val rootNode = sourceTree.getRootNode
 
     @Test
     @Ignore
     def sourceTreeHasPopulatedDirectoryNodes() {
+        val sources = new SourcesRegistry(FakeDirPredicate)
         // TODO this test is unfinished
         sources.addSource(SourceFactory._pathToSource
             ("""\\zenserver\emptiness\0""", SourceFactory.WINDOWS_SEPARATOR))
@@ -92,9 +92,74 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
-    @Ignore
-    def sourceTreeAddRuleAtDir() {
-        rootNode.addDir("dtmp")
+    def dirNodeDirAdditionWorksAsExpected() {
+        val dn = new DirNode("")
+        dn.getDirNodes.contains("foo") must be (false)
+
+        val foo = dn.addDir("foo")
+        dn.getDirNodes.contains("foo") must be (true)
+
+        val bar = dn.addDir("bar")
+        dn.getDirNodes.contains("bar") must be (true)
+        dn.getDirNodes.contains("foo") must be (true) // still
+
+        foo must not (be theSameInstanceAs bar)
+
+        val foo2 = dn.addDir("foo")
+        dn.getDirNodes.contains("foo") must be (true)
+
+        foo2 must (be theSameInstanceAs foo)
+    }
+
+    @Test
+    def rootSourceCanBeAddedAndFound() {
+        // you can always get the root node
+        sourceTree.findNode("/").isDefined must be(true)
+        sourceTree.findNode("/").get.sourcePathTermination must be(false)
+
+        // but it is only terminated when it is added
+        _addSource("/")
+
+        sourceTree.findNode("/").get.sourcePathTermination must be(true)
+    }
+
+    @Test
+    def directorySourceCanBeAddedAndFound() {
+        _addSource("/a/b/c")
+        sourceTree.findNode("/a").isDefined must be(true)
+        sourceTree.findNode("/a/b").isDefined must be(true)
+        sourceTree.findNode("/a/b/c").get.sourcePathTermination must be(true)
+    }
+
+    @Test
+    def directoryThatDoesNotExistCannotBeFound() {
+        sourceTree.findNode("/a").isEmpty must be(true)
+        sourceTree.findNode("/a/b").isEmpty must be(true)
+        sourceTree.findNode("/a/b/c").isEmpty must be(true)
+    }
+
+    def _addSource(path: String) {
+        sourceTree.addSource(
+            SourceFactory._pathToSource(path, SourceFactory.UNIX_SEPARATOR))
+    }
+
+    @Test
+    def addRuleAtRootSourcePathAllowed() {
+        _addSource("/")
+        sourceTree.getRulesAtDir("/").size must be(0)
+
+        val rule = compiler.compile(Rule(Glob, "*.c", "/"))
+        sourceTree.addIncludeRule(rule)
+
+        // TODO unfinished
+        val rules = sourceTree.getRulesAtDir("/")
+        rules.size must be(1)
+        rules(0) must be theSameInstanceAs rule
+    }
+
+    @Test
+    def addRuleAtSourcePathAllowed() {
+        _addSource("dtmp")
         sourceTree.getRulesAtDir("/dtmp").size must be(0)
 
         val rule = compiler.compile(Rule(Glob, "*.c", "/dtmp"))
@@ -107,8 +172,65 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
+    def addRuleAtDeeperSourcePathAllowed() {
+        _addSource("dtmp/done")
+        sourceTree.getRulesAtDir("/dtmp/done").size must be(0)
+
+        val rule = compiler.compile(Rule(Glob, "*.c", "/dtmp/done"))
+        sourceTree.addIncludeRule(rule)
+
+        // TODO unfinished
+        val rules = sourceTree.getRulesAtDir("/dtmp/done")
+        rules.size must be(1)
+        rules(0) must be theSameInstanceAs rule
+    }
+
+    @Test
+    def addRuleUnderSourceDirAllowed() {
+        _addSource("dtmp")
+        sourceTree.getRulesAtDir("/dtmp").size must be(0)
+
+        val rule = compiler.compile(Rule(Glob, "*.c", "/dtmp/dunder/directory"))
+        sourceTree.addIncludeRule(rule)
+
+        // TODO unfinished
+        sourceTree.getRulesAtDir("/dtmp").size must be(0)
+
+        sourceTree.getRulesAtDir("/dtmp/dunder").size must be(0)
+
+        val endRules = sourceTree.getRulesAtDir("/dtmp/dunder/directory")
+        endRules.size must be(1)
+        endRules(0) must be theSameInstanceAs rule
+    }
+
+    @Test
+    def addRuleAwayFromSourceDirNotAllowed() {
+        _addSource("dtmp")
+        sourceTree.getRulesAtDir("/dtmp").size must be(0)
+
+        intercept[SourceTreeException] (
+            sourceTree.addIncludeRule(
+                compiler.compile(Rule(Glob, "*.c", "/dway/daway")))
+        ).getMessage must
+            be("Cannot add rule '*.c' at '/dway/daway': rules can only be added at, or under source paths")
+    }
+
+    @Test
+    def addRuleAboveSourceDirNotAllowed() {
+        _addSource("dtmp/dunder")
+        sourceTree.getRulesAtDir("/dtmp").size must be(0)
+        sourceTree.getRulesAtDir("/dtmp/dunder").size must be(0)
+
+        intercept[SourceTreeException] (
+            sourceTree.addIncludeRule(
+                compiler.compile(Rule(Glob, "*.c", "/dtmp")))
+        ).getMessage must
+            be("Cannot add rule '*.c' at '/dtmp': rules can only be added at, or under source paths")
+    }
+
+    @Test
     def allPathComponentsMustBeDirectories() {
-        rootNode.addDir("dtmp")
+        _addSource("dtmp")
 
         intercept[SourceTreeException] (
             sourceTree.addIncludeRule(
