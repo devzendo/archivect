@@ -56,6 +56,8 @@ object SourceTreeFactory {
 
     sealed abstract case class SourceTree(allPathsAreDirectoriesPredicate:
                                           SourcePredicate) {
+        val rootNode = new DirNode("")
+
         def addSource(source: Source) {
             var searchNode = rootNode
             println("adding source '" + source.path + "'")
@@ -79,7 +81,6 @@ object SourceTreeFactory {
             searchNode.sourcePathTermination = true
         }
 
-        val rootNode = new DirNode("")
         def getRootNode: DirNode = {
             rootNode
         }
@@ -123,14 +124,15 @@ object SourceTreeFactory {
                     predicate.rule.ruleAt + "': rules can only be added to directories")
             }
             
-            // TODO rules must be in the subtree of sources
             def throwSinceRuleIsNotAtOrUnderSourceTree() {
                 throw new SourceTreeException("Cannot add rule '" +
                     predicate.rule.ruleText + "' at '" +
                     predicate.rule.ruleAt + "': rules can only be added at, or under source paths")
             }
+
             var rulePlacementNode = rootNode
-            var seenSourceTermination = false
+            var seenSourceTermination = rulePlacementNode.sourcePathTermination
+
             ruleAtSource.pathComponents.foreach { (c: String) =>
                 val subNodes = rulePlacementNode.getDirNodes
                 val subNode = subNodes.get(c)
@@ -152,10 +154,6 @@ object SourceTreeFactory {
                 throwSinceRuleIsNotAtOrUnderSourceTree()
             }
             rulePlacementNode.addRulePredicate(predicate)
-
-
-//            var node = rootNode
-//            ruleAtSource.pathComponents.foreach((c: String) => node = node.addDir(c))
         }
 
     }
