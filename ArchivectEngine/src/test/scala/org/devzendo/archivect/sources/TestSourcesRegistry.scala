@@ -164,7 +164,7 @@ class TestSourcesRegistry extends AssertionsForJUnit with MustMatchersForJUnit {
         sourceTrees.size must be(1)
         sourceTrees(0) match {
             case uncSourceTree: UNCSourceTree =>
-                val dirNodes = uncSourceTree.getRootNode.getDirNodes
+                val dirNodes = uncSourceTree._getRootNode.getDirNodes
                 dirNodes.size must be(1) // TODO unfinished
                 dirNodes.get("a").get.name must be("a")
             case x => fail("did not return a UNCSourceTree; got a " +

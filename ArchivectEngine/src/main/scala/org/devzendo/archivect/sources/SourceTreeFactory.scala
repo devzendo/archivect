@@ -63,11 +63,11 @@ object SourceTreeFactory {
             searchNode.sourcePathTermination = true
         }
 
-        def getRootNode: DirNode = {
+        def _getRootNode: DirNode = {
             rootNode
         }
 
-        def findNode(path: String): Option[DirNode] = {
+        def _findNode(path: String): Option[DirNode] = {
             val source = SourceFactory.pathToSource(path)
             var searchNode = rootNode
             source.pathComponents.foreach { (c: String) =>
@@ -84,7 +84,7 @@ object SourceTreeFactory {
 
         def getRulesAtDir(path: String): List[RulePredicate] = {
             val list = for {
-                pathNode <- findNode(path)
+                pathNode <- _findNode(path)
             } yield pathNode.getRulePredicates
             list.getOrElse(List.empty[RulePredicate])
         }

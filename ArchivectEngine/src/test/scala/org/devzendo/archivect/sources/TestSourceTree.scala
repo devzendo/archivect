@@ -27,7 +27,7 @@ import org.devzendo.archivect.rule.RuleCompiler
 class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     val compiler = new RuleCompiler()
     val sourceTree = new UnrootedSourceTree(FakeDirPredicate)
-    val rootNode = sourceTree.getRootNode
+    val rootNode = sourceTree._getRootNode
 
     @Test
     @Ignore
@@ -114,28 +114,28 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     @Test
     def rootSourceCanBeAddedAndFound() {
         // you can always get the root node
-        sourceTree.findNode("/").isDefined must be(true)
-        sourceTree.findNode("/").get.sourcePathTermination must be(false)
+        sourceTree._findNode("/").isDefined must be(true)
+        sourceTree._findNode("/").get.sourcePathTermination must be(false)
 
         // but it is only terminated when it is added
         _addSource("/")
 
-        sourceTree.findNode("/").get.sourcePathTermination must be(true)
+        sourceTree._findNode("/").get.sourcePathTermination must be(true)
     }
 
     @Test
     def directorySourceCanBeAddedAndFound() {
         _addSource("/a/b/c")
-        sourceTree.findNode("/a").isDefined must be(true)
-        sourceTree.findNode("/a/b").isDefined must be(true)
-        sourceTree.findNode("/a/b/c").get.sourcePathTermination must be(true)
+        sourceTree._findNode("/a").isDefined must be(true)
+        sourceTree._findNode("/a/b").isDefined must be(true)
+        sourceTree._findNode("/a/b/c").get.sourcePathTermination must be(true)
     }
 
     @Test
     def directoryThatDoesNotExistCannotBeFound() {
-        sourceTree.findNode("/a").isEmpty must be(true)
-        sourceTree.findNode("/a/b").isEmpty must be(true)
-        sourceTree.findNode("/a/b/c").isEmpty must be(true)
+        sourceTree._findNode("/a").isEmpty must be(true)
+        sourceTree._findNode("/a/b").isEmpty must be(true)
+        sourceTree._findNode("/a/b/c").isEmpty must be(true)
     }
 
     def _addSource(path: String) {
@@ -144,7 +144,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
-    def addRuleAtRootSourcePathAllowed() {
+    def addIncludeRuleAtRootSourcePathAllowed() {
         _addSource("/")
         sourceTree.getRulesAtDir("/").size must be(0)
 
@@ -157,7 +157,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
-    def addRuleAtSourcePathAllowed() {
+    def addIncludeRuleAtSourcePathAllowed() {
         _addSource("dtmp")
         sourceTree.getRulesAtDir("/dtmp").size must be(0)
 
@@ -170,7 +170,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
-    def addRuleAtDeeperSourcePathAllowed() {
+    def addIncludeRuleAtDeeperSourcePathAllowed() {
         _addSource("dtmp/done")
         sourceTree.getRulesAtDir("/dtmp/done").size must be(0)
 
@@ -183,7 +183,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
-    def addRuleUnderSourceDirAllowed() {
+    def addIncludeRuleUnderSourceDirAllowed() {
         _addSource("dtmp")
         sourceTree.getRulesAtDir("/dtmp").size must be(0)
 
@@ -200,7 +200,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
-    def addRuleAwayFromSourceDirNotAllowed() {
+    def addIncludeRuleAwayFromSourceDirNotAllowed() {
         _addSource("dtmp")
         sourceTree.getRulesAtDir("/dtmp").size must be(0)
 
@@ -212,7 +212,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
-    def addRuleAboveSourceDirNotAllowed() {
+    def addIncludeRuleAboveSourceDirNotAllowed() {
         _addSource("dtmp/dunder")
         sourceTree.getRulesAtDir("/dtmp").size must be(0)
         sourceTree.getRulesAtDir("/dtmp/dunder").size must be(0)
