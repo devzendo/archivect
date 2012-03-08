@@ -109,9 +109,10 @@ object SourceTreeFactory {
         }
 
         def getRulesAtDir(path: String): List[RulePredicate] = {
-            val source = SourceFactory.pathToSource(path)
-            // TODO
-            List.empty[RulePredicate]
+            val list = for {
+                pathNode <- findNode(path)
+            } yield pathNode.getRulePredicates
+            list.getOrElse(List.empty[RulePredicate])
         }
 
         @throws(classOf[SourceTreeException])
