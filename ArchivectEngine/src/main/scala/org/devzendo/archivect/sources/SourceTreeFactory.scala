@@ -27,8 +27,6 @@ object SourceTreeFactory {
         var dirMap = Map.empty[String, DirNode]
         var sourcePathTermination = false
 
-        //def sourcePathTermination = _sourcePathTermination
-
         def getDirNodes: Map[String, DirNode] = {
             dirMap
         }
@@ -37,7 +35,6 @@ object SourceTreeFactory {
             val dn = dirMap.get(name)
             if (dn.isEmpty) {
                 val newDirNode = new DirNode(name)
-                println("adding node '" + name + "'")
                 dirMap += (name -> newDirNode)
                 newDirNode
             } else {
@@ -60,52 +57,29 @@ object SourceTreeFactory {
 
         def addSource(source: Source) {
             var searchNode = rootNode
-            println("adding source '" + source.path + "'")
-            println("root node is: '" + searchNode.name + "' (" + searchNode.hashCode() + ")")
             source.pathComponents.foreach { (c: String) =>
-                println("path component '" + c + "' search node was: '" + searchNode.name + "' (" +searchNode.hashCode() + ")")
                 searchNode = searchNode.addDir(c)
-                println("search node now: '" + searchNode.name + "' (" + searchNode.hashCode() + ")")
-
-//                val subNodes = searchNode.getDirNodes
-//                val subNode = subNodes.get(c)
-//                if (subNode.isDefined) {
-//                    println("node " + c + " is defined")
-//                    searchNode = subNode.get
-//                } else {
-//                    println("node " + c + " is not defined; adding one")
-//                    searchNode = searchNode.addDir(c)
-//                }
             }
-            println("adding source path termination to " + searchNode.hashCode())
             searchNode.sourcePathTermination = true
         }
 
         def getRootNode: DirNode = {
             rootNode
         }
+
         def findNode(path: String): Option[DirNode] = {
-            println("findNode searching for path '" + path + "'")
             val source = SourceFactory.pathToSource(path)
-            println("searching for path as source '" + source.pathComponents + "'")
             var searchNode = rootNode
             source.pathComponents.foreach { (c: String) =>
-                println("path component '" + c + "'...")
-                println("search node now: '" + searchNode.name + "' (" + searchNode.hashCode() + ")")
-
                 val subNodes = searchNode.getDirNodes
-                subNodes.keys.foreach((c:String) => println("dir name key: " + c))
                 val subNode = subNodes.get(c)
                 if (subNode.isDefined) {
-                    println("found node " + c + " in dir '" + searchNode.name + "'")
                     searchNode = subNode.get
                 } else {
-                    println("node " + c + " not found in dir '" + searchNode.name + "'")
                     return None
                 }
             }
-            println("yes, got that node")
-            return Some(searchNode)
+            Some(searchNode)
         }
 
         def getRulesAtDir(path: String): List[RulePredicate] = {
@@ -158,6 +132,7 @@ object SourceTreeFactory {
         }
 
     }
+
     case class UnrootedSourceTree(
          override val allPathsAreDirectoriesPredicate: SourcePredicate)
         extends SourceTree(allPathsAreDirectoriesPredicate) {

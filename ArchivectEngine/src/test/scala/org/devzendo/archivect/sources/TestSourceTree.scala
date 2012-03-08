@@ -151,7 +151,6 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
         val rule = compiler.compile(Rule(Glob, "*.c", "/"))
         sourceTree.addIncludeRule(rule)
 
-        // TODO unfinished
         val rules = sourceTree.getRulesAtDir("/")
         rules.size must be(1)
         rules(0) must be theSameInstanceAs rule
@@ -165,7 +164,6 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
         val rule = compiler.compile(Rule(Glob, "*.c", "/dtmp"))
         sourceTree.addIncludeRule(rule)
 
-        // TODO unfinished
         val rules = sourceTree.getRulesAtDir("/dtmp")
         rules.size must be(1)
         rules(0) must be theSameInstanceAs rule
@@ -179,7 +177,6 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
         val rule = compiler.compile(Rule(Glob, "*.c", "/dtmp/done"))
         sourceTree.addIncludeRule(rule)
 
-        // TODO unfinished
         val rules = sourceTree.getRulesAtDir("/dtmp/done")
         rules.size must be(1)
         rules(0) must be theSameInstanceAs rule
@@ -193,7 +190,6 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
         val rule = compiler.compile(Rule(Glob, "*.c", "/dtmp/dunder/directory"))
         sourceTree.addIncludeRule(rule)
 
-        // TODO unfinished
         sourceTree.getRulesAtDir("/dtmp").size must be(0)
 
         sourceTree.getRulesAtDir("/dtmp/dunder").size must be(0)
