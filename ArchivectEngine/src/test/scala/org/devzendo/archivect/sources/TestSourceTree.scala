@@ -346,6 +346,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
 //        endRules.size must be(1)
 //        endRules(0)._1 must be(false)
 //        endRules(0)._2 must be theSameInstanceAs rule
+        // TODO do after working out how composite rules are done
 
     }
 }
