@@ -15,10 +15,10 @@
  */
 package org.devzendo.archivect.sources
 
-import org.devzendo.archivect.rule.RulePredicate
 import org.devzendo.archivect.sources.SourceFactory._
 import scala.throws
 import collection.mutable.{ListBuffer, Map}
+import org.devzendo.archivect.rule.{CompositeRulePredicate, RulePredicate}
 
 object SourceTreeFactory {
     case class DirNode(name: String) {
@@ -88,6 +88,11 @@ object SourceTreeFactory {
                 pathNode <- _findNode(path)
             } yield pathNode.getRulePredicates
             list.getOrElse(List.empty[(Boolean, RulePredicate)])
+        }
+
+        def getEffectiveRuleAtDir(path: String): CompositeRulePredicate = {
+            null
+            // TODO do after working out how composite rules are done
         }
 
         def _addRule(inclusion: Boolean, predicate: RulePredicate) {

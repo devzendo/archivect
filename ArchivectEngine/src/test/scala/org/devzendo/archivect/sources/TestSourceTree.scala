@@ -335,4 +335,17 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
         ).getMessage must
             be("Cannot add rule '*.txt' at '/dir/file': rules can only be added to directories")
     }
+
+    @Test
+    def effectiveRuleHierarchyComputed() {
+        _addSource("dtmp")
+        sourceTree.addIncludeRule(compiler.compile(Rule(Glob, "*.c", "/dtmp")))
+        sourceTree.addExcludeRule(compiler.compile(Rule(Glob, "*.c", "/dtmp/dunder/directory")))
+
+        val endRule = sourceTree.getEffectiveRuleAtDir("/dtmp/dunder/directory")
+//        endRules.size must be(1)
+//        endRules(0)._1 must be(false)
+//        endRules(0)._2 must be theSameInstanceAs rule
+
+    }
 }
