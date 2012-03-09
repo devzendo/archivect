@@ -23,7 +23,7 @@ import collection.mutable.{ListBuffer, Map}
 object SourceTreeFactory {
     case class DirNode(name: String) {
 
-        var rulePredicates = ListBuffer.empty[RulePredicate]
+        var rulePredicates = ListBuffer.empty[(Boolean, RulePredicate)]
         var dirMap = Map.empty[String, DirNode]
         var sourcePathTermination = false
 
@@ -42,12 +42,13 @@ object SourceTreeFactory {
             }
         }
 
-        def getRulePredicates: List[RulePredicate] = {
+        def getRulePredicates: List[(Boolean, RulePredicate)] = {
             rulePredicates.readOnly
         }
 
-        def addRulePredicate(predicate: RulePredicate) {
-            rulePredicates += predicate
+        def addRulePredicate(inclusion: Boolean, predicate: RulePredicate) {
+            val tuple = (inclusion, predicate)
+            rulePredicates += tuple
         }
     }
 
@@ -82,15 +83,16 @@ object SourceTreeFactory {
             Some(searchNode)
         }
 
-        def getRulesAtDir(path: String): List[RulePredicate] = {
+        def getRulesAtDir(path: String): List[(Boolean, RulePredicate)] = {
             val list = for {
                 pathNode <- _findNode(path)
             } yield pathNode.getRulePredicates
-            list.getOrElse(List.empty[RulePredicate])
+            list.getOrElse(List.empty[(Boolean, RulePredicate)])
         }
 
         @throws(classOf[SourceTreeException])
         def addIncludeRule(predicate: RulePredicate) {
+            val inclusion = true
             val ruleAtSource = SourceFactory.pathToSource(predicate.rule.ruleAt)
 
             if (!allPathsAreDirectoriesPredicate(ruleAtSource)) {
@@ -128,7 +130,7 @@ object SourceTreeFactory {
             if (!seenSourceTermination) {
                 throwSinceRuleIsNotAtOrUnderSourceTree()
             }
-            rulePlacementNode.addRulePredicate(predicate)
+            rulePlacementNode.addRulePredicate(true, predicate)
         }
 
     }
