@@ -153,6 +153,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
 
         val rules = sourceTree.getRulesAtDir("/")
         rules.size must be(1)
+        rules(0)._1 must be(true)
         rules(0)._2 must be theSameInstanceAs rule
     }
 
@@ -166,6 +167,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
 
         val rules = sourceTree.getRulesAtDir("/dtmp")
         rules.size must be(1)
+        rules(0)._1 must be(true)
         rules(0)._2 must be theSameInstanceAs rule
     }
 
@@ -179,6 +181,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
 
         val rules = sourceTree.getRulesAtDir("/dtmp/done")
         rules.size must be(1)
+        rules(0)._1 must be(true)
         rules(0)._2 must be theSameInstanceAs rule
     }
 
@@ -196,6 +199,7 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
 
         val endRules = sourceTree.getRulesAtDir("/dtmp/dunder/directory")
         endRules.size must be(1)
+        endRules(0)._1 must be(true)
         endRules(0)._2 must be theSameInstanceAs rule
     }
 
