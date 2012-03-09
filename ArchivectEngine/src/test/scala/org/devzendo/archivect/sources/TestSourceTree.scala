@@ -229,6 +229,91 @@ class TestSourceTree extends AssertionsForJUnit with MustMatchersForJUnit {
     }
 
     @Test
+    def addExcludeRuleAtRootSourcePathAllowed() {
+        _addSource("/")
+        sourceTree.getRulesAtDir("/").size must be(0)
+
+        val rule = compiler.compile(Rule(Glob, "*.c", "/"))
+        sourceTree.addExcludeRule(rule)
+
+        val rules = sourceTree.getRulesAtDir("/")
+        rules.size must be(1)
+        rules(0)._1 must be(false)
+        rules(0)._2 must be theSameInstanceAs rule
+    }
+
+    @Test
+    def addExcludeRuleAtSourcePathAllowed() {
+        _addSource("dtmp")
+        sourceTree.getRulesAtDir("/dtmp").size must be(0)
+
+        val rule = compiler.compile(Rule(Glob, "*.c", "/dtmp"))
+        sourceTree.addExcludeRule(rule)
+
+        val rules = sourceTree.getRulesAtDir("/dtmp")
+        rules.size must be(1)
+        rules(0)._1 must be(false)
+        rules(0)._2 must be theSameInstanceAs rule
+    }
+
+    @Test
+    def addExcludeRuleAtDeeperSourcePathAllowed() {
+        _addSource("dtmp/done")
+        sourceTree.getRulesAtDir("/dtmp/done").size must be(0)
+
+        val rule = compiler.compile(Rule(Glob, "*.c", "/dtmp/done"))
+        sourceTree.addExcludeRule(rule)
+
+        val rules = sourceTree.getRulesAtDir("/dtmp/done")
+        rules.size must be(1)
+        rules(0)._1 must be(false)
+        rules(0)._2 must be theSameInstanceAs rule
+    }
+
+    @Test
+    def addExcludeRuleUnderSourceDirAllowed() {
+        _addSource("dtmp")
+        sourceTree.getRulesAtDir("/dtmp").size must be(0)
+
+        val rule = compiler.compile(Rule(Glob, "*.c", "/dtmp/dunder/directory"))
+        sourceTree.addExcludeRule(rule)
+
+        sourceTree.getRulesAtDir("/dtmp").size must be(0)
+
+        sourceTree.getRulesAtDir("/dtmp/dunder").size must be(0)
+
+        val endRules = sourceTree.getRulesAtDir("/dtmp/dunder/directory")
+        endRules.size must be(1)
+        endRules(0)._1 must be(false)
+        endRules(0)._2 must be theSameInstanceAs rule
+    }
+
+    @Test
+    def addExcludeRuleAwayFromSourceDirNotAllowed() {
+        _addSource("dtmp")
+        sourceTree.getRulesAtDir("/dtmp").size must be(0)
+
+        intercept[SourceTreeException] (
+            sourceTree.addExcludeRule(
+                compiler.compile(Rule(Glob, "*.c", "/dway/daway")))
+        ).getMessage must
+            be("Cannot add rule '*.c' at '/dway/daway': rules can only be added at, or under source paths")
+    }
+
+    @Test
+    def addExcludeRuleAboveSourceDirNotAllowed() {
+        _addSource("dtmp/dunder")
+        sourceTree.getRulesAtDir("/dtmp").size must be(0)
+        sourceTree.getRulesAtDir("/dtmp/dunder").size must be(0)
+
+        intercept[SourceTreeException] (
+            sourceTree.addExcludeRule(
+                compiler.compile(Rule(Glob, "*.c", "/dtmp")))
+        ).getMessage must
+            be("Cannot add rule '*.c' at '/dtmp': rules can only be added at, or under source paths")
+    }
+
+    @Test
     def allPathComponentsMustBeDirectories() {
         _addSource("dtmp")
 

@@ -90,9 +90,7 @@ object SourceTreeFactory {
             list.getOrElse(List.empty[(Boolean, RulePredicate)])
         }
 
-        @throws(classOf[SourceTreeException])
-        def addIncludeRule(predicate: RulePredicate) {
-            val inclusion = true
+        def _addRule(inclusion: Boolean, predicate: RulePredicate) {
             val ruleAtSource = SourceFactory.pathToSource(predicate.rule.ruleAt)
 
             if (!allPathsAreDirectoriesPredicate(ruleAtSource)) {
@@ -100,7 +98,7 @@ object SourceTreeFactory {
                     predicate.rule.ruleText + "' at '" +
                     predicate.rule.ruleAt + "': rules can only be added to directories")
             }
-            
+
             def throwSinceRuleIsNotAtOrUnderSourceTree() {
                 throw new SourceTreeException("Cannot add rule '" +
                     predicate.rule.ruleText + "' at '" +
@@ -130,7 +128,17 @@ object SourceTreeFactory {
             if (!seenSourceTermination) {
                 throwSinceRuleIsNotAtOrUnderSourceTree()
             }
-            rulePlacementNode.addRulePredicate(true, predicate)
+            rulePlacementNode.addRulePredicate(inclusion, predicate)
+        }
+
+        @throws(classOf[SourceTreeException])
+        def addIncludeRule(predicate: RulePredicate) {
+            _addRule(true, predicate);
+        }
+
+        @throws(classOf[SourceTreeException])
+        def addExcludeRule(predicate: RulePredicate) {
+            _addRule(false, predicate);
         }
 
     }
