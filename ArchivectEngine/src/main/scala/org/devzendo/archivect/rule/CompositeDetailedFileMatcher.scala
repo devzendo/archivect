@@ -37,5 +37,10 @@ class NotDetailedFileMatcher(orig: DetailedFileMatcher) extends CompositeDetaile
     def matches(file: DetailedFile): Boolean = {
         ! orig.matches(file)
     }
+}
 
+class OrDetailedFileMatcher(left: DetailedFileMatcher, right: DetailedFileMatcher) extends CompositeDetailedFileMatcher {
+    def matches(file: DetailedFile): Boolean = {
+        left.matches(file) || right.matches(file)
+    }
 }

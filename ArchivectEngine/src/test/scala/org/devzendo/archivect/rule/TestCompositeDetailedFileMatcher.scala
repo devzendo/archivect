@@ -55,4 +55,21 @@ class TestCompositeDetailedFileMatcher extends AssertionsForJUnit with MustMatch
 
         EasyMock.verify(file1)
     }
+
+    @Test
+    def orMatcherOrs() {
+        val file1 = EasyMock.createMock(classOf[DetailedFile])
+        EasyMock.replay(file1)
+
+        val pass = new PassDetailedFileMatcher()
+        val fail = new FailDetailedFileMatcher()
+
+        new OrDetailedFileMatcher(fail, fail).matches(file1) must be(false)
+        new OrDetailedFileMatcher(fail, pass).matches(file1) must be(true)
+        new OrDetailedFileMatcher(pass, fail).matches(file1) must be(true)
+        new OrDetailedFileMatcher(pass, pass).matches(file1) must be(true)
+
+        EasyMock.verify(file1)
+    }
+
 }
