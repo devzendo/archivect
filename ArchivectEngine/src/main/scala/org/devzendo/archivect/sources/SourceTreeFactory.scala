@@ -18,7 +18,7 @@ package org.devzendo.archivect.sources
 import org.devzendo.archivect.sources.SourceFactory._
 import scala.throws
 import collection.mutable.{ListBuffer, Map}
-import org.devzendo.archivect.rule.{CompositeRulePredicate, RulePredicate}
+import org.devzendo.archivect.rule.{CompositeDetailedFileMatcher, RulePredicate}
 
 object SourceTreeFactory {
     case class DirNode(name: String) {
@@ -90,7 +90,7 @@ object SourceTreeFactory {
             list.getOrElse(List.empty[(Boolean, RulePredicate)])
         }
 
-        def getEffectiveRuleAtDir(path: String): CompositeRulePredicate = {
+        def getEffectiveRuleAtDir(path: String): CompositeDetailedFileMatcher = {
             null
             // TODO do after working out how composite rules are done
         }

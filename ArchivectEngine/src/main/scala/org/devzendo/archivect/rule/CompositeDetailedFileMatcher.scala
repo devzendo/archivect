@@ -15,6 +15,27 @@
  */
 package org.devzendo.archivect.rule
 
-class CompositeRulePredicate /*extends RulePredicate*/ {
+import org.devzendo.xpfsa.{ DetailedFile, UnixFileStatus }
+
+sealed abstract class CompositeDetailedFileMatcher extends DetailedFileMatcher {
+
+}
+
+class PassDetailedFileMatcher extends CompositeDetailedFileMatcher {
+    def matches(file: DetailedFile): Boolean = {
+        true
+    }
+}
+
+class FailDetailedFileMatcher extends CompositeDetailedFileMatcher {
+    def matches(file: DetailedFile): Boolean = {
+        false
+    }
+}
+
+class NotDetailedFileMatcher(orig: DetailedFileMatcher) extends CompositeDetailedFileMatcher {
+    def matches(file: DetailedFile): Boolean = {
+        ! orig.matches(file)
+    }
 
 }

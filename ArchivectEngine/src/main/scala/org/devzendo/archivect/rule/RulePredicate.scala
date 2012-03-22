@@ -20,8 +20,11 @@ import org.devzendo.archivect.model.Rule
 import org.devzendo.xpfsa.{ DetailedFile, UnixFileStatus }
 import java.util.regex.{ Pattern, PatternSyntaxException }
 
-sealed abstract class RulePredicate(val rule: Rule) {
+trait DetailedFileMatcher {
     def matches(file: DetailedFile): Boolean
+}
+sealed abstract class RulePredicate(val rule: Rule) extends DetailedFileMatcher
+{
 }
 
 case class GlobRulePredicate(override val rule: Rule) extends RulePredicate(rule) {
