@@ -2,38 +2,58 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.devzendo</groupId>
-    <artifactId>Archivect</artifactId>
+    <artifactId>archivect</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Archivect</name>
+    <name>archivect</name>
     <description>A cross-platform archive/backup restore application.
-    (Apache License v2) 2010 Matt Gumbley, DevZendo.org</description>
+    (Apache License v2) 2010-2015 Matt Gumbley, DevZendo.org</description>
+    <url>http://www.devzendo.org/content/archivect</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repository</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://bitbucket.org/devzendo/archivect</url>
+        <connection>scm:hg:https://bitbucket.org/devzendo/archivect</connection>
+        <developerConnection>scm:hg:https://bitbucket.org/devzendo/archivect</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>matt.gumbley</id>
+            <name>Matt Gumbley</name>
+            <email>matt.gumbley@devzendo.org</email>
+        </developer>
+    </developers>
 
     <parent>
         <groupId>org.devzendo</groupId>
-        <artifactId>GroupParent</artifactId>
-        <version>1.0.1</version>
+        <artifactId>group-parent</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <scala.version>2.9.1</scala.version>
+        <scala.version>2.10.2</scala.version>
         <skipTests>true</skipTests>
     </properties>
 
     <modules>
-        <module>ArchivectCode</module>
+        <module>archivect-code</module>
 
-        <module>ArchivectEngine</module>
+        <module>archivect-engine</module>
 
-        <module>ArchivectUI</module>
-        <module>ArchivectUIMacOSX</module>
-        <module>ArchivectUIWindows</module>
-        <module>ArchivectUILinux</module>
+        <module>archivect-ui</module>
+        <module>archivect-ui-macosx</module>
+        <module>archivect-ui-windows</module>
+        <module>archivect-ui-linux</module>
 
-        <module>ArchivectCommand</module>
-        <module>ArchivectCommandMacOSX</module>
-        <module>ArchivectCommandWindows</module>
-        <module>ArchivectCommandLinux</module>
+        <module>archivect-command</module>
+        <module>archivect-command-macosx</module>
+        <module>archivect-command-windows</module>
+        <module>archivect-command-linux</module>
     </modules>
 
     <build>
