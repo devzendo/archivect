@@ -32,8 +32,8 @@ case class SmbDestination(override val name: String, val server: String,
 case class DestinationSummary(val name: String, val destinationType: String)
 
 sealed abstract class DestinationEvent extends ObservableEvent
-case class DestinationAddedEvent extends DestinationEvent
-case class DestinationRemovedEvent extends DestinationEvent
+case class DestinationAddedEvent() extends DestinationEvent
+case class DestinationRemovedEvent() extends DestinationEvent
 
 trait Destinations {
     /**

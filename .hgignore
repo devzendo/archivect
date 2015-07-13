@@ -1,33 +1,6 @@
-
-syntax: regexp
-^ArchivectCommand/target$
-syntax: regexp
-^ArchivectEngine/target$
-syntax: regexp
-^ArchivectUI/target$
-syntax: regexp
-^ArchivectNar/target$
-syntax: regexp
-^ArchivectUIWindows/target$
-syntax: regexp
-^ArchivectCommandWindows/target$
-syntax: regexp
-^ArchivectCommandLinux/target$
-syntax: regexp
-^ArchivectCommandMacOSX/target$
-syntax: regexp
-^ArchivectUILinux/target$
-syntax: regexp
-^ArchivectUIMacOSX/target$
-syntax: regexp
-^target$
-syntax: regexp
-^ArchivectCode/target$
 syntax: glob
 **/.scala_dependencies
-syntax: regexp
-^ArchivectCommand/\.cache$
-syntax: regexp
-^ArchivectEngine/\.cache$
-syntax: regexp
-^ArchivectUI/\.cache$
+**/target/ 
+syntax: glob 
+.cache 
+*.iml 

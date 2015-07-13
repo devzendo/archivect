@@ -2,17 +2,26 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.devzendo</groupId>
-	<artifactId>ArchivectEngine</artifactId>
+	<artifactId>archivect-engine</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
-	<name>ArchivectEngine</name>
+	<name>archivect-engine</name>
 	<packaging>nar</packaging>
 	<description>Archivect internals.
-    (Apache License v2) 2010 Matt Gumbley, DevZendo.org</description>
+    (Apache License v2) 2010-2015 Matt Gumbley, DevZendo.org</description>
 
 	<parent>
 		<groupId>org.devzendo</groupId>
-		<artifactId>ArchivectCode</artifactId>
+		<artifactId>archivect-code</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
+		<relativePath>../archivect-code</relativePath>
 	</parent>
+    <dependencies>
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>cross-platform-file-system-access</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>nar</type>
+        </dependency>
+    </dependencies>
 
 </project>
