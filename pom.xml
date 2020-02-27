@@ -17,9 +17,9 @@
         </license>
     </licenses>
     <scm>
-        <url>https://bitbucket.org/devzendo/archivect</url>
-        <connection>scm:hg:https://bitbucket.org/devzendo/archivect</connection>
-        <developerConnection>scm:hg:https://bitbucket.org/devzendo/archivect</developerConnection>
+        <url>https://github.com/devzendo/archivect.git</url>
+        <connection>scm:git:https://github.com/devzendo/archivect.git</connection>
+        <developerConnection>scm:git:git@github.com:devzendo/archivect.git</developerConnection>
     </scm>
     <developers>
         <developer>
